@@ -1,0 +1,188 @@
+#include "drugdictionaryadd.h"
+#include "connectsql.h"
+#include <QTreeWidgetItem>
+#include <QTextCodec>
+#include "initial.h"
+extern ConnectSql sql;
+
+Drugdictionaryadd::Drugdictionaryadd(QWidget *parent)
+	: QWidget(parent)
+{
+	ui.setupUi(this);
+	initUI();
+	connect(ui.lineEdit, SIGNAL(textChanged(const QString &)), this, SLOT(showinfo(const QString &)));
+}
+void Drugdictionaryadd::initUI()
+{
+	QSqlQuery query(*sql.db);		
+	query.exec("select * from mz_classification");
+	QStringList list;
+	while(query.next())
+	{
+		QString str = query.value(1).toString()+"-"+ query.value(2).toString();
+		list.append(str);
+	}
+	ui.mzclascomboBox->addItems(list);
+	list.clear();
+	query.exec("select * from mz_receipt");
+	while(query.next())
+	{
+		QString str = query.value(1).toString()+"-"+ query.value(2).toString();
+		list.append(str);
+	}
+	ui.mzreceiptcomboBox->addItems(list);
+	list.clear();
+	query.exec("select * from zy_classification");
+	while(query.next())
+	{
+		QString str = query.value(1).toString()+"-"+  query.value(2).toString();
+		list.append(str);
+	}
+	ui.comboBox_3->addItems(list);
+	list.clear();
+	query.exec("select * from zy_classification");
+	while(query.next())
+	{
+		QString str = query.value(1).toString()+"-"+  query.value(2).toString();
+		list.append(str);
+	}
+	ui.comboBox_4->addItems(list);
+	list.clear();
+	query.exec("select * from sys_dictionarytype");
+	while(query.next())
+	{
+		QString str = query.value(2).toString();
+		list.append(str);
+	}
+	ui.comboBox_7->addItems(list);
+	IsEdit=false;
+}
+void Drugdictionaryadd::showinfo(const QString &text)
+{
+	Initial*init = new Initial;
+	QString str = init->getPinyinByName(QString::fromLocal8Bit("拉西"));
+	//ui.lineEdit_2->setText(init->GetIntial(text));
+ }
+void Drugdictionaryadd::on_saveButton_clicked()
+{
+	
+	QSqlQuery query(*sql.db);
+	int count =0;
+	query.prepare("select *from sys_drugdictionary");
+	query.exec();
+	while(query.next())
+	{
+		count++;
+	}
+	count++;
+	QString strdrugname = ui.lineEdit->text().trimmed();
+	if(IsEdit)
+	{
+		query.prepare("select *from sys_drugdictionary where name = '"+strdrugname+"'");
+		query.exec();
+		while (query.next())
+		{
+			count = query.value(0).toInt();
+		}
+		query.prepare("delete from sys_drugdictionary where name = '"+strdrugname+"'");
+		query.exec();
+	}
+
+	query.prepare("INSERT INTO sys_drugdictionary VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	query.bindValue(0, count);
+	query.bindValue(1, ui.lineEdit->text());
+	query.bindValue(2, ui.lineEdit_2->text());
+	query.bindValue(3, NULL);
+	query.bindValue(4, ui.lineEdit_5->text());
+	query.bindValue(5, ui.lineEdit_6->text());
+	query.bindValue(6, ui.comboBox_5->currentText());
+	query.bindValue(7, ui.lineEdit_9->text());
+	query.bindValue(8,  ui.comboBox_5->currentText());
+	query.bindValue(9, NULL);
+	query.bindValue(10, ui.mzreceiptcomboBox->currentText());
+	query.bindValue(11,  ui.comboBox_4->currentText());
+	query.bindValue(12, ui.mzclascomboBox->currentText());
+	query.bindValue(13, ui.comboBox_3->currentText());
+	query.bindValue(14, ui.comboBox_7->currentText());
+	query.bindValue(15, ui.lineEdit_7->text().toDouble());
+	query.bindValue(16, NULL);
+	query.bindValue(17, ui.lineEdit_8->text().toDouble());
+	query.bindValue(18, NULL);
+	query.bindValue(19, NULL);
+	query.bindValue(20, NULL);
+	query.bindValue(21, NULL);
+	query.bindValue(22, ui.lineEdit_3->text());
+	query.bindValue(23, NULL);
+	if(query.exec())
+	{
+		QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
+		return;
+	}
+}
+void Drugdictionaryadd::on_cancelButton_clicked()
+{
+	this->close();
+}
+void Drugdictionaryadd::edit(QStringList list)
+{
+	IsEdit=true;
+	ui.lineEdit->setText(list.at(2));
+	ui.lineEdit_2->setText(list.at(3));
+	ui.lineEdit_3->setText(list.at(1));
+
+	ui.lineEdit_5->setText(list.at(5));
+	ui.lineEdit_6->setText(list.at(6));
+
+	ui.lineEdit_7->setText(list.at(16));
+	ui.lineEdit_8->setText(list.at(18));
+	ui.lineEdit_9->setText(list.at(8));
+
+	for (int i =0;i<ui.comboBox_5->count();i++)
+	{
+		if (ui.comboBox_5->itemText(i)==list.at(7))
+		{
+			ui.comboBox_5->setCurrentIndex(i);
+		}
+	}
+
+	for (int i =0;i<ui.mzreceiptcomboBox->count();i++)
+	{
+		if (ui.mzreceiptcomboBox->itemText(i)==list.at(11))
+		{
+			ui.mzreceiptcomboBox->setCurrentIndex(i);
+		}
+	}
+	for (int i =0;i<ui.mzclascomboBox->count();i++)
+	{
+		if (ui.mzclascomboBox->itemText(i)==list.at(13))
+		{
+			ui.mzclascomboBox->setCurrentIndex(i);
+		}
+	}
+	for (int i =0;i<ui.comboBox_4->count();i++)
+	{
+		if (ui.comboBox_4->itemText(i)==list.at(12))
+		{
+			ui.comboBox_4->setCurrentIndex(i);
+		}
+	}
+	for (int i =0;i<ui.comboBox_3->count();i++)
+	{
+		if (ui.comboBox_3->itemText(i)==list.at(14))
+		{
+			ui.comboBox_3->setCurrentIndex(i);
+		}
+	}
+
+	for (int i =0;i<ui.comboBox_7->count();i++)
+	{
+		if (ui.comboBox_7->itemText(i)==list.at(15))
+		{
+			ui.comboBox_7->setCurrentIndex(i);
+		}
+	}
+}
+Drugdictionaryadd::~Drugdictionaryadd()
+{
+
+}
