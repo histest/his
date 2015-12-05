@@ -54,6 +54,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="pushButton">
+           <property name="font">
+            <font>
+             <family>Agency FB</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
            <property name="text">
             <string>打印</string>
            </property>
@@ -285,6 +291,19 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="pushButton_2">
+           <property name="font">
+            <font>
+             <family>Agency FB</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>打印</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -411,6 +430,19 @@
            </property>
            <property name="text">
             <string>清屏</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pushButton_3">
+           <property name="font">
+            <font>
+             <family>Agency FB</family>
+             <pointsize>12</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>打印</string>
            </property>
           </widget>
          </item>
