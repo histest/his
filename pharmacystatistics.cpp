@@ -702,6 +702,10 @@ void PharmacyStatistics::print( QPrinter* printer )
 	painter.setBrush(QBrush(Qt::white,Qt::SolidPattern));//ÉèÖÃ»­Ë¢ÐÎÊ½ 
 	int row = ui.tableWidget->rowCount();
 	int col = ui.tableWidget->columnCount();
+	if (row==0)
+	{
+		return;
+	}
 	double cellwidth = (w-40)/col;
 	double cellheight = 160;
 
