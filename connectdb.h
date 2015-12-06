@@ -19,6 +19,8 @@ public:
 	bool IsAdmin;
 	bool IsAuthorized;
 	bool  Isconnect;
+	QListView *namelistview; 
+	QStringListModel *model; 
 private:
 	Ui::ConnectDB *ui;
 	bool eventFilter(QObject*obj,QEvent*event);
@@ -32,6 +34,8 @@ private:
 		void on_cancelButton_2_clicked();
 		void on_exitButton_clicked();
 		void on_closeButton_clicked();
+		void setCompleter(const QString &text); 
+		void completeText(const QModelIndex &index);
 };
 
 #endif // CONNECTDB_H

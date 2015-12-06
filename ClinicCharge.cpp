@@ -359,16 +359,7 @@ void ClinicCharge::on_packageButton_clicked()
 	package->setWindowModality(Qt::WindowModal);
 	package->show();
 }
-void ClinicCharge::on_previewButton_clicked()
-{
-	filePrintPreview();
-}
-void ClinicCharge::on_printButton_clicked()
-{
-	QPrinter       printer( QPrinter::HighResolution );
-	QPrintDialog   dialog( &printer, this );
-	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
-}
+
 void ClinicCharge::on_addrowButton_clicked()
 {
 	//表格增加一行
@@ -405,7 +396,6 @@ void ClinicCharge::on_deleterowButton_clicked()
 		ui.dueincomeEdit->setText(strcurrentamount);
 	}
 }
-
 void ClinicCharge::setEdit(bool IsEdit)
 {
 	if (IsEdit==true)
@@ -520,6 +510,22 @@ int  ClinicCharge::sheetNo()
 	}
 	return isheetcount;
 }
+void ClinicCharge::filePrint()
+{
+	// 打印对话框
+	QPrinter       printer( QPrinter::HighResolution );
+	printer.setPageSize(QPrinter::Custom);
+	printer.setOrientation(QPrinter::Landscape);
+	printer.setPaperSize(QSizeF(120,180),QPrinter::Point);
+
+	QPrintDialog   dialog( &printer, this );
+	
+	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
+}
+void ClinicCharge::on_previewButton_clicked()
+{
+	filePrintPreview();
+}
 void ClinicCharge::filePrintPreview()
 {
 	// 打印预览对话框
@@ -534,16 +540,10 @@ void ClinicCharge::filePrintPreview()
 	connect( &preview, SIGNAL(paintRequested(QPrinter*)), SLOT(print(QPrinter*)) );
 	preview.exec();
 }
-void ClinicCharge::filePrint()
+void ClinicCharge::on_printButton_clicked()
 {
-	// 打印对话框
 	QPrinter       printer( QPrinter::HighResolution );
-	printer.setPageSize(QPrinter::Custom);
-	printer.setOrientation(QPrinter::Landscape);
-	printer.setPaperSize(QSizeF(120,180),QPrinter::Point);
-
 	QPrintDialog   dialog( &printer, this );
-	
 	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
 }
 void ClinicCharge::print( QPrinter* printer )

@@ -32,6 +32,21 @@ private:
 		void on_radioButton_4_clicked();
 		void completeText(const QModelIndex &index); // 点击完成列表中的项，使用此项自动完成输入的单词
 		void setCompleter(const QString &text); // 动态的显示完成列表
+
+		void on_printButton_clicked();
+		void on_previewButton_clicked();
+		void print(QPrinter* printer);
+		void filePrintPreview();
+
+		void on_printButton_2_clicked();
+		void on_previewButton_2_clicked();
+		void print_2(QPrinter* printer);
+		void filePrintPreview_2();
+
+		void on_printButton_3_clicked();
+		void on_previewButton_3_clicked();
+		void print_3(QPrinter* printer);
+		void filePrintPreview_3();
 };
 
 #endif // CLINICSTATISTICS_H

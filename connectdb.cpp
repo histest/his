@@ -1,6 +1,9 @@
 #include "connectdb.h"
 #include "ui_connectdb.h"
 #include "connectsql.h"
+#include <vector>  
+using namespace std;
+vector <QString> vtSat; 
 ConnectSql sql;
 ConnectDB::ConnectDB(QWidget *parent): 
 QDialog(parent),
@@ -8,6 +11,13 @@ QDialog(parent),
 {
 	ui->setupUi(this);
 	initUI();
+	namelistview = new QListView(this);
+	model = new QStringListModel(this);
+	namelistview->setWindowFlags(Qt::ToolTip);
+	installEventFilter(namelistview);
+	connect(namelistview, SIGNAL(clicked(const QModelIndex &)), this, SLOT(completeText(const QModelIndex &)));
+	connect(ui->comboBox_2, SIGNAL(editTextChanged(const QString &)), this, SLOT(setCompleter(const QString &)));
+
 	ui->widget->setStyleSheet("QWidget{background-color: rgb(85,170,255);}"
 		"QPushButton{background-color: rgb(85,170,255);color: white;border-style: outset;}"
 		"QPushButton:hover{	background-color: rgb(3,110,184);color: white;}");
@@ -34,6 +44,18 @@ bool ConnectDB::on_okButton_clicked()
 {
 
 	bool isconnect =sql.connect(ui->lineEdit->text().trimmed());
+	QStringList list;
+	if (isconnect)
+	{
+		QSqlQuery query(*sql.db);
+		query.exec("select * from sys_users");
+		while(query.next())
+		{
+			list.append(query.value(1).toString());
+			vtSat.push_back(query.value(1).toString());
+		}
+		ui->comboBox_2->addItems(list);
+	}
 	return isconnect;
 
 }
@@ -140,4 +162,68 @@ bool ConnectDB::eventFilter(QObject*obj,QEvent*event)
 			}
 		}
 	}
+}
+void ConnectDB::setCompleter(const QString &text) {
+	namelistview->hide();
+	//disconnect(ui.comboBox,SIGNAL(editTextChanged (const QString & )),this,SLOT(setCompleter(const QString & )));  
+	if (text.isEmpty()) {
+		namelistview->hide();
+		return;
+	}
+
+	if ((text.length() > 1) && (!namelistview->isHidden())) {
+		return;
+	}
+
+	QSqlQuery query(*sql.db);	
+
+
+	QString strsql= "select * from sys_users where name like '"+text+"'";
+	query.exec(strsql);
+	if (query.next())return;
+
+	QStringList list;
+	for(int i = 0;i < vtSat.size();++i){
+
+		if (vtSat[i].indexOf(text) != -1)
+		{
+
+			list.append(vtSat[i]);
+		}
+	}
+
+	model->setStringList(list);
+	//	model->setStringList(sl);
+	namelistview->setModel(model);
+
+	if (model->rowCount() == 0) {
+		return;
+	}
+
+	// Position the text edit
+	namelistview->setMinimumWidth(this->width());
+	namelistview->setMaximumWidth(this->width());
+
+	QPoint p(0, this->height());
+	int x = this->mapToGlobal(p).x();
+	int y = this->mapToGlobal(p).y() + 1;
+
+	//listView->move(x, y);
+	namelistview->setGeometry(this->x()+130, this->y()+215, 50, 100);
+	namelistview->resize(100,200);
+	namelistview->setFixedWidth(123);
+	namelistview->show();
+	//	connect(ui.comboBox,SIGNAL(editTextChanged (const QString & )),this,SLOT(setCompleter(const QString & )));  
+}
+void ConnectDB::completeText(const QModelIndex &index) {
+	QString strName = index.data().toString();
+	for (int i =0;i<ui->comboBox_2->count();i++)
+	{
+		if (ui->comboBox_2->itemText(i)==strName)
+		{
+			ui->comboBox_2->setCurrentIndex(i);
+		}
+	}
+	//ui.comboBox->setEditText(strName);
+	namelistview->hide();
 }

@@ -38,8 +38,13 @@ private:
 //	bool eventFilter(QObject*obj,QEvent*event);
 public slots:
 	void on_printButton_clicked();
-	void on_saveButton_clicked();
 	void on_previewButton_clicked();
+	void filePrint();
+	void print(QPrinter* printer);
+	void printString(const QString &htmlString);
+	void filePrintPreview();
+	void on_saveButton_clicked();
+
 	void on_checkButton_clicked();
 	void on_discardButton_clicked();
 	void on_addButton_clicked();
@@ -48,10 +53,8 @@ public slots:
 	void on_packageButton_clicked();
 	void on_addrowButton_clicked();
 	void on_deleterowButton_clicked();
-	void filePrintPreview();
-	void filePrint();
-	void printString(const QString &htmlString);
-	void print(QPrinter* printer);
+
+
 	void getItem(int row,int column);
 	void selectDoctor(QString strDoctor);
 	void edit(QString strNo);
