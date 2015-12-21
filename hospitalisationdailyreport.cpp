@@ -137,6 +137,187 @@ void Hospitalisationdailyreport:: on_deleteButton_clicked()
 	ui.discardButton->setEnabled(false);
 	ui.deleteButton->setEnabled(false);
 }
+void Hospitalisationdailyreport::filePrintPreview()
+{
+	// 打印预览对话框
+	QPrinter             printer( QPrinter::HighResolution );
+	QPrintPreviewDialog  preview( &printer, this );
+	preview.setWindowTitle(QString::fromLocal8Bit("预览"));
+	connect( &preview, SIGNAL(paintRequested(QPrinter*)), SLOT(print(QPrinter*)) );
+	preview.exec();
+}
+void Hospitalisationdailyreport::print( QPrinter* printer )
+{
+	QPainter painter( printer );
+	int      w = printer->pageRect().width();
+	int      h = printer->pageRect().height();
+	QRect    page( 0, h/16, w, h );
+	QRect    page2(0, h/12, w, h );
+	QRect    page3( w/4, h/6, w, h );
+	QRect    page4( 0, h/10, w, h );
+	QFont    font = painter.font();
+	font.setPixelSize( (w+h) / 100 );
+	painter.setFont( font );
+	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit("三河市燕郊镇卫生院住院日结单") );
+	QString str =QString::fromLocal8Bit("日期:")+ ui.startdateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss")+"-"+ui.endateTimeEdit ->dateTime().toString("yyyy-MM-dd hh:mm:ss");
+	painter.drawText( page2, Qt::AlignTop    | Qt::AlignHCenter, str );
+
+	painter.begin(this);
+	painter.setPen(QPen(Qt::black,4,Qt::SolidLine));//设置画笔形式 
+	painter.setBrush(QBrush(Qt::white,Qt::SolidPattern));//设置画刷形式 
+	int row = ui.dailyreporttableWidget->rowCount();
+	int col = ui.dailyreporttableWidget->columnCount();
+	double cellwidth = (w-40)/col;
+	double cellheight = 160;
+
+	//计算总页数
+	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
+	int everypagerow = (h-100)/160;//后面每页的空白为100
+	int pagecount = 0;
+	if (row>firstpagerow)
+	{
+		pagecount = (row -firstpagerow)/everypagerow;
+		int remain  = (row -firstpagerow)%everypagerow;
+		if (remain!=0)
+		{
+			pagecount+=2;
+		}
+		else
+		{
+			pagecount+=1;
+		}
+	}
+	else
+	{
+		pagecount=1;
+	}
+	if (pagecount == 1)
+	{
+
+		QStringList list;
+		for (int j =0;j<col;j++)
+		{
+			list.append(ui.dailyreporttableWidget->horizontalHeaderItem(j)->text());
+		}
+		for (int i=0;i<row;i++)
+		{
+			for (int j=0;j<col;j++)
+			{
+				if (ui.dailyreporttableWidget->item(i,j)==NULL)
+				{
+					list.append("");
+					continue;
+				}
+				list.append(ui.dailyreporttableWidget->item(i,j)->text());
+			}
+		}
+		for (int i=0;i<row+1;i++)
+		{
+			for (int j=0;j<col;j++)
+			{
+				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.dailyreporttableWidget->item(i,j)->text()
+			}
+		}
+		painter.end();
+	}
+	else
+	{
+		//首页
+		QStringList list;
+		for (int j =0;j<col;j++)
+		{
+			list.append(ui.dailyreporttableWidget->horizontalHeaderItem(j)->text());
+		}
+		for (int i=0;i<firstpagerow;i++)
+		{
+			for (int j=0;j<col;j++)
+			{
+				if (ui.dailyreporttableWidget->item(i,j)==NULL)
+				{
+					list.append("");
+					continue;
+				}
+				list.append(ui.dailyreporttableWidget->item(i,j)->text());
+			}
+		}
+		for (int i=0;i<firstpagerow+1;i++)
+		{
+			for (int j=0;j<col;j++)
+			{
+				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.dailyreporttableWidget->item(i,j)->text()
+			}
+		}
+		printer->newPage();
+		//占满的页面
+		for (int k = 0;k<pagecount-2;k++)
+		{
+			list.clear();
+			for (int i=firstpagerow+k*everypagerow;i<firstpagerow+(k+1)*everypagerow;i++)
+			{
+				for (int j=0;j<col;j++)
+				{
+					if (ui.dailyreporttableWidget->item(i,j)==NULL)
+					{
+						list.append("");
+						continue;
+					}
+					list.append(ui.dailyreporttableWidget->item(i,j)->text());
+				}
+			}
+			for (int i=0;i<everypagerow;i++)
+			{
+				for (int j=0;j<col;j++)
+				{
+					painter.drawRect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
+					QRect rect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.dailyreporttableWidget->item(i,j)->text()
+				}
+			}
+			printer->newPage();
+		}
+		//
+		list.clear();
+		for (int i=firstpagerow+(pagecount-2)*everypagerow;i<row;i++)
+		{
+			for (int j=0;j<col;j++)
+			{
+				if (ui.dailyreporttableWidget->item(i,j)==NULL)
+				{
+					list.append("");
+					continue;
+				}
+				list.append(ui.dailyreporttableWidget->item(i,j)->text());
+			}
+		}
+		for (int i=0;i<row-firstpagerow-(pagecount-2)*everypagerow;i++)
+		{
+			for (int j=0;j<col;j++)
+			{
+				painter.drawRect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.dailyreporttableWidget->item(i,j)->text()
+			}
+		}
+		painter.end();
+	}
+	//QPixmap image;
+	//image=image.grabWidget(ui.dailyreporttableWidget,-200,0,900, 1000);
+	//painter.drawPixmap(page4,image);
+}
+void Hospitalisationdailyreport::on_printButton_clicked()
+{
+	QPrinter       printer( QPrinter::HighResolution );
+	QPrintDialog   dialog( &printer, this );
+	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
+}
+void Hospitalisationdailyreport::on_previewButton_clicked()
+{
+	filePrintPreview();
+}
 Hospitalisationdailyreport::~Hospitalisationdailyreport()
 {
 

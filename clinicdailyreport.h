@@ -23,6 +23,10 @@ private:
 		void on_queryButton_clicked();
 		void on_editButton_clicked();
 		void on_deleteButton_clicked();
+		void on_printButton_clicked();
+		void on_previewButton_clicked();
+		void print(QPrinter* printer);
+		void filePrintPreview();
 };
 
 #endif // CLINICDAILYREPORT_H
