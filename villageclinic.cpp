@@ -15,7 +15,7 @@ Villageclinic::Villageclinic(QWidget *parent)
 		"color: white;padding-left: 4px;border: 1px solid #6c6c6c;}"
 		"QHeaderView::section:checked{background-color: white;color: black;}");	
 	ui.treeWidget->setStyleSheet("QTreeWidget{border: 1px solid gray;color: black;	background-color: white;selection-color: grey;}");
-	connect(ui.treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(showTable(QTreeWidgetItem*,int)));
+	//connect(ui.treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(showTable(QTreeWidgetItem*,int)));
 	initUI();
 }
 void Villageclinic::initUI()
@@ -88,6 +88,7 @@ void Villageclinic::on_editButton_clicked()
 	ui.tableWidget->setEditTriggers(QAbstractItemView::AllEditTriggers);
 	ui.saveButton->setEnabled(true);
 	ui.editButton->setEnabled(true);
+	ui.deleteButton->setEnabled(true);
 }
 void Villageclinic::on_saveButton_clicked()
 {

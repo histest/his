@@ -136,7 +136,7 @@ void ruralcooperatecorrespondence::on_inputButton_clicked()
 	{
 		QStringList header;
 		ui.tableWidget->setColumnCount(5); 
-		header<<QString::fromLocal8Bit("项目代码")<<QString::fromLocal8Bit("项目名称")<<QString::fromLocal8Bit("项目名称")<<QString::fromLocal8Bit("财务分类代码")<<QString::fromLocal8Bit("计价单位")<<QString::fromLocal8Bit("计价单位");
+		header<<QString::fromLocal8Bit("项目代码")<<QString::fromLocal8Bit("项目名称")<<QString::fromLocal8Bit("拼音")<<QString::fromLocal8Bit("财务分类代码")<<QString::fromLocal8Bit("计价单位")<<QString::fromLocal8Bit("计价单位");
 		ui.tableWidget->setHorizontalHeaderLabels(header);  
 
 		int row =ui.tableWidget->rowCount();
@@ -299,7 +299,36 @@ void ruralcooperatecorrespondence::on_exitButton_clicked()
 		this->close();
 	}
 }
-
+void ruralcooperatecorrespondence::on_deleteButton_clicked()
+{
+	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认从数据库中删除该行？"),QMessageBox::Yes,QMessageBox::No);
+	if(ok == QMessageBox::Yes)
+	{
+		int row = ui.tableWidget->currentRow();
+		QString strName = ui.tableWidget->item(row,1)->text().trimmed();
+		QList<QTreeWidgetItem*> list= ui.treeWidget->selectedItems();
+		QTreeWidgetItem*item = list.at(0);
+		QString strText = item->text(0);
+		sql.connect2();
+		QSqlQuery query2(sql.db2);	
+		QString strsql;
+		if (strText==QString::fromLocal8Bit("药品"))
+		{
+			strsql = QString("delete from HIS.t_dic1 where mc1  = '"+strName+"'");
+		}
+		if (strText==QString::fromLocal8Bit("医疗项目"))
+		{
+			strsql = QString("delete from HIS.t_dic2 where Mc = '"+strName+"'");
+		}
+		if (strText==QString::fromLocal8Bit("卫生材料"))
+		{
+			strsql = QString("delete from HIS.t_dic3 where Mc = '"+strName+"'");	
+		}
+		if (query2.exec(strsql))
+			QMessageBox::information(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("删除成功！"));
+		sql.disconnect2();
+	}
+}
 ruralcooperatecorrespondence::~ruralcooperatecorrespondence()
 {
 

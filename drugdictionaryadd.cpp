@@ -40,7 +40,7 @@ void Drugdictionaryadd::initUI()
 	}
 	ui.comboBox_3->addItems(list);
 	list.clear();
-	query.exec("select * from zy_classification");
+	query.exec("select * from zy_receipt");
 	while(query.next())
 	{
 		QString str = query.value(1).toString()+"-"+  query.value(2).toString();
@@ -55,6 +55,28 @@ void Drugdictionaryadd::initUI()
 		list.append(str);
 	}
 	ui.comboBox_7->addItems(list);
+	list.clear();
+	list.append(QString::fromLocal8Bit("个"));
+	list.append(QString::fromLocal8Bit("公斤"));
+	list.append(QString::fromLocal8Bit("袋"));
+	list.append(QString::fromLocal8Bit("箱"));
+	list.append(QString::fromLocal8Bit("吨"));
+	list.append(QString::fromLocal8Bit("桶"));
+	list.append(QString::fromLocal8Bit("副"));
+	list.append(QString::fromLocal8Bit("盒"));
+	list.append(QString::fromLocal8Bit("张"));
+	list.append(QString::fromLocal8Bit("串"));
+	list.append(QString::fromLocal8Bit("捆"));
+	list.append(QString::fromLocal8Bit("套"));
+	list.append(QString::fromLocal8Bit("打"));
+	list.append(QString::fromLocal8Bit("把"));
+	list.append(QString::fromLocal8Bit("元"));
+	list.append(QString::fromLocal8Bit("克"));
+	list.append(QString::fromLocal8Bit("次"));
+	list.append(QString::fromLocal8Bit("方"));
+	list.append(QString::fromLocal8Bit("只"));
+	ui.comboBox_5->addItems(list);
+	ui.comboBox_8->addItems(list);
 	IsEdit=false;
 }
 void Drugdictionaryadd::showinfo(const QString &text)
@@ -87,6 +109,7 @@ void Drugdictionaryadd::on_saveButton_clicked()
 		query.prepare("delete from sys_drugdictionary where name = '"+strdrugname+"'");
 		query.exec();
 	}
+	if (ui.lineEdit->text()=="") return;
 
 	query.prepare("INSERT INTO sys_drugdictionary VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, count);
@@ -116,8 +139,10 @@ void Drugdictionaryadd::on_saveButton_clicked()
 	if(query.exec())
 	{
 		QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
+		this->close();
 		return;
 	}
+	
 }
 void Drugdictionaryadd::on_cancelButton_clicked()
 {

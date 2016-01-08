@@ -18,8 +18,8 @@ void SettingMenu::initData()
 	QString str3 = str.fromLocal8Bit("重启");
 	QString str1 = str.fromLocal8Bit("关于");
 	QString str2 = str.fromLocal8Bit("退出");
-    actionNames<<str1<<str3 <<str2;// << tr("Check update") << tr("Online help") \
-              << tr("Office site")  << tr("Show rightBar")<< "display"
+    actionNames<<str3 <<str2;// << tr("Check update") << tr("Online help") \
+              << tr("Office site")  << tr("Show rightBar")<< "display"<<str1
 }
 
 void SettingMenu::initUI()

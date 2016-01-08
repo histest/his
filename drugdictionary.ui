@@ -64,7 +64,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="saveButton">
+        <widget class="QPushButton" name="deleteButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -78,7 +78,7 @@
           </font>
          </property>
          <property name="text">
-          <string>保存</string>
+          <string>删除</string>
          </property>
         </widget>
        </item>

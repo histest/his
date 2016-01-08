@@ -14,7 +14,7 @@ void ClinicDrugFilter::initData(QString strName)
 {
 	QSqlQuery query(*sql.db);	
 	
-	QString strsql= "select * from sys_drugdictionary where abbr = '"+strName+"'";//;//where AbbrName = '"+strName+"'
+	QString strsql=QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strName);//;//where AbbrName = '"+strName+"'
 
 	query.exec(strsql);
 	QStringList list;

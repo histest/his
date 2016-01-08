@@ -170,7 +170,7 @@ void Combination::getItem(int row,int column)
 		list_widget->show();
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
-		QString strsql= "select * from sys_drugdictionary where abbr = '"+strText+"'";//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
 
 		query.exec(strsql);
 		QStringList list;

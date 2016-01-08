@@ -183,14 +183,14 @@ void HospitalisationPay::on_previewButton_clicked()
 }
 void HospitalisationPay::on_printButton_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
 }
 void HospitalisationPay::filePrintPreview()
 {
 	// ¥Ú”°‘§¿¿∂‘ª∞øÚ
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle(QString::fromLocal8Bit("‘§¿¿"));
 	connect( &preview, SIGNAL(paintRequested(QPrinter*)), SLOT(print(QPrinter*)) );

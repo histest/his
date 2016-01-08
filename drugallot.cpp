@@ -1212,14 +1212,14 @@ void DrugAllot::edit_store(QString strNo)
 }
 void DrugAllot::on_printButton_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print_XSDB( &printer );
 }
 
 void DrugAllot::on_printButton_2_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print_CKDB( &printer );
 }
@@ -1237,7 +1237,7 @@ void DrugAllot::on_previewButton_2_clicked()
 void DrugAllot::filePrintPreview()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle("preview");
 	preview.setMinimumSize(1000,900);
@@ -1248,7 +1248,7 @@ void DrugAllot::filePrintPreview()
 void DrugAllot::filePrintPreview_2()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle("preview");
 	preview.setMinimumSize(1000,900);
@@ -1425,7 +1425,7 @@ void DrugAllot::getItem_Sale(int row,int column)//计算费用
 
 
 
-		QString strsql= "select * from sys_drugdictionary where abbr = '"+strText+"'";//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
 
 		query.exec(strsql);
 		QStringList list;
@@ -1503,7 +1503,7 @@ void DrugAllot::getItem_Store(int row,int column)//计算费用
 
 		
 
-		QString strsql= "select * from sys_drugdictionary where abbr = '"+strText+"'";//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
 
 		query.exec(strsql);
 		QStringList list;

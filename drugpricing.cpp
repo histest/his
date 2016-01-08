@@ -144,7 +144,7 @@ void DrugPricing::on_deleteRowButton_clicked()
 }
 void DrugPricing::on_printButton_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
 }
@@ -155,7 +155,7 @@ void DrugPricing::on_previewButton_clicked()
 void DrugPricing::filePrintPreview()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle("preview");
 	preview.setMinimumSize(1000,900);
@@ -273,7 +273,7 @@ void DrugPricing::getItem(int row,int column)//计算费用
 		list_widget->show();
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
-		QString strsql= "select * from sys_drugdictionary where abbr = '"+strText+"'";//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
 
 		query.exec(strsql);
 		QStringList list;

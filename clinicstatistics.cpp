@@ -498,7 +498,7 @@ void ClinicStatistics::on_previewButton_clicked()
 void ClinicStatistics::filePrintPreview()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle(QString::fromLocal8Bit("预览"));
 	preview.setMinimumSize(800,600);
@@ -507,7 +507,7 @@ void ClinicStatistics::filePrintPreview()
 }
 void ClinicStatistics::on_printButton_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
 }
@@ -516,29 +516,38 @@ void ClinicStatistics::print( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/50, h/15, w, h );
+	QRect    page( w/50, h/50, w, h );
 	QRect    page4( w/30, h/10, w, h );
 	QFont    font = painter.font();
-	font.setPixelSize( 50 );
+	font.setPointSize(10);
 	painter.setFont( font );
 	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit(" 三河市燕郊镇卫生院门诊收费明细") );
 
 	QPixmap image;
-	image=image.grabWidget(ui.tableWidget,0,0,1000, 1000);
-	//	painter.drawPixmap(page4,image);
-
+	font.setPointSize(7);
+	painter.setFont( font );
 	painter.begin(this);
 	painter.setPen(QPen(Qt::black,4,Qt::SolidLine));//设置画笔形式 
 	painter.setBrush(QBrush(Qt::white,Qt::SolidPattern));//设置画刷形式 
 	int row = ui.tableWidget->rowCount();
 	int col = ui.tableWidget->columnCount();
-	double cellwidth = (w-40)/col;
+	double cellwidth = (w-1000)/col;
 	double cellheight = 160;
-
+	double upmargin = 300;
 	//计算总页数
 	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
 	int pagecount = 0;
+	//xp系统
+	if(sql.windowsFlag==QSysInfo::WV_5_1||sql.windowsFlag==QSysInfo::WV_5_0||sql.windowsFlag==QSysInfo::WV_5_2||sql.windowsFlag==QSysInfo::WV_4_0)//判断当前系统
+	{
+		cellwidth= (w-300)/col;
+		cellheight=60;
+		upmargin = 50;
+		firstpagerow = (h-200)/cellheight;
+		everypagerow = (h-20)/cellheight;
+	}
+	double leftmargin = (w-cellwidth*col-2*cellwidth)/2;
 	if (row>firstpagerow)
 	{
 		pagecount = (row -firstpagerow)/everypagerow;
@@ -579,10 +588,34 @@ void ClinicStatistics::print( QPrinter* printer )
 		for (int i=0;i<row+1;i++)
 		{
 			for (int j=0;j<col;j++)
-			{
-				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
+			{	
+				if(j==0)
+				{
+					QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+				}
+				else if(j==1)
+				{
+					double temp = cellwidth*2;
+					QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),temp,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+				}
+				else if(j==2)
+				{
+					double temp = cellwidth*2;
+					QRect rect(leftmargin+cellwidth+temp,upmargin+cellheight*(i+1),temp,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+				}
+				else
+				{
+					QRect rect(leftmargin+cellwidth*(j+2),upmargin+cellheight*(i+1),cellwidth,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
+				}
+
 			}
 		}
 		painter.end();
@@ -610,10 +643,33 @@ void ClinicStatistics::print( QPrinter* printer )
 		for (int i=0;i<firstpagerow+1;i++)
 		{
 			for (int j=0;j<col;j++)
-			{
-				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
+			{	
+				if(j==0)
+				{
+					QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+				}
+				else if(j==1)
+				{
+					double temp = cellwidth*2;
+					QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),temp,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+				}
+				else if(j==2)
+				{
+					double temp = cellwidth*2;
+					QRect rect(leftmargin+cellwidth+temp,upmargin+cellheight*(i+1),temp,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+				}
+				else
+				{
+					QRect rect(leftmargin+cellwidth*(j+2),upmargin+cellheight*(i+1),cellwidth,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
+				}
 			}
 		}
 		printer->newPage();
@@ -636,10 +692,33 @@ void ClinicStatistics::print( QPrinter* printer )
 			for (int i=0;i<everypagerow;i++)
 			{
 				for (int j=0;j<col;j++)
-				{
-					painter.drawRect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
-					QRect rect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
-					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
+				{				
+					if(j==0)
+					{
+						QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
+						painter.drawRect(rect);
+						painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+					}
+					else if(j==1)
+					{
+						double temp = cellwidth*2;
+						QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),temp,cellheight);
+						painter.drawRect(rect);
+						painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+					}
+					else if(j==2)
+					{
+						double temp = cellwidth*2;
+						QRect rect(leftmargin+cellwidth+temp,upmargin+cellheight*(i+1),temp,cellheight);
+						painter.drawRect(rect);
+						painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+					}
+					else
+					{
+						QRect rect(leftmargin+cellwidth*(j+2),upmargin+cellheight*(i+1),cellwidth,cellheight);
+						painter.drawRect(rect);
+						painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
+					}
 				}
 			}
 			printer->newPage();
@@ -661,10 +740,33 @@ void ClinicStatistics::print( QPrinter* printer )
 		for (int i=0;i<row-firstpagerow-(pagecount-2)*everypagerow;i++)
 		{
 			for (int j=0;j<col;j++)
-			{
-				painter.drawRect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
-				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
+			{		
+				if(j==0)
+				{
+					QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+				}
+				else if(j==1)
+				{
+					double temp = cellwidth*2;
+					QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),temp,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+				}
+				else if(j==2)
+				{
+					double temp = cellwidth*2;
+					QRect rect(leftmargin+cellwidth+temp,upmargin+cellheight*(i+1),temp,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );
+				}
+				else
+				{
+					QRect rect(leftmargin+cellwidth*(j+2),upmargin+cellheight*(i+1),cellwidth,cellheight);
+					painter.drawRect(rect);
+					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
+				}
 			}
 		}
 		painter.end();
@@ -678,7 +780,7 @@ void ClinicStatistics::on_previewButton_2_clicked()
 void ClinicStatistics::filePrintPreview_2()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle(QString::fromLocal8Bit("预览"));
 	preview.setMinimumSize(800,600);
@@ -687,7 +789,7 @@ void ClinicStatistics::filePrintPreview_2()
 }
 void ClinicStatistics::on_printButton_2_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print_2( &printer );
 }
@@ -696,10 +798,10 @@ void ClinicStatistics::print_2( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/50, h/15, w, h );
+	QRect    page( w/50, h/50, w, h );
 	QRect    page4( w/30, h/10, w, h );
 	QFont    font = painter.font();
-	font.setPixelSize( 50 );
+	font.setPointSize( 9 );
 	painter.setFont( font );
 	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit(" 三河市燕郊镇卫生院门诊日结统计") );
 
@@ -714,11 +816,22 @@ void ClinicStatistics::print_2( QPrinter* printer )
 	int col = ui.tableWidget_2->columnCount();
 	double cellwidth = (w-40)/col;
 	double cellheight = 160;
+	double upmargin = 300;
 
 	//计算总页数
 	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
 	int pagecount = 0;
+	//xp系统
+	if(sql.windowsFlag==QSysInfo::WV_5_1||sql.windowsFlag==QSysInfo::WV_5_0||sql.windowsFlag==QSysInfo::WV_5_2||sql.windowsFlag==QSysInfo::WV_4_0)//判断当前系统
+	{
+		cellwidth= (w-100)/col;
+		cellheight=60;
+		upmargin = 50;
+		firstpagerow = (h-200)/cellheight;
+		everypagerow = (h-20)/cellheight;
+	}
+	double leftmargin = (w-cellwidth*col)/2;
 	if (row>firstpagerow)
 	{
 		pagecount = (row -firstpagerow)/everypagerow;
@@ -760,8 +873,8 @@ void ClinicStatistics::print_2( QPrinter* printer )
 		{
 			for (int j=0;j<col;j++)
 			{
-				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawRect(rect);
 				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
 			}
 		}
@@ -791,8 +904,8 @@ void ClinicStatistics::print_2( QPrinter* printer )
 		{
 			for (int j=0;j<col;j++)
 			{
-				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawRect(rect);
 				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
 			}
 		}
@@ -817,8 +930,8 @@ void ClinicStatistics::print_2( QPrinter* printer )
 			{
 				for (int j=0;j<col;j++)
 				{
-					painter.drawRect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
-					QRect rect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
+					QRect rect(leftmargin+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
+					painter.drawRect(rect);
 					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
 				}
 			}
@@ -842,8 +955,9 @@ void ClinicStatistics::print_2( QPrinter* printer )
 		{
 			for (int j=0;j<col;j++)
 			{
-				painter.drawRect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
+				
+				QRect rect(leftmargin+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawRect(rect);
 				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
 			}
 		}
@@ -858,7 +972,7 @@ void ClinicStatistics::on_previewButton_3_clicked()
 void ClinicStatistics::filePrintPreview_3()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle(QString::fromLocal8Bit("预览"));
 	preview.setMinimumSize(800,600);
@@ -867,7 +981,7 @@ void ClinicStatistics::filePrintPreview_3()
 }
 void ClinicStatistics::on_printButton_3_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print_3( &printer );
 }
@@ -876,10 +990,11 @@ void ClinicStatistics::print_3( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/50, h/15, w, h );
+	QRect    page( w/50, h/50, w, h );
 	QRect    page4( w/30, h/10, w, h );
 	QFont    font = painter.font();
 	font.setPixelSize( 50 );
+	font.setPointSize( 9 );
 	painter.setFont( font );
 	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit(" 三河市燕郊镇卫生院项目统计") );
 
@@ -892,13 +1007,24 @@ void ClinicStatistics::print_3( QPrinter* printer )
 	painter.setBrush(QBrush(Qt::white,Qt::SolidPattern));//设置画刷形式 
 	int row = ui.tableWidget_5->rowCount();
 	int col = ui.tableWidget_5->columnCount();
-	double cellwidth = (w-40)/col;
+	double cellwidth = (w-100)/col;
 	double cellheight = 160;
+	double upmargin = 300;
 
 	//计算总页数
 	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
 	int pagecount = 0;
+	//xp系统
+	if(sql.windowsFlag==QSysInfo::WV_5_1||sql.windowsFlag==QSysInfo::WV_5_0||sql.windowsFlag==QSysInfo::WV_5_2||sql.windowsFlag==QSysInfo::WV_4_0)//判断当前系统
+	{
+		cellwidth= (w-100)/col;
+		cellheight=60;
+		upmargin = 50;
+		firstpagerow = (h-200)/cellheight;
+		everypagerow = (h-20)/cellheight;
+	}
+	double leftmargin = (w-cellwidth*col)/2;
 	if (row>firstpagerow)
 	{
 		pagecount = (row -firstpagerow)/everypagerow;
@@ -940,8 +1066,9 @@ void ClinicStatistics::print_3( QPrinter* printer )
 		{
 			for (int j=0;j<col;j++)
 			{
-				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				
+				QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawRect(rect);
 				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
 			}
 		}
@@ -971,8 +1098,8 @@ void ClinicStatistics::print_3( QPrinter* printer )
 		{
 			for (int j=0;j<col;j++)
 			{
-				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(leftmargin+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
+				painter.drawRect(rect);
 				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
 			}
 		}
@@ -997,8 +1124,8 @@ void ClinicStatistics::print_3( QPrinter* printer )
 			{
 				for (int j=0;j<col;j++)
 				{
-					painter.drawRect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
-					QRect rect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
+					QRect rect(leftmargin+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
+					painter.drawRect(rect);
 					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
 				}
 			}
@@ -1022,8 +1149,8 @@ void ClinicStatistics::print_3( QPrinter* printer )
 		{
 			for (int j=0;j<col;j++)
 			{
-				painter.drawRect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(leftmargin+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawRect(rect);
 				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.tableWidget->item(i,j)->text()
 			}
 		}

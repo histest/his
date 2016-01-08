@@ -50,7 +50,7 @@ void Drugdictionary::initUI()
 	ui.treeWidget->expandAll();
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-	ui.saveButton->setEnabled(false);
+	//ui.saveButton->setEnabled(false);
 	connect(ui.tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
 
 	QString strsql;
@@ -132,7 +132,7 @@ void Drugdictionary::on_deleteButton_clicked()
 		{
 			return;
 		}
-		QString strName = ui.tableWidget->item(list.at(0)->row(),1)->text();
+		QString strName = ui.tableWidget->item(list.at(0)->row(),2)->text();
 		if (strName==NULL)
 		{
 			return;
@@ -145,7 +145,8 @@ void Drugdictionary::on_deleteButton_clicked()
 void Drugdictionary::on_editButton_clicked()
 {
 	ui.tableWidget->setEditTriggers(QAbstractItemView::AllEditTriggers);
-	ui.saveButton->setEnabled(true);
+	//ui.saveButton->setEnabled(true);
+	ui.deleteButton->setEnabled(true);
 }
 void Drugdictionary::on_saveButton_clicked()
 {

@@ -27,7 +27,7 @@ void HospitalisationInternalPayment::initUI()
 }
 void HospitalisationInternalPayment::on_printButton_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
 }
@@ -106,7 +106,7 @@ void HospitalisationInternalPayment::on_queryButton_clicked()
 void HospitalisationInternalPayment::filePrintPreview()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle("preview");
 	preview.setMinimumSize(800,600);
@@ -134,10 +134,22 @@ void HospitalisationInternalPayment::print( QPrinter* printer )
 	painter.setBrush(QBrush(Qt::white,Qt::SolidPattern));//设置画刷形式 
 	int row = ui.tableWidget->rowCount();
 	int col = ui.tableWidget->columnCount();
-	double cellwidth = 1600;
-	double cellheight = 160;
+	double cellwidth;
+	double cellheight;
+	double upmargin;
+	if(sql.windowsFlag==QSysInfo::WV_5_1||sql.windowsFlag==QSysInfo::WV_5_0||sql.windowsFlag==QSysInfo::WV_5_2||sql.windowsFlag==QSysInfo::WV_4_0)//判断当前系统
+	{
+		cellwidth=400;
+		cellheight=60;
+		upmargin = 200;
+	}
+	else
+	{
+		cellwidth=1600;
+		cellheight=160;
+		upmargin = 800;
+	}
 	double leftmargin = (w-cellwidth*col)/2;
-	double upmargin = 800;
 	QStringList list;
 	for (int j =0;j<col;j++)
 	{

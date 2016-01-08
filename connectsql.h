@@ -32,6 +32,7 @@ public:
 	bool dboracle;
 	QString struser;
 	QString strtitle;
+	int windowsFlag;
 };
 
 #endif // CONNECTSQL_H

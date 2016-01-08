@@ -54,7 +54,7 @@ void PharmacyInventory::findbyname(const QString &)
 	//	}
 	//}
 	QSqlQuery query(*sql.db);
-	QString strsql= "select * from sys_drugdictionary where abbr='"+strText+"'";//;//where AbbrName = '"+strName+"'
+	QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
 	query.exec(strsql);
 	while(query.next())
 	{

@@ -86,6 +86,7 @@ void Insurancetype::on_editButton_clicked()
 	ui.tableWidget->setEditTriggers(QAbstractItemView::AllEditTriggers);
 	ui.saveButton->setEnabled(true);
 	ui.editButton->setEnabled(true);
+	ui.deleteButton->setEnabled(true);
 }
 void Insurancetype::on_saveButton_clicked()
 {

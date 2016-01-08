@@ -32,11 +32,11 @@ void Ruralcooperativedictionary::initUI()
 
 	QSettings setting("sqlserver.ini",QSettings::IniFormat);//¶ÁÅäÖÃÎÄ¼þ
 	setting.beginGroup("config");
-
-	ui.lineEdit_4->setText(setting.value("ip").toString());
+	ui.lineEdit_4->setText(setting.value("server").toString());
 	ui.lineEdit_5->setText(setting.value("username").toString());
 	ui.lineEdit_6->setText(setting.value("password").toString());
 	ui.lineEdit_7->setText(setting.value("databasename").toString());
+	setting.endGroup();
 }
 void Ruralcooperativedictionary::on_browseButton_clicked()
 {
@@ -54,7 +54,8 @@ void Ruralcooperativedictionary::on_browseButton_clicked()
 			QMessageBox::information(this,QString::fromLocal8Bit("¾¯¸æ"),QString::fromLocal8Bit("ÊäÈëÒ©Æ·¼ò³Æ"));
 			return;
 		}	
-		query.exec("select * from sys_drugdictionary where abbr like '"+strCode+"'");
+		QString str =QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strCode);
+		query.exec(str);
 	}
 	int row= 0;
 	while(query.next())
@@ -117,7 +118,9 @@ void Ruralcooperativedictionary::on_browseButton_2_clicked()
 				QMessageBox::information(this,QString::fromLocal8Bit("¾¯¸æ"),QString::fromLocal8Bit("ÊäÈëÒ©Æ·¼ò³Æ"));
 				return;
 			}	
-			query.exec("select * from HIS.t_dic1 where py = '"+strCode+"'");
+			QString str = QString("select * from HIS.t_dic1 where  py like '%%1%'").arg(strCode);
+			
+			query.exec(str);
 		}
 		while(query.next())
 		{	
@@ -149,7 +152,8 @@ void Ruralcooperativedictionary::on_browseButton_2_clicked()
 				QMessageBox::information(this,QString::fromLocal8Bit("¾¯¸æ"),QString::fromLocal8Bit("ÊäÈëÒ©Æ·¼ò³Æ"));
 				return;
 			}	
-			query.exec("select * from HIS.t_dic2 where py = '"+strCode+"'");
+			QString str = QString("select * from HIS.t_dic2 where py like '%%1%'").arg(strCode);
+			query.exec(str);
 		}
 
 		while(query.next())
@@ -179,8 +183,9 @@ void Ruralcooperativedictionary::on_browseButton_2_clicked()
 			{
 				QMessageBox::information(this,QString::fromLocal8Bit("¾¯¸æ"),QString::fromLocal8Bit("ÊäÈëÒ©Æ·¼ò³Æ"));
 				return;
-			}	
-			query.exec("select * from HIS.t_dic3 where py = '"+strCode+"'");
+			}
+			QString str = QString("select * from HIS.t_dic3 where py like '%%1%'").arg(strCode);
+			query.exec(str);
 		}
 
 		while(query.next())
@@ -355,6 +360,17 @@ void Ruralcooperativedictionary::on_queryButton_clicked()
 }
 void Ruralcooperativedictionary::on_outButton_clicked()
 {
+
+}
+void Ruralcooperativedictionary::on_saveButton_clicked()
+{
+	QSettings settings("sqlserver.ini", QSettings::IniFormat);
+    settings.beginGroup("config");
+    settings.setValue("server", ui.lineEdit_4->text().trimmed());
+    settings.setValue("username", ui.lineEdit_5->text().trimmed());
+	settings.setValue("password", ui.lineEdit_6->text().trimmed());
+	settings.setValue("databasename", ui.lineEdit_7->text().trimmed());
+    settings.endGroup();
 
 }
 Ruralcooperativedictionary::~Ruralcooperativedictionary()

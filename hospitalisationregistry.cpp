@@ -501,7 +501,7 @@ void HospitalisationRegistry::setCompleter(const QString &text) {
 		return;
 	}
 	QSqlQuery query(*sql.db);	
-	QString strsql= "select * from sys_personnel where jianpin='"+text+"'";
+	QString strsql=QString("select * from sys_personnel where jianpin like'%%1%'").arg(text);
 	query.exec(strsql);
 	QStringList list;
 	while(query.next())
@@ -523,9 +523,8 @@ void HospitalisationRegistry::setCompleter(const QString &text) {
 	int x = mapToGlobal(p).x();
 	int y = mapToGlobal(p).y() + 1;
 	//listView->move(x, y);
-	doctorlist->setGeometry(800, 280, 50, 100);
-	doctorlist->resize(100,200);
-	doctorlist->setFixedWidth(123);
+	doctorlist->setGeometry(this->x()+441, this->y()+270, 50, 100);
+	doctorlist->setFixedWidth(40);
 	doctorlist->show();
 }
 void HospitalisationRegistry::keyPressEvent(QKeyEvent *e) {

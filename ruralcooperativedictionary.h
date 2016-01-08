@@ -25,6 +25,7 @@ private:
 		void on_checkButton_2_clicked();
 		void on_queryButton_clicked();
 		void on_outButton_clicked();
+		void on_saveButton_clicked();
 		void getItem(int row,int column);
 		void getItem2(int row,int column);
 		void setNo(QString);

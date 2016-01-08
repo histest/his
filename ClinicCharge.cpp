@@ -475,7 +475,7 @@ void ClinicCharge::getItem(int row,int column)
 
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
-		QString strsql= "select * from sys_drugdictionary where abbr = '"+strText+"'";//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
 
 		query.exec(strsql);
 		QStringList list;
@@ -513,7 +513,7 @@ int  ClinicCharge::sheetNo()
 void ClinicCharge::filePrint()
 {
 	// 打印对话框
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	printer.setPageSize(QPrinter::Custom);
 	printer.setOrientation(QPrinter::Landscape);
 	printer.setPaperSize(QSizeF(120,180),QPrinter::Point);
@@ -529,20 +529,16 @@ void ClinicCharge::on_previewButton_clicked()
 void ClinicCharge::filePrintPreview()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
-	//printer.setPageSize(QPrinter::PageSize::B6);
-	printer.setPageSize(QPrinter::Custom);
-	printer.setOrientation(QPrinter::Landscape);
-	printer.setPaperSize(QSizeF(120,180),QPrinter::Point);
+	QPrinter             printer( QPrinter::PrinterResolution );
+	printer.setPageSize(QPrinter::A4);
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle(QString::fromLocal8Bit("预览"));
-	//preview.setMinimumSize(1000,900);
 	connect( &preview, SIGNAL(paintRequested(QPrinter*)), SLOT(print(QPrinter*)) );
 	preview.exec();
 }
 void ClinicCharge::on_printButton_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
 }
@@ -551,20 +547,17 @@ void ClinicCharge::print( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/5, h/15, w, h );
-	QRect    page2( w/9, h/9, w, h );
-	QRect    page3( w/9, h/6, 5*w/6, h/8);
-	QRect    page4( w/11, 9*h/40, 5*w/6, h/4);
-	QRect    page5(  w/6, 35*h/40,  5*w/6, h/8);
-	QRect    page6( w/11, 38*h/40, 5*w/6, h/8);
-	QRect    page7(  w/9, 24*h/80, w, h/10);
+	QRect    page2( 38*w/210, 20*h/297, w, h );
+	QRect    page3( 35*w/210, 24*h/297, 5*w/6, h/8);
+	QRect    page4( 28*w/210, 35*h/297, 5*w/6, h/4);
+	QRect    page5( 45*w/210, 93*h/297,  5*w/6, h/8);
+	QRect    page6( 115*w/210, 122*h/297, 5*w/6, h/8);
 	QFont    font = painter.font();
-	font.setPixelSize( (w+h) / 100 );
+	font.setPointSize(8);
 	painter.setFont( font );
-//	painter.drawText( page, Qt::AlignTop    | Qt::AlignLeft, QString::fromLocal8Bit("          三河市燕郊镇卫生院收款单") );
-	QString str =QString::fromLocal8Bit("三河市燕郊镇卫生院")+"                     "+ui.departmentEdit->text()+"                 "+ui.sheetNoEdit->text();
+	QString str =QString::fromLocal8Bit("三河市燕郊镇卫生院")+"                       "+ui.departmentEdit->text()+"                     "+ui.sheetNoEdit->text();
 	painter.drawText( page2, Qt::AlignTop    | Qt::AlignLeft, str);
-	str =ui.nameEdit->text()+"                    "+ui.gendercomboBox->currentText()+"               "+ui.insurancetypecomboBox->currentText()+"                 "+ui.insuranceNoEdit->text();
+	str =ui.nameEdit->text()+"                    "+ui.gendercomboBox->currentText()+"               "+ui.insurancetypecomboBox->currentText()+"                                   "+ui.insuranceNoEdit->text();
 	painter.drawText( page3, Qt::AlignTop    | Qt::AlignLeft, str);
 	int row = ui.tableWidget->rowCount();
 	str="";
@@ -574,21 +567,20 @@ void ClinicCharge::print( QPrinter* printer )
 		{
 			continue;
 		}
-		str =str+ui.tableWidget->item(i,1)->text()+"               "+ui.tableWidget->item(i,7)->text()+"  "+ui.tableWidget->item(i,9)->text()+"\n";
+		str =str+ui.tableWidget->item(i,1)->text()+"               "+ui.tableWidget->item(i,6)->text()+"   "+ui.tableWidget->item(i,7)->text()+"   "+ui.tableWidget->item(i,9)->text()+"\n";
 	
 	}
 //	str =ui.dueincomeEdit->text()+"\n"+ui.dateTimeEdit->time().toString();
 	painter.drawText( page4, Qt::AlignTop    | Qt::AlignLeft, str);
 
 	double amount=ui.dueincomeEdit->text().toDouble();
-//	string strblock="";
 	Capital*capital = new Capital;
 	QString strcaptial=capital->NumToChineseStr(amount);;
 	str="";
-	str=ui.dueincomeEdit->text()+"                       "+strcaptial;
+	str=strcaptial+"                                   "+ui.dueincomeEdit->text();
 	painter.drawText( page5, Qt::AlignTop    | Qt::AlignLeft, str);
-	str="                  "+ui.sheetmakerEdit->text()+"              "+QString::number(ui.dateTimeEdit->date().year())+"  "+QString::number(ui.dateTimeEdit->date().month())+"  "+QString::number(ui.dateTimeEdit->date().day());
-	painter.drawText( page6, Qt::AlignTop    | Qt::AlignRight, str);
+	str=ui.sheetmakerEdit->text()+"                               "+QString::number(ui.dateTimeEdit->date().year())+"   "+QString::number(ui.dateTimeEdit->date().month())+"   "+QString::number(ui.dateTimeEdit->date().day());
+	painter.drawText( page6, Qt::AlignTop    | Qt::AlignLeft, str);
 
 }
 void ClinicCharge::printString(const QString &htmlString) {
@@ -936,7 +928,7 @@ void ClinicCharge::setCompleter(const QString &text) {
 
 	QSqlQuery query(*sql.db);	
 
-	QString strsql= "select * from sys_personnel where jianpin='"+text+"'";
+	QString strsql=QString("select * from sys_personnel where jianpin like'%%1%'").arg(text);
 	query.exec(strsql);
 	QStringList list;
 	while(query.next())
@@ -962,9 +954,9 @@ void ClinicCharge::setCompleter(const QString &text) {
 	int y = mapToGlobal(p).y() + 1;
 
 	//listView->move(x, y);
-	doctorlist->setGeometry(849, 190, 50, 100);
+	doctorlist->setGeometry(this->x()+677, this->y()+220, 50, 100);
 	doctorlist->resize(100,200);
-	doctorlist->setFixedWidth(123);
+	doctorlist->setFixedWidth(ui.doctorEdit->width());
 	doctorlist->show();
 }
 void ClinicCharge::showDepartment(const QString &text)

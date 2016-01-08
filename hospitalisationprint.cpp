@@ -162,7 +162,7 @@ void Hospitalisationprint::initUI(QString strNo)
 }
 void Hospitalisationprint::on_printButton_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
 }
@@ -173,23 +173,18 @@ void Hospitalisationprint::on_previewButton_clicked()
 void Hospitalisationprint::filePrintPreview()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	printer.setPageSize(QPrinter::Custom);
-	printer.setOrientation(QPrinter::Landscape);
-	printer.setPaperSize(QSizeF(100,210),QPrinter::Point);
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle(QString::fromLocal8Bit("预览"));
-//	preview.setMinimumSize(1000,900);
 	connect( &preview, SIGNAL(paintRequested(QPrinter*)), SLOT(print(QPrinter*)) );
 	preview.exec();
 }
 void Hospitalisationprint::filePrint()
 {
 	// 打印对话框
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	printer.setPageSize(QPrinter::Custom);
-	printer.setOrientation(QPrinter::Landscape);
-	printer.setPaperSize(QSizeF(100,210),QPrinter::Point);
 	QPrintDialog   dialog( &printer, this );
 
 	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
@@ -199,29 +194,22 @@ void Hospitalisationprint::print( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/5, h/15, w, h );
-
-	QRect    page2( w/9, h/9, w, h );
-
-	QRect    page7( w/9, h/5, w, h );
-	QRect    page3( w/9, 3*h/20, 5*w/6, h/8);
-
-	QRect    page4( w/11, 11*h/40, 5*w/6, h/4);
-	QRect    page8( w/2, 11*h/40, 5*w/6, h/4);
-
-	QRect    page5(  w/6, 30*h/40,  5*w/6, h/8);
-	QRect    page6( w/11, 38*h/40, 5*w/6, h/8);
+	QRect    page2( 36*w/210, 17*h/297, w, h );
+	QRect    page3( 35*w/210, 23*h/297, w, h );
+	QRect    page4( 34*w/210, 28*h/297, 5*w/6, h/8);
+	QRect    page5( 30*w/210, 35*h/297, 5*w/6, h/4);
+	QRect    page6(110*w/210, 35*h/297, 5*w/6, h/4);
+	QRect    page7( 42*w/210, 72*h/297,  5*w/6, h/8);
+	QRect    page8( 115*w/210, 98*h/297, 5*w/6, h/8);
 	QFont    font = painter.font();
-	font.setPixelSize( (w+h) / 100 );
+	font.setPointSize(8);
 	painter.setFont( font );
-	//painter.drawText( page, Qt::AlignTop    | Qt::AlignLeft, QString::fromLocal8Bit("          三河市燕郊镇卫生院收款单") );
 	QString str =QString::fromLocal8Bit("三河市燕郊镇卫生院")+"                     "+ui.departmentlabel->text()+"                 "+ui.sheetnolabel->text();
 	painter.drawText(page2, Qt::AlignTop    | Qt::AlignLeft, str);
-	str =ui.hospitalisationNolabel->text()+"                    "+ui.startyearlabel->text()+"  "+ui.startmonthlabel->text()+"   "+ui.startdaylabel->text() +  "                   "+ui.endyearlabel->text()+"  "+ui.endmonthlabel->text()+"   "+ui.enddaylabel->text()+"              "+ui.deltadaylabel->text();
+	str =ui.hospitalisationNolabel->text()+"                    "+ui.startyearlabel->text()+"  "+ui.startmonthlabel->text()+"   "+ui.startdaylabel->text() +  "               "+ui.endyearlabel->text()+"  "+ui.endmonthlabel->text()+"   "+ui.enddaylabel->text()+"              "+ui.deltadaylabel->text();
 	painter.drawText( page3, Qt::AlignTop    | Qt::AlignLeft, str);
-	
-	str =ui.namelabel->text()+"                    "+ui.genderlabel->text()+"               "+ui.insurancetypelabel->text()+"                 "+ui.insurancenolabel->text();
-	painter.drawText( page7, Qt::AlignTop    | Qt::AlignLeft, str);
+	str =ui.namelabel->text()+"                    "+ui.genderlabel->text()+"                     "+ui.insurancetypelabel->text()+"                                "+ui.insurancenolabel->text();
+	painter.drawText( page4, Qt::AlignTop    | Qt::AlignLeft, str);
 	int row = ui.tableWidget->rowCount();
 	str="";
 	for (int i =0;i<row;i++)
@@ -230,7 +218,7 @@ void Hospitalisationprint::print( QPrinter* printer )
 
 	}
 	//	str =ui.dueincomeEdit->text()+"\n"+ui.dateTimeEdit->time().toString();
-	painter.drawText( page4, Qt::AlignTop    | Qt::AlignLeft, str);
+	painter.drawText( page5, Qt::AlignTop    | Qt::AlignLeft, str);
 
 	row = ui.tableWidget_2->rowCount();
 	str="";
@@ -240,18 +228,16 @@ void Hospitalisationprint::print( QPrinter* printer )
 
 	}
 	//	str =ui.dueincomeEdit->text()+"\n"+ui.dateTimeEdit->time().toString();
-	painter.drawText( page8, Qt::AlignTop    | Qt::AlignLeft, str);
+	painter.drawText( page6, Qt::AlignTop    | Qt::AlignLeft, str);
 
 	double amount=ui.totalfeelabel->text().toDouble();
-	//string strblock="";
-
 	Capital*capital = new Capital;
 	QString strcaptial=capital->NumToChineseStr(amount);//=QString::fromLocal8Bit(.c_str());;
 	str="";
 	str=strcaptial+"                                 "+ui.totalfeelabel->text();
-	painter.drawText( page5, Qt::AlignTop    | Qt::AlignLeft, str);
-	str="                                                                 "+ui.sheetmakerlabel->text()+"              "+ui.currentyearlabel->text()+"  "+ui.currentmonthlabel->text()+"  "+ui.currentdaylabel->text();
-	painter.drawText( page6, Qt::AlignTop    | Qt::AlignRight, str);
+	painter.drawText( page7, Qt::AlignTop    | Qt::AlignLeft, str);
+	str=ui.sheetmakerlabel->text()+"                                "+ui.currentyearlabel->text()+"  "+ui.currentmonthlabel->text()+"  "+ui.currentdaylabel->text();
+	painter.drawText( page8, Qt::AlignTop    | Qt::AlignLeft, str);
 
 }
 

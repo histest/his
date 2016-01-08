@@ -709,7 +709,7 @@ void HospitalisationStatistics::on_radioButton_3_clicked()
 }
 void HospitalisationStatistics::on_printButton_clicked()
 {
-	QPrinter       printer( QPrinter::HighResolution );
+	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print( &printer );
 }
@@ -720,7 +720,7 @@ void HospitalisationStatistics::on_previewButton_clicked()
 void HospitalisationStatistics::filePrintPreview()
 {
 	// 打印预览对话框
-	QPrinter             printer( QPrinter::HighResolution );
+	QPrinter             printer( QPrinter::PrinterResolution );
 	QPrintPreviewDialog  preview( &printer, this );
 	preview.setWindowTitle(QString::fromLocal8Bit("预览"));
 	preview.setMinimumSize(800,600);
@@ -757,10 +757,22 @@ void HospitalisationStatistics::print( QPrinter* printer )
 		painter.setBrush(QBrush(Qt::white,Qt::SolidPattern));//设置画刷形式 
 		int row = ui.billtableWidget->rowCount();
 		int col = ui.billtableWidget->columnCount();
-		double cellwidth = 1600;
-		double cellheight = 160;
+		double cellwidth;
+		double cellheight;
+		double upmargin;
+		if(sql.windowsFlag==QSysInfo::WV_5_1||sql.windowsFlag==QSysInfo::WV_5_0||sql.windowsFlag==QSysInfo::WV_5_2||sql.windowsFlag==QSysInfo::WV_4_0)//判断当前系统
+		{
+			cellwidth=400;
+			cellheight=60;
+			upmargin = 200;
+		}
+		else
+		{
+			cellwidth=1600;
+			cellheight=160;
+			upmargin = 800;
+		}
 		double leftmargin = (w-cellwidth*col)/2;
-		double upmargin = 800;
 		QStringList list;
 		for (int j =0;j<col;j++)
 		{
@@ -804,10 +816,10 @@ void HospitalisationStatistics::print( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/50, h/15, w, h );
+	QRect    page( w/50, h/50, w, h );
 	QRect    page4( w/30, h/10, w, h );
 	QFont    font = painter.font();
-	font.setPixelSize( 50 );
+	font.setPointSize(8);
 	painter.setFont( font );
 	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit(" 三河市燕郊镇卫生院住院明细") );
 
@@ -822,11 +834,22 @@ void HospitalisationStatistics::print( QPrinter* printer )
 	int col = ui.billtableWidget->columnCount();
 	double cellwidth = (w-40)/col;
 	double cellheight = 160;
+	double upmargin = 300;
 
 	//计算总页数
 	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
 	int pagecount = 0;
+	//xp系统
+	if(sql.windowsFlag==QSysInfo::WV_5_1||sql.windowsFlag==QSysInfo::WV_5_0||sql.windowsFlag==QSysInfo::WV_5_2||sql.windowsFlag==QSysInfo::WV_4_0)//判断当前系统
+	{
+		cellwidth= (w-100)/col;
+		cellheight=60;
+		upmargin = 50;
+		firstpagerow = (h-200)/cellheight;
+		everypagerow = (h-20)/cellheight;
+	}
+	double leftmargin = (w-cellwidth*col)/2;
 	if (row>firstpagerow)
 	{
 		pagecount = (row -firstpagerow)/everypagerow;
@@ -868,8 +891,8 @@ void HospitalisationStatistics::print( QPrinter* printer )
 		{
 			for (int j=0;j<col;j++)
 			{
-				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawRect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
 				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.billtableWidget->item(i,j)->text()
 			}
 		}
@@ -899,8 +922,8 @@ void HospitalisationStatistics::print( QPrinter* printer )
 		{
 			for (int j=0;j<col;j++)
 			{
-				painter.drawRect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,600+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawRect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
 				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.billtableWidget->item(i,j)->text()
 			}
 		}
@@ -925,8 +948,8 @@ void HospitalisationStatistics::print( QPrinter* printer )
 			{
 				for (int j=0;j<col;j++)
 				{
-					painter.drawRect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
-					QRect rect(20+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
+					painter.drawRect(leftmargin+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
+					QRect rect(leftmargin+j*cellwidth,50+cellheight*(i),cellwidth,cellheight);
 					painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.billtableWidget->item(i,j)->text()
 				}
 			}
@@ -950,8 +973,8 @@ void HospitalisationStatistics::print( QPrinter* printer )
 		{
 			for (int j=0;j<col;j++)
 			{
-				painter.drawRect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
-				QRect rect(20+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
+				painter.drawRect(leftmargin+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
+				QRect rect(leftmargin+j*cellwidth,50+cellheight*(i+1),cellwidth,cellheight);
 				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.billtableWidget->item(i,j)->text()
 			}
 		}

@@ -14,7 +14,7 @@ Departmentfile::Departmentfile(QWidget *parent)
 		"color: white;padding-left: 4px;border: 1px solid #6c6c6c;}"
 		"QHeaderView::section:checked{background-color: white;color: black;}");	
 	ui.treeWidget->setStyleSheet("QTreeWidget{border: 1px solid gray;	background-color: grey;	selection-color: grey;}");
-	connect(ui.treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(showTable(QTreeWidgetItem*,int)));
+	//connect(ui.treeWidget,SIGNAL(itemClicked(QTreeWidgetItem*,int)),this,SLOT(showTable(QTreeWidgetItem*,int)));
 	initUI();
 }
 void Departmentfile::initUI()

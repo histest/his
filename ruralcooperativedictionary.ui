@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -126,7 +126,7 @@
          <item>
           <widget class="QLabel" name="label_11">
            <property name="text">
-            <string>数据库：</string>
+            <string>数据库：  </string>
            </property>
           </widget>
          </item>
@@ -139,7 +139,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QPushButton" name="pushButton_8">
+       <widget class="QPushButton" name="saveButton">
         <property name="geometry">
          <rect>
           <x>130</x>
@@ -149,7 +149,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>确定</string>
+         <string>保存</string>
         </property>
        </widget>
        <widget class="QWidget" name="layoutWidget">

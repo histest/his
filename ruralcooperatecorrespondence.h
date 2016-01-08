@@ -19,7 +19,7 @@ private:
 		//void showTable(QTreeWidgetItem*,int column);
 		//void on_addButton_clicked();
 		//void on_editButton_clicked();
-		//void on_saveButton_clicked();
+		void on_deleteButton_clicked();
 		void on_exitButton_clicked();
 		void on_outputButton_clicked();
 		void on_inputButton_clicked();
