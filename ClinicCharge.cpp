@@ -3,7 +3,6 @@
 #include "clinicdrugfilter.h"
 #include "package.h"
 #include "getdoctor.h"
-//#include "Capitalization.h"
 #include "capital.h"
 extern ConnectSql sql;
 Package*package;
@@ -354,7 +353,6 @@ void ClinicCharge::on_packageButton_clicked()
 	package->setWindowModality(Qt::WindowModal);
 	package->show();
 }
-
 void ClinicCharge::on_addrowButton_clicked()
 {
 	//表格增加一行
@@ -756,7 +754,7 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 void ClinicCharge::edit(QString strNo)
 {
 	list_widget->close();
-	doctorlist->hide();
+
 	setEdit(false);
 	ui.tableWidget->installEventFilter(this);
 	ui.doctorEdit->installEventFilter(this);
@@ -849,7 +847,7 @@ void ClinicCharge::edit(QString strNo)
 		}
 		rowcount++;
 	}
-
+	doctorlist->hide();
 }
 void ClinicCharge::indexchange(int index)
 {
@@ -1008,98 +1006,6 @@ void ClinicCharge::addPackage(QString strName)
 		row++;
 	}
 }
-
-//bool ClinicCharge::eventFilter(QObject*obj,QEvent*event)
-//{
-//	if(obj == ui.tableWidget)
-//	{
-//		if(event->type() == QEvent::KeyPress)
-//		{
-//			QKeyEvent*keyEvent=static_cast<QKeyEvent*>(event);//将事件转化为键盘事件
-//			if(keyEvent->key() == Qt::Key_Return)
-//			{
-//				int count = ui.tableWidget->rowCount();
-//				if (ui.tableWidget->item(count-1,9)==NULL) return false;
-//				ui.tableWidget->insertRow(count);
-//				return true;
-//			}
-//			else
-//			{
-//				qDebug()<<keyEvent->key()<<Qt::Key_Enter;
-//			}
-//		}
-//		else
-//		{
-//			return  false;
-//		}
-//	}
-//	if (obj == list_widget)
-//	{
-//		if (!list_widget->isHidden()) {
-//			QKeyEvent*e=static_cast<QKeyEvent*>(event);//将事件转化为键盘事件
-//			int key = e->key();
-//			int count = list_widget->model()->rowCount();
-//			QModelIndex currentIndex = list_widget->currentIndex();
-//
-//			if (Qt::Key_Down == key) {
-//				int row = currentIndex.row() + 1;
-//				if (row >= count) {
-//					row = 0;
-//				}
-//
-//				QModelIndex index = list_widget->model()->index(row, 0);
-//				list_widget->setCurrentIndex(index);
-//			} else if (Qt::Key_Up == key) {
-//				int row = currentIndex.row() - 1;
-//				if (row < 0) {
-//					row = count - 1;
-//				}
-//
-//				QModelIndex index = list_widget->model()->index(row, 0);
-//				list_widget->setCurrentIndex(index);
-//			} else if (Qt::Key_Escape == key) {
-//				list_widget->hide();
-//			} else if (Qt::Key_Enter == key || Qt::Key_Return == key) {
-//				if (currentIndex.isValid()) {
-//					QString strName = list_widget->currentIndex().data().toString();
-//
-//					int row = ui.tableWidget->currentRow();
-//					QSqlQuery query(*sql.db);	
-//					QString strsql= "select * from sys_drugdictionary where name='"+strName+"'";
-//					query.exec(strsql);
-//					while(query.next())
-//					{
-//						ui.tableWidget->setItem(row,0,new QTableWidgetItem(query.value(22).toString()));
-//						ui.tableWidget->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
-//						ui.tableWidget->setItem(row,2,new QTableWidgetItem(query.value(4).toString()));
-//						ui.tableWidget->setItem(row,3,new QTableWidgetItem(query.value(5).toString()));
-//						//ui.tableWidget->setItem(iRow,4,new QTableWidgetItem(query.value(6).toString()));//批号
-//						//ui.tableWidget->setItem(iRow,5,new QTableWidgetItem(query.value(6).toString()));//库存
-//						ui.tableWidget->setItem(row,6,new QTableWidgetItem(query.value(6).toString()));
-//						ui.tableWidget->setItem(row,8,new QTableWidgetItem(query.value(15).toString()));
-//						ui.tableWidget->setItem(row,10,new QTableWidgetItem(query.value(10).toString()));
-//						ui.tableWidget->setItem(row,11,new QTableWidgetItem(query.value(14).toString()));
-//					}
-//
-//
-//					strsql= "select * from yf_inventory where name='"+strName+"'";
-//					query.exec(strsql);
-//					while(query.next())
-//					{
-//						ui.tableWidget->setItem(row,5,new QTableWidgetItem(query.value(7).toString()));
-//					}
-//				}
-//
-//				list_widget->hide();
-//			} else {
-//				list_widget->hide();
-//				//QLineEdit::keyPressEvent(e);
-//			}
-//		} else {
-//			//QLineEdit::keyPressEvent(e);
-//		}
-//	}
-//}
 ClinicCharge::~ClinicCharge()
 {
 

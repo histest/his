@@ -115,7 +115,7 @@ void HospitalisationPay::on_saveButton_clicked()
 		return;
 	}
 
-	query.prepare("INSERT INTO zy_pay VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	query.prepare("INSERT INTO zy_pay VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, itotalcount);
 	query.bindValue(1, ui.sheetNoEdit->text());
 	query.bindValue(2, ui.dateTimeEdit->dateTime());
@@ -129,9 +129,9 @@ void HospitalisationPay::on_saveButton_clicked()
 	else
 		query.bindValue(8, ui.amountEdit->text().toDouble());
 	query.bindValue(9, ui.remarkEdit->document()->toPlainText());
+	query.bindValue(10, ui.payerEdit->text());
 	if(query.exec())
 	{
-	//	QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
 		ui.editButton->setEnabled(true);
 		ui.saveButton->setEnabled(false);
 		ui.discardButton->setEnabled(false);
@@ -224,7 +224,7 @@ void HospitalisationPay::print( QPrinter* printer )
 			QDateTime::currentDateTime().toString( Qt::DefaultLocaleShortDate ) );
 		painter.drawRect(page3);
 		painter.drawRect(page4);
-		str ="\n"+QString::fromLocal8Bit("制单：")+ui.sheetmakerEdit->text()+"     "+QString::fromLocal8Bit("打印时间：")+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+		str ="\n"+QString::fromLocal8Bit("退款人：")+ui.payerEdit->text()+"     "+QString::fromLocal8Bit("制单：")+ui.sheetmakerEdit->text()+"     "+QString::fromLocal8Bit("打印时间：")+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
 		painter.drawText( page5, Qt::AlignTop    | Qt::AlignLeft, str);
 		painter.drawRect(page6);
 		str =QString::fromLocal8Bit("此乃临时收据，不作报销凭证，请妥善保存，出院结算时交回。");
@@ -244,7 +244,7 @@ void HospitalisationPay::print( QPrinter* printer )
 		QDateTime::currentDateTime().toString( Qt::DefaultLocaleShortDate ) );
 	painter.drawRect(page3);
 	painter.drawRect(page4);
-	str ="\n"+QString::fromLocal8Bit("制单：")+ui.sheetmakerEdit->text()+"     "+QString::fromLocal8Bit("打印时间：")+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+	str ="\n"+QString::fromLocal8Bit("交款人：")+ui.payerEdit->text()+"     "+QString::fromLocal8Bit("制单：")+ui.sheetmakerEdit->text()+"     "+QString::fromLocal8Bit("打印时间：")+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
 	painter.drawText( page5, Qt::AlignTop    | Qt::AlignLeft, str);
 	painter.drawRect(page6);
 	str =QString::fromLocal8Bit("此乃临时收据，不作报销凭证，请妥善保存，出院结算时交回。");
@@ -330,6 +330,7 @@ void HospitalisationPay::setEdit(bool IsEdit)
 		ui.lineEdit_6->setEnabled(true);
 		ui.chargemethodcomboBox->setEnabled(true);
 		ui.hospitalNocomboBox->setEnabled(true);
+		ui.payerEdit->setEnabled(true);
 		ui.tableWidget->setEnabled(true);
 	}
 	else
@@ -346,6 +347,7 @@ void HospitalisationPay::setEdit(bool IsEdit)
 		ui.chargemethodcomboBox->setEnabled(false);
 		ui.hospitalNocomboBox->setEnabled(false);
 		ui.tableWidget->setEnabled(false);
+		ui.payerEdit->setEnabled(false);
 	}
 }
 bool HospitalisationPay::eventFilter(QObject*obj,QEvent*event)
@@ -433,6 +435,7 @@ void HospitalisationPay::edit(QString strNo)
 	//	ui.chargemethodcomboBox->setEditText(query.value(7).toString());
 		ui.amountEdit->setText(query.value(8).toString());
 		//ui.remarkEdit->setText(query.value(9).toString());
+		ui.payerEdit->setText(query.value(10).toString());
 	}
 	
 }

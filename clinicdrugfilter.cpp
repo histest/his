@@ -38,7 +38,6 @@ void ClinicDrugFilter::currentItem()
 {
 	strDrugName=ui->listWidget->selectedItems().at(0)->text();
 }
-
 ClinicDrugFilter::~ClinicDrugFilter()
 {
 

@@ -455,6 +455,7 @@ void HospitalisationStatistics::on_payqueryButton_clicked()
 	model->setHeaderData(7,Qt::Horizontal,QString::fromLocal8Bit("付款方式"));
 	model->setHeaderData(8,Qt::Horizontal,QString::fromLocal8Bit("金额"));
 	model->setHeaderData(9,Qt::Horizontal,QString::fromLocal8Bit("备注"));
+	model->setHeaderData(10,Qt::Horizontal,QString::fromLocal8Bit("交款人"));
 	ui.paytableView->setModel(model);
 }
 void HospitalisationStatistics::on_payclearButton_clicked()

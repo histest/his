@@ -162,50 +162,62 @@ void Drugdictionaryadd::edit(QStringList list)
 	ui.lineEdit_8->setText(list.at(18));
 	ui.lineEdit_9->setText(list.at(8));
 
-	for (int i =0;i<ui.comboBox_5->count();i++)
-	{
-		if (ui.comboBox_5->itemText(i)==list.at(7))
-		{
-			ui.comboBox_5->setCurrentIndex(i);
-		}
-	}
+	//for (int i =0;i<ui.comboBox_5->count();i++)
+	//{
+	//	if (ui.comboBox_5->itemText(i)==list.at(7))
+	//	{
+	//		ui.comboBox_5->setCurrentIndex(i);
+	//	}
+	//}
+	ui.comboBox_5->setItemText(0,list.at(7));
 
-	for (int i =0;i<ui.mzreceiptcomboBox->count();i++)
-	{
-		if (ui.mzreceiptcomboBox->itemText(i)==list.at(11))
-		{
-			ui.mzreceiptcomboBox->setCurrentIndex(i);
-		}
-	}
-	for (int i =0;i<ui.mzclascomboBox->count();i++)
-	{
-		if (ui.mzclascomboBox->itemText(i)==list.at(13))
-		{
-			ui.mzclascomboBox->setCurrentIndex(i);
-		}
-	}
-	for (int i =0;i<ui.comboBox_4->count();i++)
-	{
-		if (ui.comboBox_4->itemText(i)==list.at(12))
-		{
-			ui.comboBox_4->setCurrentIndex(i);
-		}
-	}
-	for (int i =0;i<ui.comboBox_3->count();i++)
-	{
-		if (ui.comboBox_3->itemText(i)==list.at(14))
-		{
-			ui.comboBox_3->setCurrentIndex(i);
-		}
-	}
 
-	for (int i =0;i<ui.comboBox_7->count();i++)
-	{
-		if (ui.comboBox_7->itemText(i)==list.at(15))
-		{
-			ui.comboBox_7->setCurrentIndex(i);
-		}
-	}
+	//for (int i =0;i<ui.mzreceiptcomboBox->count();i++)
+	//{
+	//	if (ui.mzreceiptcomboBox->itemText(i)==list.at(11))
+	//	{
+	//		ui.mzreceiptcomboBox->setCurrentIndex(i);
+	//	}
+	//}
+	ui.mzreceiptcomboBox->setItemText(0,list.at(11));
+
+
+	//for (int i =0;i<ui.mzclascomboBox->count();i++)
+	//{
+	//	if (ui.mzclascomboBox->itemText(i)==list.at(13))
+	//	{
+	//		ui.mzclascomboBox->setCurrentIndex(i);
+	//	}
+	//}
+	ui.mzclascomboBox->setItemText(0,list.at(13));
+
+
+	//for (int i =0;i<ui.comboBox_4->count();i++)
+	//{
+	//	if (ui.comboBox_4->itemText(i)==list.at(12))
+	//	{
+	//		ui.comboBox_4->setCurrentIndex(i);
+	//	}
+	//}
+	ui.comboBox_4->setItemText(0,list.at(12));
+
+	//for (int i =0;i<ui.comboBox_3->count();i++)
+	//{
+	//	if (ui.comboBox_3->itemText(i)==list.at(14))
+	//	{
+	//		ui.comboBox_3->setCurrentIndex(i);
+	//	}
+	//}
+	ui.comboBox_3->setItemText(0,list.at(14));
+
+	//for (int i =0;i<ui.comboBox_7->count();i++)
+	//{
+	//	if (ui.comboBox_7->itemText(i)==list.at(15))
+	//	{
+	//		ui.comboBox_7->setCurrentIndex(i);
+	//	}
+	//}
+	ui.comboBox_7->setItemText(0,list.at(15));
 }
 Drugdictionaryadd::~Drugdictionaryadd()
 {

@@ -312,53 +312,6 @@ void HospitalisationRegistry::on_checkButton_clicked()
 {
 
 }
-//bool HospitalisationRegistry::eventFilter(QObject*obj,QEvent*event)
-//{
-//	if(obj == ui.doctorEdit)
-//	{
-//		if(event->type() == QEvent::KeyPress)
-//		{
-//			QKeyEvent*keyEvent=static_cast<QKeyEvent*>(event);//将事件转化为键盘事件
-//			if(keyEvent->key() == Qt::Key_Return)
-//			{
-//
-//				GetDoctor getdoctor = new GetDoctor;
-//				getdoctor.initData(ui.doctorEdit->text());
-//				if(getdoctor.exec())
-//				{
-//					ui.doctorEdit->setText(getdoctor.strDoctorName);
-//					return  true;
-//				}
-//				else
-//				{
-//					return  false;
-//				}
-//				return  true;
-//			}
-//			else
-//			{
-//				return  false;
-//			}
-//		}
-//		else
-//		{
-//			return  false;
-//		}
-//
-//	}
-//	if(obj == this)
-//	{
-//		if(event->type() == QEvent::KeyPress)
-//		{
-//			QKeyEvent*keyEvent=static_cast<QKeyEvent*>(event);
-//			if(keyEvent->key() == Qt::Key_Return)
-//			{
-//				focusNextChild();
-//				return true;
-//			}
-//		}
-//	}
-//}
 void HospitalisationRegistry::setEdit(bool IsEdit)
 {
 	if (IsEdit==true)
@@ -409,7 +362,7 @@ void HospitalisationRegistry::setEdit(bool IsEdit)
 }
 void HospitalisationRegistry::edit(QString strNo)
 {
-	doctorlist->hide();
+
 	ui.addButton->setEnabled(false);
 	ui.editButton->setEnabled(true);
 	setEdit(false);
@@ -483,6 +436,7 @@ void HospitalisationRegistry::edit(QString strNo)
 		ui.sheetmakerEdit->setText(query.value(20).toString());	
 		ui.statusEdit->setText(query.value(22).toString());			
 	}
+	doctorlist->hide();
 }
 void HospitalisationRegistry::completeText(const QModelIndex &index) {
 	QString strName = index.data().toString();

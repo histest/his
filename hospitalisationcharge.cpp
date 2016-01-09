@@ -331,7 +331,7 @@ void HospitalisationCharge::print( QPrinter* printer )
 	QRect    page( w/50, h/50, w, h );
 	QRect    page4( w/30, h/10, w, h );
 	QFont    font = painter.font();
-	font.setPixelSize( 50 );
+	font.setPointSize(8);
 	painter.setFont( font );
 	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit(" 三河市燕郊镇卫生院住院收费") );
 	
@@ -352,7 +352,7 @@ void HospitalisationCharge::print( QPrinter* printer )
 	double cellheight = 160;
 	double upmargin = h/30;
 	//计算总页数
-	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
+	int firstpagerow = (h-upmargin)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
 	int pagecount = 0;
 
@@ -362,7 +362,7 @@ void HospitalisationCharge::print( QPrinter* printer )
 		cellwidth= (w-100)/col;
 		cellheight=60;
 		upmargin = h/30;
-		firstpagerow = (h-200)/cellheight;
+		firstpagerow = (h-upmargin)/cellheight;
 		everypagerow = (h-20)/cellheight;
 	}
 	double leftmargin = (w-cellwidth*col)/2;

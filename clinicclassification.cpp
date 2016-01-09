@@ -139,7 +139,6 @@ void Clinicclassification::on_exitButton_clicked()
 		this->close();
 	}
 }
-
 Clinicclassification::~Clinicclassification()
 {
 

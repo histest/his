@@ -137,7 +137,7 @@ void HospitalisationInternalPayment::print( QPrinter* printer )
 	if(sql.windowsFlag==QSysInfo::WV_5_1||sql.windowsFlag==QSysInfo::WV_5_0||sql.windowsFlag==QSysInfo::WV_5_2||sql.windowsFlag==QSysInfo::WV_4_0)//判断当前系统
 	{
 		cellwidth=400;
-		cellheight=60;
+		cellheight=45;
 		upmargin = h/35;
 	}
 	else
