@@ -15,6 +15,7 @@ public:
 	QStringList words;
 	QListView *listView; 
 	QStringListModel *model; 
+	QListView *patientlist; 
 	void keyPressEvent(QKeyEvent *e);
 private:
 	Ui::ClinicStatistics ui;
@@ -30,8 +31,8 @@ private:
 		void on_radioButton_2_clicked();
 		void on_radioButton_3_clicked();
 		void on_radioButton_4_clicked();
-		void completeText(const QModelIndex &index); // 点击完成列表中的项，使用此项自动完成输入的单词
-		void setCompleter(const QString &text); // 动态的显示完成列表
+		void completeText(const QModelIndex &index); 
+		void setCompleter(const QString &text); 
 
 		void on_printButton_clicked();
 		void on_previewButton_clicked();

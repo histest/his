@@ -409,6 +409,7 @@ void HospitalisationRegistry::setEdit(bool IsEdit)
 }
 void HospitalisationRegistry::edit(QString strNo)
 {
+	doctorlist->hide();
 	ui.addButton->setEnabled(false);
 	ui.editButton->setEnabled(true);
 	setEdit(false);
@@ -501,7 +502,7 @@ void HospitalisationRegistry::setCompleter(const QString &text) {
 		return;
 	}
 	QSqlQuery query(*sql.db);	
-	QString strsql=QString("select * from sys_personnel where jianpin like'%%1%'").arg(text);
+	QString strsql=QString("select * from sys_personnel where jianpin like'%%1%' or name like'%%1%'").arg(text).arg(text);
 	query.exec(strsql);
 	QStringList list;
 	while(query.next())

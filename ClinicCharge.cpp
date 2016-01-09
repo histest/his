@@ -38,14 +38,9 @@ ClinicCharge::ClinicCharge(QWidget *parent)
 	ui.tableWidget->horizontalHeader()->resizeSection(2,80);
 	connect(ui.tableWidget,SIGNAL(cellChanged(int,int)),this,SLOT(getItem(int,int)));
 	connect(list_widget,SIGNAL(itemClicked(QListWidgetItem *)),this,SLOT(selectItem(QListWidgetItem *)));//
-	//connect(ui.tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem2(int,int)));
-	//connect(ui.doctorEdit,SIGNAL(textEdited(QString)),this,SLOT(selectDoctor(QString)));
-	//connect(ui.doctorEdit,SIGNAL(editingFinished(QString)),this,SLOT(selectDoctor(QString)));
-	//connect(ui.tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
 	connect(ui.doctorEdit, SIGNAL(textChanged(const QString &)), this, SLOT(setCompleter(const QString &)));
 	connect(ui.doctorEdit, SIGNAL(textChanged(const QString &)), this, SLOT(showDepartment(const QString &)));
 	connect(package,SIGNAL(showPackage(QString)),this,SLOT(addPackage(QString)));
-	//connect(ui.departmentEdit, SIGNAL(textChanged(const QString &)), this, SLOT(setdepartmentCompleter(const QString &)));
 }
 void ClinicCharge::initUI()
 {
@@ -250,9 +245,9 @@ void ClinicCharge::on_saveButton_clicked()
 		query.bindValue(8, amount);
 		query.bindValue(9, ui.dateTimeEdit->dateTime());
 		QString strdrugtype;
-		if (ui.tableWidget->item(i,10)!=NULL)
+		if (ui.tableWidget->item(i,11)!=NULL)
 		{
-			strdrugtype= ui.tableWidget->item(i,10)->text();
+			strdrugtype= ui.tableWidget->item(i,11)->text();
 		}
 		if (strdrugtype==QString::fromLocal8Bit("西药")||strdrugtype==QString::fromLocal8Bit("中成药")||strdrugtype==QString::fromLocal8Bit("中草药"))
 		{
@@ -475,7 +470,7 @@ void ClinicCharge::getItem(int row,int column)
 
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
-		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strText).arg(strText);
 
 		query.exec(strsql);
 		QStringList list;
@@ -761,6 +756,7 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 void ClinicCharge::edit(QString strNo)
 {
 	list_widget->close();
+	doctorlist->hide();
 	setEdit(false);
 	ui.tableWidget->installEventFilter(this);
 	ui.doctorEdit->installEventFilter(this);
@@ -928,7 +924,7 @@ void ClinicCharge::setCompleter(const QString &text) {
 
 	QSqlQuery query(*sql.db);	
 
-	QString strsql=QString("select * from sys_personnel where jianpin like'%%1%'").arg(text);
+	QString strsql=QString("select * from sys_personnel where jianpin like'%%1%' or name like'%%1%'").arg(text).arg(text);
 	query.exec(strsql);
 	QStringList list;
 	while(query.next())

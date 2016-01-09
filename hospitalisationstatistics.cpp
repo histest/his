@@ -741,17 +741,32 @@ void HospitalisationStatistics::print( QPrinter* printer )
 		QPainter painter( printer );
 		int      w = printer->pageRect().width();
 		int      h = printer->pageRect().height();
-		QRect    page( 0, h/15, w, h );
-		QRect    page2(0, h/10, w, h );
-		QRect    page3( w/4, h/6, w, h );
-		QRect    page4( 0, h/10, w, h );
+		QRect    page( 0, h/130, w, h );
+		QRect    page2(0, h/50, w, h );
+		QRect    page3(0, h/30, w, h );
 		QFont    font = painter.font();
-		font.setPixelSize( (w+h) / 100 );
+		font.setPointSize(9);
 		painter.setFont( font );
 		painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit("三河市燕郊镇卫生院住院清单") );
-		QString str =QString::fromLocal8Bit("住院号:")+ ui.lineEdit_6->text()+QString::fromLocal8Bit("姓名:")+ ui.lineEdit_17->text();
-		painter.drawText( page2, Qt::AlignTop    | Qt::AlignHCenter, str );
+		QString strHospitalNo = ui.lineEdit_6->text();
+		QSqlQuery query(*sql.db);
+		QString strRegistryDate,strOutDate,strGender,strAge;
+		QString strsql = "select *from zy_patientinfo where hospitalisationno = '"+strHospitalNo+"'";
+		query.exec(strsql);
+		while(query.next())
+		{
+			strRegistryDate = query.value(2).toString();
+			strGender =  query.value(5).toString();
+			strAge =  query.value(6).toString();
+			strOutDate= query.value(23).toString();
 
+		}
+		strRegistryDate.replace("T"," ");
+		strOutDate.replace("T"," ");
+		QString str =QString::fromLocal8Bit("住院号:")+ ui.lineEdit_6->text()+QString::fromLocal8Bit("   姓名:")+ ui.lineEdit_17->text()+QString::fromLocal8Bit("   性别:")+strGender+QString::fromLocal8Bit("   年龄:")+strAge;
+		painter.drawText( page2, Qt::AlignTop    | Qt::AlignHCenter, str );
+		str =QString::fromLocal8Bit("入院日期:")+ strRegistryDate+QString::fromLocal8Bit("   出院日期:")+ strOutDate;
+		painter.drawText( page3, Qt::AlignTop    | Qt::AlignHCenter, str );
 		painter.begin(this);
 		painter.setPen(QPen(Qt::black,4,Qt::SolidLine));//设置画笔形式 
 		painter.setBrush(QBrush(Qt::white,Qt::SolidPattern));//设置画刷形式 
@@ -764,13 +779,13 @@ void HospitalisationStatistics::print( QPrinter* printer )
 		{
 			cellwidth=400;
 			cellheight=60;
-			upmargin = 200;
+			upmargin = h/35;
 		}
 		else
 		{
 			cellwidth=1600;
 			cellheight=160;
-			upmargin = 800;
+			upmargin = h/35;
 		}
 		double leftmargin = (w-cellwidth*col)/2;
 		QStringList list;
@@ -796,7 +811,7 @@ void HospitalisationStatistics::print( QPrinter* printer )
 			{
 				painter.drawRect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
 				QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
-				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignLeft, list.at(i*col+j) );//ui.billtableWidget->item(i,j)->text()
+				painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.billtableWidget->item(i,j)->text()
 			}
 		}
 		painter.drawRect(leftmargin,upmargin+cellheight*(row+2),cellwidth*col,cellheight);
@@ -816,7 +831,7 @@ void HospitalisationStatistics::print( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/50, h/50, w, h );
+	QRect    page( w/50, h/70, w, h );
 	QRect    page4( w/30, h/10, w, h );
 	QFont    font = painter.font();
 	font.setPointSize(8);
@@ -834,10 +849,10 @@ void HospitalisationStatistics::print( QPrinter* printer )
 	int col = ui.billtableWidget->columnCount();
 	double cellwidth = (w-40)/col;
 	double cellheight = 160;
-	double upmargin = 300;
+	double upmargin = h/50;
 
 	//计算总页数
-	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
+	int firstpagerow = (h-upmargin)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
 	int pagecount = 0;
 	//xp系统
@@ -845,8 +860,8 @@ void HospitalisationStatistics::print( QPrinter* printer )
 	{
 		cellwidth= (w-100)/col;
 		cellheight=60;
-		upmargin = 50;
-		firstpagerow = (h-200)/cellheight;
+		upmargin = h/50;;
+		firstpagerow = (h-upmargin)/cellheight;
 		everypagerow = (h-20)/cellheight;
 	}
 	double leftmargin = (w-cellwidth*col)/2;

@@ -1425,7 +1425,7 @@ void DrugAllot::getItem_Sale(int row,int column)//计算费用
 
 
 
-		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strText).arg(strText);
 
 		query.exec(strsql);
 		QStringList list;
@@ -1503,7 +1503,7 @@ void DrugAllot::getItem_Store(int row,int column)//计算费用
 
 		
 
-		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strText).arg(strText);
 
 		query.exec(strsql);
 		QStringList list;

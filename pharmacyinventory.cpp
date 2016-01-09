@@ -11,6 +11,9 @@ PharmacyInventory::PharmacyInventory(QWidget *parent)
 {
 	ui.setupUi(this);
 	initUI();
+	druglist = new QListView(this);
+	model = new QStringListModel(this);
+	druglist->setWindowFlags(Qt::ToolTip);
 	ui.tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->setStyleSheet("QTableWidget{border: 1px solid gray;	background-color: transparent;	selection-color: grey;}");
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section {background-color:white;color: black;padding-left: 4px;border: 1px solid #6c6c6c;};"
@@ -24,6 +27,7 @@ PharmacyInventory::PharmacyInventory(QWidget *parent)
 	installEventFilter(list_widget);
 	connect(ui.tableWidget,SIGNAL(cellClicked(int,int)),this,SLOT(getItem(int,int)));
 	connect(ui.lineEdit_code,SIGNAL(textChanged(const QString &)),this,SLOT(findbyname(const QString &)));
+	connect(druglist, SIGNAL(clicked(const QModelIndex &)), this, SLOT(completeText(const QModelIndex &)));
 }
 
 PharmacyInventory::~PharmacyInventory()
@@ -33,33 +37,52 @@ PharmacyInventory::~PharmacyInventory()
 
 void PharmacyInventory::getItem(int row,int column)//计算费用
 {
-	 ui.lineEdit_name->setText(ui.tableWidget->item(row,0)->text());
-	// ui.lineEdit_manufacturer->setText(ui.tableWidget->item(row,2)->text());	
+
 }
-void PharmacyInventory::findbyname(const QString &)
+void PharmacyInventory::findbyname(const QString &text)
 {
-	QString strText =  ui.lineEdit_code->text();
-	//ClinicDrugFilter drugfilter = new ClinicDrugFilter;
-	//drugfilter.initData(strText);
-	//QString strName;
-	//if(drugfilter.exec())
-	//{
-	//	strName= drugfilter.strDrugName;
-	//	QSqlQuery query(*sql.db);	
-	//	QString strsql= "select * from sys_drugdictionary where name='"+strName+"'";//;//where AbbrName = '"+strName+"'
-	//	query.exec(strsql);
-	//	while(query.next())
-	//	{
-	//		ui.lineEdit_name->setText(query.value(1).toString());
-	//	}
-	//}
-	QSqlQuery query(*sql.db);
-	QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
+	druglist->hide();
+	if (text.isEmpty()) {
+		druglist->hide();
+		return;
+	}
+
+	if ((text.length() > 1) && (!druglist->isHidden())) {
+		return;
+	}
+
+	QSqlQuery query(*sql.db);	
+
+	QString strsql=QString("select * from sys_drugdictionary where abbr like '%%1%' or name like'%%2%'  ").arg(text).arg(text);
 	query.exec(strsql);
+	QStringList list;
 	while(query.next())
 	{
-		ui.lineEdit_name->setText(query.value(1).toString());
+		QString str = query.value(1).toString();
+		list.append(str);
 	}
+
+	model->setStringList(list);
+	//	model->setStringList(sl);
+	druglist->setModel(model);
+
+	if (model->rowCount() == 0) {
+		return;
+	}
+
+	// Position the text edit
+	druglist->setMinimumWidth(width());
+	druglist->setMaximumWidth(width());
+
+	QPoint p(0, height());
+	int x = mapToGlobal(p).x();
+	int y = mapToGlobal(p).y() + 1;
+
+	//listView->move(x, y);
+	druglist->setGeometry(this->x()+180, this->y()+160, 50, 100);
+	druglist->resize(100,200);
+	druglist->setFixedWidth(160);
+	druglist->show();
 }
 void PharmacyInventory::initUI()
 {
@@ -88,15 +111,10 @@ void PharmacyInventory::SetEdit(bool IsEdit)
 	{
 		
 		ui.tableWidget->setEnabled(true);
-		ui.lineEdit_name->setEnabled(true);
-		//ui.lineEdit_manufacturer->setEnabled(true);
-
 	}
 	else
 	{
-		ui.lineEdit_name->setEnabled(false);
 		ui.tableWidget->setEnabled(false);
-		//ui.lineEdit_manufacturer->setEnabled(false);
 	}
 }
 
@@ -132,10 +150,7 @@ void PharmacyInventory::on_FindAllButton_clicked()
 void PharmacyInventory::on_FindButton_clicked()
 {
 	QString strName;
-	strName = ui.lineEdit_name->text();
-	//QString strManufacturer;
-	//strManufacturer = ui.lineEdit_manufacturer->text();	
-	
+	strName = ui.lineEdit_code->text();
 	ui.tableWidget->setEditTriggers(QAbstractItemView::AllEditTriggers);
 
 	int rows = ui.tableWidget->model()->rowCount();   //行总数
@@ -155,10 +170,10 @@ void PharmacyInventory::on_FindButton_clicked()
 	//if (code)   
 	//	strStd2= code->fromUnicode(strManufacturer).data();
 
-	if(ui.radioButton_1->isChecked() && strStd1!="")//按照药品名称查找
+	if(strStd1!="")//按照药品名称查找
 	{
 		QSqlQuery query(*sql.db);	
-		QString strsql1= "select * from yf_inventory where name like '"+strName+"'";//;//where AbbrName = '"+strName+"'
+		QString strsql1= "select * from yf_inventory where name like '"+strName+"'";
 		query.exec(strsql1);
 		
 		while(query.next())
@@ -175,27 +190,7 @@ void PharmacyInventory::on_FindButton_clicked()
 		}
 		ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	}
-	//else if(ui.radioButton_2->isChecked()&& strStd2!="")//按照生产厂商查找
-	//{
-	//	QSqlQuery query(*sql.db);	
-	//	QString strsql1= "select * from yf_inventory where manufacturer like '"+strManufacturer+"'";//;//where AbbrName = '"+strName+"'
-	//	query.exec(strsql1);
-	//				
-	//	while(query.next())
-	//	{
-	//		int rows = ui.tableWidget->model()->rowCount();   //行总数
-	//		ui.tableWidget->insertRow(rows);
-	//		iRow=rows;
-	//		ui.tableWidget->setItem(iRow,0,new QTableWidgetItem(query.value(2).toString()));
-	//		ui.tableWidget->setItem(iRow,1,new QTableWidgetItem(query.value(3).toString()));
-	//		ui.tableWidget->setItem(iRow,2,new QTableWidgetItem(query.value(4).toString()));
-	//		ui.tableWidget->setItem(iRow,4,new QTableWidgetItem(query.value(6).toString()));
-	//		ui.tableWidget->setItem(iRow,5,new QTableWidgetItem(query.value(7).toString()));
-	//		ui.tableWidget->setItem(iRow,6,new QTableWidgetItem(query.value(8).toString()));
-	//	}
-	//	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-	//}
-	else if(!ui.radioButton_1->isChecked())
+	else 
 	{
 		QSqlQuery query(*sql.db);	
 		QString strsql1= "select * from yf_inventory";//;//where AbbrName = '"+strName+"'
@@ -214,5 +209,55 @@ void PharmacyInventory::on_FindButton_clicked()
 			ui.tableWidget->setItem(iRow,6,new QTableWidgetItem(query.value(8).toString()));
 		}
 		ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	}
+}
+
+void PharmacyInventory::completeText(const QModelIndex &index) {
+	QString strName = index.data().toString();
+	ui.lineEdit_code->setText(strName);
+	druglist->hide();
+}
+void PharmacyInventory::keyPressEvent(QKeyEvent *e) {
+	if (!druglist->isHidden()) {
+		int key = e->key();
+		int count = druglist->model()->rowCount();
+		QModelIndex currentIndex = druglist->currentIndex();
+
+		if (Qt::Key_Down == key) {
+			// 按向下方向键时，移动光标选中下一个完成列表中的项
+			int row = currentIndex.row() + 1;
+			if (row >= count) {
+				row = 0;
+			}
+
+			QModelIndex index = druglist->model()->index(row, 0);
+			druglist->setCurrentIndex(index);
+		} else if (Qt::Key_Up == key) {
+			// 按向下方向键时，移动光标选中上一个完成列表中的项
+			int row = currentIndex.row() - 1;
+			if (row < 0) {
+				row = count - 1;
+			}
+
+			QModelIndex index = druglist->model()->index(row, 0);
+			druglist->setCurrentIndex(index);
+		} else if (Qt::Key_Escape == key) {
+			// 按下Esc键时，隐藏完成列表
+			druglist->hide();
+		} else if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+			// 按下回车键时，使用完成列表中选中的项，并隐藏完成列表
+			if (currentIndex.isValid()) {
+				QString text = druglist->currentIndex().data().toString();
+				ui.lineEdit_code->setText(text);
+			}
+
+			druglist->hide();
+		} else {
+			// 其他情况，隐藏完成列表，并使用QLineEdit的键盘按下事件
+			druglist->hide();
+			//QLineEdit::keyPressEvent(e);
+		}
+	} else {
+		//QLineEdit::keyPressEvent(e);
 	}
 }

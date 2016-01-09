@@ -181,16 +181,13 @@ void ClinicDailyReport::print( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( 0, h/16, w, h );
-	QRect    page2(0, h/12, w, h );
-	QRect    page3( w/4, h/6, w, h );
-	QRect    page4( 0, h/10, w, h );
+	QRect    page( 0, h/70, w, h );
+	QRect    page2(0, h/35, w, h );
 	QFont    font = painter.font();
-	//font.setPixelSize( (w+h) / 100 );
 	font.setPointSize(9);
 	painter.setFont( font );
 	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit("三河市燕郊镇卫生院门诊日结单") );
-	QString str =QString::fromLocal8Bit("日期:")+ ui.startdateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss")+"-"+ui.endateTimeEdit ->dateTime().toString("yyyy-MM-dd hh:mm:ss");
+	QString str =QString::fromLocal8Bit("日期:")+ ui.startdateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss")+"-"+ui.endateTimeEdit ->dateTime().toString("yyyy-MM-dd hh:mm:ss")+QString::fromLocal8Bit("     制单:")+ ui.sheetmakerEdit->text();
 	painter.drawText( page2, Qt::AlignTop    | Qt::AlignHCenter, str );
 
 	painter.begin(this);
@@ -200,19 +197,18 @@ void ClinicDailyReport::print( QPrinter* printer )
 	int col = ui.tableWidget->columnCount();
 	double cellwidth = (w-100)/col;
 	double cellheight = 160;
-	double upmargin = 600;
-
+	double upmargin = h/30;
 
 	//计算总页数
-	int firstpagerow = (h-800)/160;
+	int firstpagerow = (h-upmargin)/160;
 	int everypagerow = (h-100)/160;
 	int pagecount = 0;
 	if(sql.windowsFlag==QSysInfo::WV_5_1||sql.windowsFlag==QSysInfo::WV_5_0||sql.windowsFlag==QSysInfo::WV_5_2||sql.windowsFlag==QSysInfo::WV_4_0)//判断当前系统
 	{
 		cellwidth= (w-100)/col;
 		cellheight=60;
-		upmargin = 200;
-		firstpagerow = (h-200)/cellheight;//第一页上方空白为750,下方为50
+		upmargin = h/35;
+		firstpagerow = (h-upmargin)/cellheight;//第一页上方空白为750,下方为50
 		everypagerow = (h-50)/cellheight;//后面每页的空白为100
 	}
 	double leftmargin = (w-cellwidth*col)/2;

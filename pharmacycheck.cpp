@@ -445,7 +445,7 @@ void PharmacyCheck::getItem(int row,int column)//¼ÆËã·ÑÓÃ
 		list_widget->show();
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
-		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strText).arg(strText);
 
 		query.exec(strsql);
 		QStringList list;

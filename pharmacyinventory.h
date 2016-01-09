@@ -18,7 +18,9 @@ public:
 	void SetEdit(bool IsEdit);
 	int iRow;
 	QListWidget*list_widget ;
-//	void keyPressEvent(QKeyEvent *e);
+	QListView *druglist; 
+	QStringListModel *model; 
+	void keyPressEvent(QKeyEvent *e);
 private:
 	Ui::PharmacyInventory ui;
 public slots:
@@ -26,7 +28,7 @@ public slots:
 	void on_FindAllButton_clicked();
 	void getItem(int row,int column);
 	void findbyname(const QString &);
-
+	void completeText(const QModelIndex &index); 
 };
 
 #endif // PHARMACYINVENTORY_H

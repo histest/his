@@ -133,20 +133,15 @@ void ClinicInternalPayment::print( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( 0, h/15, w, h );
-	QRect    page2(0, h/10, w, h );
-	QRect    page3( w/4, h/6, w, h );
-	QRect    page4( 0, h/10, w, h );
+	QRect    page( 0, h/70, w, h );
+	QRect    page2(0, h/35, w, h );
 	QFont    font = painter.font();
-	font.setPixelSize( (w+h) / 100 );
+	font.setPointSize(9);
 	painter.setFont( font );
 	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit("三河市燕郊镇卫生院门诊内部缴款单") );
-    QString str =QString::fromLocal8Bit("日期:")+ ui.dateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss")+"-"+ui.dateTimeEdit_2 ->dateTime().toString("yyyy-MM-dd hh:mm:ss")+ui.label_5->text();
+    QString str =QString::fromLocal8Bit("日期:")+ ui.dateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss")+"-"+ui.dateTimeEdit_2 ->dateTime().toString("yyyy-MM-dd hh:mm:ss")+"       "+ui.label_5->text();
 	painter.drawText( page2, Qt::AlignTop    | Qt::AlignHCenter, str );
 
-	//painter.begin(this);
-	//painter.setPen(QPen(Qt::black,4,Qt::SolidLine));//设置画笔形式 
-	//painter.setBrush(QBrush(Qt::white,Qt::SolidPattern));//设置画刷形式 
 	int row = ui.tableWidget->rowCount();
 	int col = ui.tableWidget->columnCount();
 	double cellwidth;
@@ -156,13 +151,13 @@ void ClinicInternalPayment::print( QPrinter* printer )
 	{
 		cellwidth=400;
 		cellheight=60;
-		upmargin = 200;
+		upmargin = h/35;
 	}
 	else
 	{
 		cellwidth=1600;
 		cellheight=160;
-		upmargin = 800;
+		upmargin = h/35;
 	}
 	double leftmargin = (w-cellwidth*col)/2;
 	QStringList list;
@@ -188,7 +183,7 @@ void ClinicInternalPayment::print( QPrinter* printer )
 		{
 			painter.drawRect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
 			QRect rect(leftmargin+j*cellwidth,upmargin+cellheight*(i+1),cellwidth,cellheight);
-			painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignLeft, list.at(i*col+j) );//ui.billtableWidget->item(i,j)->text()
+			painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignHCenter, list.at(i*col+j) );//ui.billtableWidget->item(i,j)->text()
 		}
 	}
 	painter.drawRect(leftmargin,upmargin+cellheight*(row+2),cellwidth*col,cellheight);
@@ -201,16 +196,10 @@ void ClinicInternalPayment::print( QPrinter* printer )
 	}
 	double sum = ui.tableWidget->item(row-1,1)->text().toDouble();
 	
-	painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignLeft, QString::fromLocal8Bit("大写：")+capital->NumToChineseStr(sum));//ui.billtableWidget->item(i,j)->text()
+	painter.drawText( rect, Qt::AlignVCenter    | Qt::AlignLeft, QString::fromLocal8Bit("大写：")+capital->NumToChineseStr(sum));
 	
-	QRect rect2(leftmargin,upmargin+cellheight*(row+3),cellwidth*col,cellheight);
-	painter.drawText( rect2, Qt::AlignVCenter    | Qt::AlignLeft, QString::fromLocal8Bit("会计主管：")+"   "+ QString::fromLocal8Bit("收费负责人：")+"   "+ QString::fromLocal8Bit("药房负责人："));//ui.billtableWidget->item(i,j)->text()
-
-	//painter.end();
-
-	//QPixmap image;
-	//image=image.grabWidget(ui.tableWidget,-200,0,900, 1000);
-	//painter.drawPixmap(page4,image);
+	QRect rect2(leftmargin,upmargin+cellheight*(row+3),cellwidth*col,cellheight); 
+	painter.drawText( rect2, Qt::AlignVCenter    | Qt::AlignLeft, QString::fromLocal8Bit("会计主管：")+"                "+ QString::fromLocal8Bit("收费负责人：")+"                  "+ QString::fromLocal8Bit("药房负责人："));
 }
 ClinicInternalPayment::~ClinicInternalPayment()
 {

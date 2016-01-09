@@ -17,16 +17,6 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QRadioButton" name="radioButton_1">
-       <property name="text">
-        <string>按药品简称：</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_code"/>
-     </item>
-     <item>
       <widget class="QLabel" name="label">
        <property name="text">
         <string>药品名称</string>
@@ -34,17 +24,16 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit_name">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
+      <widget class="QLineEdit" name="lineEdit_code"/>
      </item>
      <item>
       <widget class="QPushButton" name="FindButton">
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>23</height>
+        </size>
+       </property>
        <property name="font">
         <font>
          <family>Agency FB</family>
@@ -55,6 +44,19 @@
         <string>查询库存</string>
        </property>
       </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>

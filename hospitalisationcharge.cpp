@@ -334,6 +334,10 @@ void HospitalisationCharge::print( QPrinter* printer )
 	font.setPixelSize( 50 );
 	painter.setFont( font );
 	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit(" 三河市燕郊镇卫生院住院收费") );
+	
+	QRect    rect( w/60, h/31, w, h );
+	QString str = QString::fromLocal8Bit("住院号：")+ui.hospitalisationNocomboBox->currentText()+ QString::fromLocal8Bit("   姓名：")+ui.nameEdit->text()+ QString::fromLocal8Bit("   住院科室：")+ui.departmentEdit->text()+ QString::fromLocal8Bit("   主治医生：")+ui.doctorEdit->text()+ QString::fromLocal8Bit("   单号：")+ui.sheetNoEdit->text()+QString::fromLocal8Bit("   时间：")+ui.dateTimeEdit->dateTime().toString("yyyy-MM-dd hh:mm:ss")+ QString::fromLocal8Bit("   制单人：")+ui.sheetmakerEdit->text();
+	painter.drawText( rect, Qt::AlignTop    | Qt::AlignHCenter,str);
 
 	QPixmap image;
 	image=image.grabWidget(ui.tableWidget,0,0,1000, 1000);
@@ -346,7 +350,7 @@ void HospitalisationCharge::print( QPrinter* printer )
 	int col = ui.tableWidget->columnCount();
 	double cellwidth = (w-40)/col;
 	double cellheight = 160;
-	double upmargin = 300;
+	double upmargin = h/30;
 	//计算总页数
 	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
@@ -357,7 +361,7 @@ void HospitalisationCharge::print( QPrinter* printer )
 	{
 		cellwidth= (w-100)/col;
 		cellheight=60;
-		upmargin = 50;
+		upmargin = h/30;
 		firstpagerow = (h-200)/cellheight;
 		everypagerow = (h-20)/cellheight;
 	}
@@ -570,7 +574,7 @@ void HospitalisationCharge::getItem(int row,int column)//计算费用
 		list_widget->show();
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
-		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
+		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strText).arg(strText);
 
 		query.exec(strsql);
 		QStringList list;

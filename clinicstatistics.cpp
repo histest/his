@@ -31,6 +31,7 @@ ClinicStatistics::ClinicStatistics(QWidget *parent)
 	initUI();
 	connect(ui.tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
 	connect(ui.patientEdit, SIGNAL(textChanged(const QString &)), this, SLOT(setCompleter(const QString &)));
+	connect(listView, SIGNAL(clicked(const QModelIndex &)), this, SLOT(completeText(const QModelIndex &)));
 }
 void ClinicStatistics::initUI()
 {
@@ -432,19 +433,72 @@ void ClinicStatistics::getItem(int row,int column)
 void ClinicStatistics::completeText(const QModelIndex &index) {
 	QString strName = index.data().toString();
 	ui.patientEdit->setText(strName);
-	listView->hide();
-}
-void ClinicStatistics::setCompleter(const QString &text) {
-	ui.lineEdit->clear();
-	ui.lineEdit_2->clear();
 	QSqlQuery query(*sql.db);	
-	QString strsql= "select * from mz_chargesheet where patientname='"+text+"'";
+	QStringList list;
+	QString strsql= QString("select * from mz_chargesheet where patientname = '%1'").arg(strName);
 	query.exec(strsql);
+	bool Isexist  =false;
 	while(query.next())
 	{
 		ui.lineEdit->setText(query.value(8).toString());
 		ui.lineEdit_2->setText(query.value(9).toString());
 	}
+	listView->hide();
+}
+void ClinicStatistics::setCompleter(const QString &text) {
+
+	listView->hide();
+	if (text.isEmpty()) {
+		listView->hide();
+		return;
+	}
+
+	if ((text.length() > 1) && (!listView->isHidden())) {
+		return;
+	}
+
+	ui.lineEdit->clear();
+	ui.lineEdit_2->clear();
+	QSqlQuery query(*sql.db);	
+	QStringList list;
+	QString strsql= QString("select * from mz_chargesheet where patientname like '%%1%'").arg(text);
+	query.exec(strsql);
+	bool Isexist  =false;
+	while(query.next())
+	{
+
+		QString str = query.value(5).toString();
+		for (int i=0;i<list.count();i++)
+		{
+			if(list.at(i)==query.value(5).toString()) 
+			{
+				Isexist= true;
+			}
+		}
+		if(!Isexist)
+			list.append(str);
+		Isexist =false;
+	}
+	model->setStringList(list);
+	listView->setModel(model);
+
+	if (model->rowCount() == 0) {
+		return;
+	}
+
+	// Position the text edit
+	listView->setMinimumWidth(width());
+	listView->setMaximumWidth(width());
+
+	QPoint p(0, height());
+	int x = mapToGlobal(p).x();
+	int y = mapToGlobal(p).y() + 1;
+
+	//listView->move(x, y);
+	listView->setGeometry(this->x()+180, this->y()+235, 50, 100);
+	listView->resize(100,200);
+	listView->setFixedWidth(95);
+	listView->show();
 }
 void ClinicStatistics::keyPressEvent(QKeyEvent *e) {
 	if (!listView->isHidden()) {
@@ -478,6 +532,17 @@ void ClinicStatistics::keyPressEvent(QKeyEvent *e) {
 			if (currentIndex.isValid()) {
 				QString text = listView->currentIndex().data().toString();
 				ui.patientEdit->setText(text);
+
+				QSqlQuery query(*sql.db);	
+				QStringList list;
+				QString strsql= QString("select * from mz_chargesheet where patientname = '%1'").arg(text);
+				query.exec(strsql);
+				bool Isexist  =false;
+				while(query.next())
+				{
+					ui.lineEdit->setText(query.value(8).toString());
+					ui.lineEdit_2->setText(query.value(9).toString());
+				}
 			}
 
 			listView->hide();
@@ -490,7 +555,6 @@ void ClinicStatistics::keyPressEvent(QKeyEvent *e) {
 		//QLineEdit::keyPressEvent(e);
 	}
 }
-
 void ClinicStatistics::on_previewButton_clicked()
 {
 	filePrintPreview();
@@ -516,8 +580,7 @@ void ClinicStatistics::print( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/50, h/50, w, h );
-	QRect    page4( w/30, h/10, w, h );
+	QRect    page( w/50, h/70, w, h );
 	QFont    font = painter.font();
 	font.setPointSize(10);
 	painter.setFont( font );
@@ -533,9 +596,9 @@ void ClinicStatistics::print( QPrinter* printer )
 	int col = ui.tableWidget->columnCount();
 	double cellwidth = (w-1000)/col;
 	double cellheight = 160;
-	double upmargin = 300;
+	double upmargin = h/50;
 	//计算总页数
-	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
+	int firstpagerow = (h-upmargin)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
 	int pagecount = 0;
 	//xp系统
@@ -543,8 +606,8 @@ void ClinicStatistics::print( QPrinter* printer )
 	{
 		cellwidth= (w-300)/col;
 		cellheight=60;
-		upmargin = 50;
-		firstpagerow = (h-200)/cellheight;
+		upmargin =  h/50;;
+		firstpagerow = (h-upmargin)/cellheight;
 		everypagerow = (h-20)/cellheight;
 	}
 	double leftmargin = (w-cellwidth*col-2*cellwidth)/2;
@@ -772,7 +835,6 @@ void ClinicStatistics::print( QPrinter* printer )
 		painter.end();
 	}
 }
-
 void ClinicStatistics::on_previewButton_2_clicked()
 {
 	filePrintPreview_2();
@@ -798,8 +860,7 @@ void ClinicStatistics::print_2( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/50, h/50, w, h );
-	QRect    page4( w/30, h/10, w, h );
+	QRect    page( w/50, h/70, w, h );
 	QFont    font = painter.font();
 	font.setPointSize( 9 );
 	painter.setFont( font );
@@ -816,10 +877,10 @@ void ClinicStatistics::print_2( QPrinter* printer )
 	int col = ui.tableWidget_2->columnCount();
 	double cellwidth = (w-40)/col;
 	double cellheight = 160;
-	double upmargin = 300;
+	double upmargin = h/50;
 
 	//计算总页数
-	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
+	int firstpagerow = (h-upmargin)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
 	int pagecount = 0;
 	//xp系统
@@ -827,8 +888,8 @@ void ClinicStatistics::print_2( QPrinter* printer )
 	{
 		cellwidth= (w-100)/col;
 		cellheight=60;
-		upmargin = 50;
-		firstpagerow = (h-200)/cellheight;
+		upmargin = h/50;
+		firstpagerow = (h-upmargin)/cellheight;
 		everypagerow = (h-20)/cellheight;
 	}
 	double leftmargin = (w-cellwidth*col)/2;
@@ -964,7 +1025,6 @@ void ClinicStatistics::print_2( QPrinter* printer )
 		painter.end();
 	}
 }
-
 void ClinicStatistics::on_previewButton_3_clicked()
 {
 	filePrintPreview_3();
@@ -990,10 +1050,8 @@ void ClinicStatistics::print_3( QPrinter* printer )
 	QPainter painter( printer );
 	int      w = printer->pageRect().width();
 	int      h = printer->pageRect().height();
-	QRect    page( w/50, h/50, w, h );
-	QRect    page4( w/30, h/10, w, h );
+	QRect    page( w/50, h/70, w, h );
 	QFont    font = painter.font();
-	font.setPixelSize( 50 );
 	font.setPointSize( 9 );
 	painter.setFont( font );
 	painter.drawText( page, Qt::AlignTop    | Qt::AlignHCenter, QString::fromLocal8Bit(" 三河市燕郊镇卫生院项目统计") );
@@ -1009,10 +1067,10 @@ void ClinicStatistics::print_3( QPrinter* printer )
 	int col = ui.tableWidget_5->columnCount();
 	double cellwidth = (w-100)/col;
 	double cellheight = 160;
-	double upmargin = 300;
+	double upmargin = h/50;
 
 	//计算总页数
-	int firstpagerow = (h-800)/160;//第一页上方空白为750,下方为50
+	int firstpagerow = (h-upmargin)/160;//第一页上方空白为750,下方为50
 	int everypagerow = (h-100)/160;//后面每页的空白为100
 	int pagecount = 0;
 	//xp系统
@@ -1020,8 +1078,8 @@ void ClinicStatistics::print_3( QPrinter* printer )
 	{
 		cellwidth= (w-100)/col;
 		cellheight=60;
-		upmargin = 50;
-		firstpagerow = (h-200)/cellheight;
+		upmargin = h/50;
+		firstpagerow = (h-upmargin)/cellheight;
 		everypagerow = (h-20)/cellheight;
 	}
 	double leftmargin = (w-cellwidth*col)/2;

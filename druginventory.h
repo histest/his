@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "ui_druginventory.h"
-
+#include <QtGui>
 class DrugInventory : public QWidget
 {
 	Q_OBJECT
@@ -14,9 +14,11 @@ public:
 	void initUI();
 	int SheetNo();
 	int InventorySheetNo();
-	//void printTableWidget(const QTableWidget* view,QString stitile,QPrinter *printer);
 	void SetEdit(bool IsEdit);
 	int iRow;
+	QListView *druglist; 
+	QStringListModel *model; 
+	void keyPressEvent(QKeyEvent *e);
 private:
 	Ui::DrugInventory ui;
 public slots:
@@ -24,7 +26,7 @@ public slots:
 	void on_FindAllButton_clicked();
 	void getItem(int row,int column);
 	void findbyname(const QString &);
-//	void findbymanufacturer(const QString &);
+	void completeText(const QModelIndex &index); 
 };
 
 #endif // DRUGINVENTORY_H

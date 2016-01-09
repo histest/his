@@ -54,7 +54,7 @@ void Ruralcooperativedictionary::on_browseButton_clicked()
 			QMessageBox::information(this,QString::fromLocal8Bit("æØ∏Ê"),QString::fromLocal8Bit(" ‰»Î“©∆∑ºÚ≥∆"));
 			return;
 		}	
-		QString str =QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strCode);
+		QString str =QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strCode).arg(strCode);
 		query.exec(str);
 	}
 	int row= 0;
@@ -118,7 +118,7 @@ void Ruralcooperativedictionary::on_browseButton_2_clicked()
 				QMessageBox::information(this,QString::fromLocal8Bit("æØ∏Ê"),QString::fromLocal8Bit(" ‰»Î“©∆∑ºÚ≥∆"));
 				return;
 			}	
-			QString str = QString("select * from HIS.t_dic1 where  py like '%%1%'").arg(strCode);
+			QString str = QString("select * from HIS.t_dic1 where  py like '%%1%' or mc1 like '%%2%' ").arg(strCode).arg(strCode);
 			
 			query.exec(str);
 		}
@@ -152,7 +152,7 @@ void Ruralcooperativedictionary::on_browseButton_2_clicked()
 				QMessageBox::information(this,QString::fromLocal8Bit("æØ∏Ê"),QString::fromLocal8Bit(" ‰»Î“©∆∑ºÚ≥∆"));
 				return;
 			}	
-			QString str = QString("select * from HIS.t_dic2 where py like '%%1%'").arg(strCode);
+			QString str = QString("select * from HIS.t_dic2 where py like '%%1%'or Mc like '%%2%' ").arg(strCode).arg(strCode);
 			query.exec(str);
 		}
 
@@ -184,7 +184,7 @@ void Ruralcooperativedictionary::on_browseButton_2_clicked()
 				QMessageBox::information(this,QString::fromLocal8Bit("æØ∏Ê"),QString::fromLocal8Bit(" ‰»Î“©∆∑ºÚ≥∆"));
 				return;
 			}
-			QString str = QString("select * from HIS.t_dic3 where py like '%%1%'").arg(strCode);
+			QString str = QString("select * from HIS.t_dic3 where py like '%%1%'or Mc like '%%2%' ").arg(strCode).arg(strCode);
 			query.exec(str);
 		}
 

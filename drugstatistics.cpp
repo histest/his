@@ -36,7 +36,7 @@ void DrugStatistics::DrugName(const QString &)
 {
 	QString strText = ui.lineEdit_DrugNo->text();
 	QSqlQuery query(*sql.db);	
-	QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'").arg(strText);//;//where AbbrName = '"+strName+"'
+	QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strText).arg(strText);
 	query.exec(strsql);
 	while(query.next())
 	{
