@@ -20,6 +20,7 @@ private:
 		void on_editButton_clicked();
 		void on_saveButton_clicked();
 		void on_deleteButton_clicked();
+		void on_deleteAllButton_clicked();
 		void on_exitButton_clicked();
 		void on_outputButton_clicked();
 		void on_inputButton_clicked();

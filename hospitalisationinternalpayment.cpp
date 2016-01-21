@@ -42,7 +42,10 @@ void HospitalisationInternalPayment::on_excelButton_clicked()
 	{
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("无数据");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 
@@ -58,12 +61,18 @@ void HospitalisationInternalPayment::on_excelButton_clicked()
 	if(OdbcExcel::saveFromTable(filePath,ui.tableWidget,"")) {
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("保存成功");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 	else{
 		QString str = str.fromLocal8Bit("错误");
 		QString msg=str.fromLocal8Bit("保存失败！\n\r")+OdbcExcel::getError();
-		QMessageBox::critical(this,str,msg);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),msg);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 }
 void HospitalisationInternalPayment::on_queryButton_clicked()

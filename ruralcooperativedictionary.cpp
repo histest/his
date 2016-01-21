@@ -1,7 +1,9 @@
 #include "ruralcooperativedictionary.h"
 #include "ruralcooperativequery.h"
 #include "connectsql.h"
+#include "QThread"
 extern ConnectSql sql;
+QThread visuaThread;
 Ruralcooperativedictionary::Ruralcooperativedictionary(QWidget *parent)
 	: QWidget(parent)
 {
@@ -51,7 +53,10 @@ void Ruralcooperativedictionary::on_browseButton_clicked()
 		QString strCode = ui.lineEdit->text();
 		if (strCode==NULL||strCode=="")
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("输入药品简称"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("输入药品简称"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}	
 		QString str =QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strCode).arg(strCode);
@@ -85,6 +90,7 @@ void Ruralcooperativedictionary::on_browseButton_clicked()
 		ui.tableWidget->setItem(row,7,new QTableWidgetItem(query.value(12).toString()));
 		ui.tableWidget->setItem(row,8,new QTableWidgetItem(query.value(23).toString()));
 		row++;
+		QCoreApplication::processEvents();
 	}
 }
 void Ruralcooperativedictionary::on_clearButton_clicked()
@@ -97,6 +103,8 @@ void Ruralcooperativedictionary::on_checkButton_clicked()
 }
 void Ruralcooperativedictionary::on_browseButton_2_clicked()
 {
+	this->moveToThread(&visuaThread);
+	visuaThread.start();
 	ui.tableWidget_2->setRowCount(0);
 	QStringList header;
 	sql.connect2();
@@ -115,7 +123,10 @@ void Ruralcooperativedictionary::on_browseButton_2_clicked()
 			QString strCode = ui.lineEdit_2->text();
 			if (strCode==NULL||strCode=="")
 			{
-				QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("输入药品简称"));
+				QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("输入药品简称"));
+				box.setStandardButtons (QMessageBox::Ok);
+				box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+				box.exec();
 				return;
 			}	
 			QString str = QString("select * from HIS.t_dic1 where  py like '%%1%' or mc1 like '%%2%' ").arg(strCode).arg(strCode);
@@ -149,7 +160,10 @@ void Ruralcooperativedictionary::on_browseButton_2_clicked()
 			QString strCode = ui.lineEdit_2->text();
 			if (strCode==NULL||strCode=="")
 			{
-				QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("输入药品简称"));
+				QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("输入药品简称"));
+				box.setStandardButtons (QMessageBox::Ok);
+				box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+				box.exec();
 				return;
 			}	
 			QString str = QString("select * from HIS.t_dic2 where py like '%%1%'or Mc like '%%2%' ").arg(strCode).arg(strCode);
@@ -181,7 +195,10 @@ void Ruralcooperativedictionary::on_browseButton_2_clicked()
 			QString strCode = ui.lineEdit_2->text();
 			if (strCode==NULL||strCode=="")
 			{
-				QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("输入药品简称"));
+				QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("输入药品简称"));
+				box.setStandardButtons (QMessageBox::Ok);
+				box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+				box.exec();
 				return;
 			}
 			QString str = QString("select * from HIS.t_dic3 where py like '%%1%'or Mc like '%%2%' ").arg(strCode).arg(strCode);
@@ -210,11 +227,17 @@ void Ruralcooperativedictionary::getItem(int row,int column)
 {
 	if (strNo=="")
 	{
-		QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("请先获取农合码！"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("请先获取农合码！"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否生成农合码？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否生成农合码？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QString strDrugName = ui.tableWidget->item(row,1)->text();
 		ui.tableWidget->setItem(row,8,new QTableWidgetItem(strNo));
@@ -223,7 +246,10 @@ void Ruralcooperativedictionary::getItem(int row,int column)
 		query.bindValue(0,strNo);
 		if(query.exec())
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("已生成！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("已生成！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 		}
 		query.prepare("UPDATE sys_drugdictionary SET cooperativecode= ? WHERE name = '"+strDrugName+"'");
 		query.bindValue(0,strNo);

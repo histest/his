@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "ui_drugstatistics.h"
-
+#include <QtGui>
 class DrugStatistics : public QWidget
 {
 	Q_OBJECT
@@ -13,6 +13,9 @@ public:
 	~DrugStatistics();
 	void initUI();
 	int iRow;
+	QListView *druglist; 
+	QStringListModel *model; 
+	void keyPressEvent(QKeyEvent *e);
 private:
 	Ui::DrugStatistics ui;
 public slots:
@@ -27,6 +30,7 @@ public slots:
 	void filePrintPreview();
 	void DrugName(const QString &);
 	void getItem(int row,int column);
+	void completeText(const QModelIndex &index); 
 };
 
 #endif // DRUGSTATISTICS_H

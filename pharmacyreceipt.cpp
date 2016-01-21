@@ -342,8 +342,11 @@ void PharmacyReceipt::on_deleteButton_clicked()//存在问题
 	int i=0,amount;
 	int rows = ui.tableWidget->model()->rowCount();   //行总数
 		
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除本单？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除本单？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec ())
 	{
 		QSqlQuery query(*sql.db);		
 		QString strSheetNo=ui.lineEdit_No->text();
@@ -437,7 +440,10 @@ void PharmacyReceipt::on_saveButton_clicked()
 	if(!ui.tableWidget->isEnabled())
 	{	
 		str2 = str.fromLocal8Bit("已保存过！");		
-		QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 
@@ -525,7 +531,10 @@ void PharmacyReceipt::on_saveButton_clicked()
 		{
 			sprintf(strtemp,"第%d行收货数量为空，请核对！",i+1);
 			str2 = str.fromLocal8Bit(strtemp);		
-			QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 		isheetcount=SheetNo();
@@ -648,7 +657,10 @@ void PharmacyReceipt::on_saveButton_clicked()
 	{
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("保存失败！");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 	//ui.editButton->setEnabled(true);
 	//ui.saveButton->setEnabled(false);
@@ -766,7 +778,10 @@ void PharmacyReceipt::getItem(int row,int column)//计算费用
 		if(ui.radioButton_Minus->isChecked()&&icount>kucun)
 		{
 			str2 = str.fromLocal8Bit("调拨数量大于库存，请核对！");
-			QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			str = QString::number(0);
 			ui.tableWidget->setItem(row,column,new  QTableWidgetItem(str));
 			return;
@@ -774,7 +789,10 @@ void PharmacyReceipt::getItem(int row,int column)//计算费用
 		if(icount<0)
 		{
 			str2 = str.fromLocal8Bit("调拨数量不能为负，请核对！");
-			QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			str = QString::number(0);
 			ui.tableWidget->setItem(row,column,new  QTableWidgetItem(str));
 			return;
@@ -847,6 +865,7 @@ void PharmacyReceipt::getItem(int row,int column)//计算费用
 }
 
 void PharmacyReceipt::keyPressEvent(QKeyEvent *e) {
+	list_widget->setFocus();
 	if (!list_widget->isHidden()) {
 		int key = e->key();
 		int count = list_widget->model()->rowCount();
@@ -888,6 +907,10 @@ void PharmacyReceipt::keyPressEvent(QKeyEvent *e) {
 					ui.tableWidget->setItem(row,8,new QTableWidgetItem(query.value(15).toString()));
 					ui.tableWidget->setItem(row,9,new QTableWidgetItem(query.value(16).toString()));//
 					ui.tableWidget->setItem(row,10,new QTableWidgetItem(query.value(10).toString()));//
+
+					ui.tableWidget->setFocus();
+					ui.tableWidget->setCurrentCell(row, 0, QItemSelectionModel::Deselect);
+					ui.tableWidget->setCurrentCell(row, 6, QItemSelectionModel::Select);
 				}
 				QString strsql1= "select * from yf_inventory where name='"+strName+"'";//;//where AbbrName = '"+strName+"'
 				query.exec(strsql1);
@@ -908,7 +931,21 @@ void PharmacyReceipt::keyPressEvent(QKeyEvent *e) {
 			list_widget->hide();
 			//QLineEdit::keyPressEvent(e);
 		}
-	} else {
-		//QLineEdit::keyPressEvent(e);
+	} else  {
+
+		int key = e->key();
+		if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+			int row = ui.tableWidget->currentRow();
+			int count = ui.tableWidget->rowCount();
+			ui.tableWidget->insertRow(count);
+			ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Deselect);
+			ui.tableWidget->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
+			//QCursor cursorAction;
+			//ui.tableWidget->setCursor(cursorAction);
+		}
+		if (Qt::Key_F5 == key ) {
+			on_saveButton_clicked();
+		}
+
 	}
 }

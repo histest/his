@@ -108,6 +108,7 @@ void Drugdictionary::showTable(QTreeWidgetItem*item,int column)
 			ui.tableWidget->setItem(row,i,new QTableWidgetItem(query.value(i-1).toString()));
 		}
 		row++;
+		QCoreApplication::processEvents();
 	}
 }
 void Drugdictionary::on_addButton_clicked()
@@ -124,8 +125,11 @@ void Drugdictionary::on_addButton_clicked()
 }
 void Drugdictionary::on_deleteButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确定删除？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QList<QTableWidgetItem*> list =  ui.tableWidget->selectedItems();
 		if (list.at(0)==NULL)
@@ -154,8 +158,11 @@ void Drugdictionary::on_saveButton_clicked()
 }
 void Drugdictionary::on_exitButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否已保存？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认退出？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		this->close();
 	}
@@ -247,9 +254,13 @@ void Drugdictionary::on_inputButton_clicked()
 		query2.bindValue(23, NULL);
 		query2.exec();
 		row++;
+		QCoreApplication::processEvents();
 	}
 	db.close();
-	QMessageBox::information(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("导入成功！"));
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("导入成功！"));
+	box.setStandardButtons (QMessageBox::Ok);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.exec();
 }
 void Drugdictionary::on_outputButton_clicked()
 {
@@ -272,12 +283,18 @@ void Drugdictionary::on_outputButton_clicked()
 	if(OdbcExcel::saveFromTable(filePath,ui.tableWidget,"")) {
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("保存成功");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 	else{
 		QString str = str.fromLocal8Bit("错误");
-		QString msg=str.fromLocal8Bit("保存失败！\n\r")+OdbcExcel::getError();
-		QMessageBox::critical(this,str,msg);
+		QString str2=str.fromLocal8Bit("保存失败！\n\r")+OdbcExcel::getError();
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 }
 void Drugdictionary::getItem(int row ,int col)
@@ -292,6 +309,19 @@ void Drugdictionary::getItem(int row ,int col)
 	add->setWindowModality(Qt::WindowModal);
 	add->edit(list);
 	add->show();
+}
+void Drugdictionary::on_deleteAllButton_clicked()
+{
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认全部删除？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
+	{
+		QSqlQuery query(*sql.db);
+		query.exec("delete  from sys_drugdictionary");
+		initUI();
+	}
 }
 Drugdictionary::~Drugdictionary()
 {

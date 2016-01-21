@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1034</width>
+    <width>1134</width>
     <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>住院登记</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_8">
+  <layout class="QVBoxLayout" name="verticalLayout_9">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_23">
      <item>
@@ -139,20 +139,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>住院号：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>病历号：</string>
+          <string>住院号：  </string>
          </property>
         </widget>
        </item>
@@ -165,14 +152,14 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>联系人：</string>
+          <string>联系人：  </string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_23">
+        <widget class="QLabel" name="label_12">
          <property name="text">
-          <string>参合证号：</string>
+          <string>住院科室：</string>
          </property>
         </widget>
        </item>
@@ -188,18 +175,17 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="recordNoEdit">
-         <property name="enabled">
-          <bool>false</bool>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
          </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -211,34 +197,42 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <widget class="QLineEdit" name="cooperativemedicalNoEdit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>80</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QComboBox" name="departmentcomboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>100</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QLabel" name="label_4">
+        <widget class="QLabel" name="label_2">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -246,34 +240,27 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>姓名：   </string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_7">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>年龄：   </string>
+          <string>病历号：  </string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_11">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string>联系方式：</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_12">
+        <widget class="QLabel" name="label_13">
          <property name="text">
-          <string>住院科室：</string>
+          <string>主治医生：</string>
          </property>
         </widget>
        </item>
@@ -282,22 +269,27 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QLineEdit" name="nameEdit">
+        <widget class="QLineEdit" name="recordNoEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="ageEdit">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+         <property name="minimumSize">
+          <size>
+           <width>60</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>16777215</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -309,45 +301,36 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>16777215</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QComboBox" name="departmentcomboBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>主治医生：</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="doctorEdit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QLineEdit" name="doctorEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QLabel" name="label_3">
+        <widget class="QLabel" name="label_4">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -355,12 +338,12 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>登记日期：</string>
+          <string>姓名：    </string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_6">
+        <widget class="QLabel" name="label_8">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
            <horstretch>0</horstretch>
@@ -368,14 +351,7 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>性别：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_9">
-         <property name="text">
-          <string>地址：</string>
+          <string>身份证号：</string>
          </property>
         </widget>
        </item>
@@ -391,28 +367,112 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_7">
        <item>
-        <widget class="QDateTimeEdit" name="dateTimeEdit">
+        <widget class="QLineEdit" name="nameEdit">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>16777215</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
+        <widget class="QLineEdit" name="IDEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="feetypecomboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>60</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="verticalLayout_8">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QComboBox" name="gendercomboBox">
+          <widget class="QLabel" name="label_7">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>年龄：    </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="ageEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
            <property name="maximumSize">
             <size>
-             <width>50</width>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>性别：</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="gendercomboBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
              <height>16777215</height>
             </size>
            </property>
@@ -429,56 +489,71 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_8">
+          <widget class="QLabel" name="label_3">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
-            <string>身份证号：</string>
+            <string>登记日期：</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="IDEdit">
+          <widget class="QDateTimeEdit" name="dateTimeEdit">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>200</width>
+             <height>16777215</height>
+            </size>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QLineEdit" name="addressEdit"/>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>地址：    </string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="addressEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>900</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QComboBox" name="feetypecomboBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_22">
-           <property name="text">
-            <string>医疗证号：</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="certificateNoEdit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="label_16">
            <property name="text">
@@ -494,6 +569,12 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
+           </property>
           </widget>
          </item>
          <item>
@@ -506,16 +587,87 @@
          <item>
           <widget class="QComboBox" name="nursinglevelcomboBox">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_23">
+           <property name="text">
+            <string>参合证号：</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="cooperativemedicalNoEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_22">
+           <property name="text">
+            <string>医疗证号：</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="certificateNoEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>16777215</height>
+            </size>
            </property>
           </widget>
          </item>
         </layout>
        </item>
       </layout>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>
@@ -558,52 +710,73 @@
     </layout>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_25">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_21">
-       <item>
-        <widget class="QLabel" name="label_18">
-         <property name="text">
-          <string>最低押金：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="minimumEdit"/>
-       </item>
-      </layout>
+      <widget class="QLabel" name="label_18">
+       <property name="text">
+        <string>最低押金：</string>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_22">
-       <item>
-        <widget class="QLabel" name="label_19">
-         <property name="text">
-          <string>制单：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="sheetmakerEdit"/>
-       </item>
-      </layout>
+      <widget class="QLineEdit" name="minimumEdit">
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_24">
-       <item>
-        <widget class="QLabel" name="label_21">
-         <property name="text">
-          <string>状态：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="statusEdit">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QLabel" name="label_19">
+       <property name="text">
+        <string>制单：</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="sheetmakerEdit">
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_21">
+       <property name="text">
+        <string>状态：</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="statusEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_6">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>
@@ -612,31 +785,29 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>hospitalisationNoEdit</tabstop>
+  <tabstop>recordNoEdit</tabstop>
   <tabstop>nameEdit</tabstop>
-  <tabstop>ageEdit</tabstop>
-  <tabstop>IDEdit</tabstop>
+  <tabstop>gendercomboBox</tabstop>
   <tabstop>contactEdit</tabstop>
   <tabstop>telEdit</tabstop>
+  <tabstop>IDEdit</tabstop>
   <tabstop>addressEdit</tabstop>
-  <tabstop>cooperativemedicalNoEdit</tabstop>
+  <tabstop>departmentcomboBox</tabstop>
   <tabstop>doctorEdit</tabstop>
-  <tabstop>certificateNoEdit</tabstop>
+  <tabstop>feetypecomboBox</tabstop>
   <tabstop>bedEdit</tabstop>
+  <tabstop>nursinglevelcomboBox</tabstop>
+  <tabstop>cooperativemedicalNoEdit</tabstop>
+  <tabstop>certificateNoEdit</tabstop>
   <tabstop>diagnosisEdit</tabstop>
   <tabstop>minimumEdit</tabstop>
-  <tabstop>editButton</tabstop>
-  <tabstop>dateTimeEdit</tabstop>
-  <tabstop>gendercomboBox</tabstop>
-  <tabstop>saveButton</tabstop>
-  <tabstop>addButton</tabstop>
-  <tabstop>feetypecomboBox</tabstop>
-  <tabstop>discardButton</tabstop>
-  <tabstop>nursinglevelcomboBox</tabstop>
-  <tabstop>deleteButton</tabstop>
-  <tabstop>departmentcomboBox</tabstop>
   <tabstop>sheetmakerEdit</tabstop>
   <tabstop>statusEdit</tabstop>
-  <tabstop>recordNoEdit</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>editButton</tabstop>
+  <tabstop>deleteButton</tabstop>
+  <tabstop>discardButton</tabstop>
+  <tabstop>saveButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

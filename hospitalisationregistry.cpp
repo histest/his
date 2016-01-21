@@ -108,7 +108,10 @@ void HospitalisationRegistry::on_saveButton_clicked()
 
 	if (ui.nameEdit->text()=="")
 	{
-		QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写病人姓名"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写病人姓名"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 	/*
@@ -217,8 +220,11 @@ void HospitalisationRegistry::on_saveButton_clicked()
 		//QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
 		if(!Isupdate)
 		{
-			int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否交押金？"),QMessageBox::Yes,QMessageBox::No);
-			if(ok == QMessageBox::Yes)
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否交押金？"));
+			box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+			if(box.exec()==QMessageBox::Ok)
 			{
 				HospitalisationPay*pay= new HospitalisationPay;
 				pay->refund(strNo,0);//同补款，加载后自动填写住院号等病人信息
@@ -233,7 +239,10 @@ void HospitalisationRegistry::on_saveButton_clicked()
 	}
 	else
 	{
-		QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存失败！"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("保存失败"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 }
 void HospitalisationRegistry::on_discardButton_clicked()
@@ -264,10 +273,12 @@ void HospitalisationRegistry::on_editButton_clicked()
 }
 void HospitalisationRegistry::on_deleteButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认从数据库中删除该住院号？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认从数据库中删除该住院号？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
-
 		QSqlQuery query(*sql.db);		
 		QString strNo=ui.hospitalisationNoEdit->text();
 		query.exec("select* from zy_patientinfo"); 
@@ -279,7 +290,10 @@ void HospitalisationRegistry::on_deleteButton_clicked()
 		}
 		if (lastNo!=strNo) 
 		{
-			QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("删除该号会造成重复！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("删除该号会造成重复！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 		//query.exec("select from zy_patientinfo where hospitalisationno ='"+strNo+"'");
@@ -295,7 +309,10 @@ void HospitalisationRegistry::on_deleteButton_clicked()
 		QString strsql = "delete from zy_patientinfo where hospitalisationno ='"+strNo+"'"; 
 		if(query.exec(strsql))
 		{
-			QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("删除成功！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("删除成功！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			on_discardButton_clicked();
 		}
 	}

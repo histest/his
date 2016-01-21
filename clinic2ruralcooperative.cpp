@@ -41,7 +41,11 @@ void Clinic2ruralcooperative::on_inputButton_clicked()
 		QStringList list =strNo.split("-");
 		strNo=list.at(0);
 		writeindb(strNo);
-		QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
+
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		if (ui.checkBox->isChecked())
 		{
 			int r = ui.listWidget->row(ui.listWidget->currentItem());  
@@ -57,7 +61,10 @@ void Clinic2ruralcooperative::on_inputButton_clicked()
 			strNo=list.at(0);
 			writeindb(strNo);
 		}
-		QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		if (ui.checkBox->isChecked())
 		{
 			ui.listWidget->clear();

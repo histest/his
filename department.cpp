@@ -56,7 +56,7 @@ void Department::initUI()
 	ui.treeWidget->expandAll();
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	ui.saveButton->setEnabled(false);
-	ui.deleteButton->setEnabled(false);
+	//ui.deleteButton->setEnabled(false);
 }
 void Department::showTable(QTreeWidgetItem*item, int column)
 {
@@ -99,8 +99,11 @@ void Department::on_editButton_clicked()
 }
 void Department::on_deleteButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确定删除？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确定删除？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QList<QTableWidgetItem*> list =  ui.tableWidget->selectedItems();
 		if (list.at(0)==NULL)
@@ -119,16 +122,22 @@ void Department::on_deleteButton_clicked()
 }
 void Department::on_exitButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否已保存？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认退出？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		this->close();
 	}
 }
 void Department::on_saveButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否保存？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否保存？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QSqlQuery query(*sql.db);		
 		QString strsql = "delete from sys_department"; 

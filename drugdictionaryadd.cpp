@@ -138,7 +138,10 @@ void Drugdictionaryadd::on_saveButton_clicked()
 	query.bindValue(23, NULL);
 	if(query.exec())
 	{
-		QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		this->close();
 		return;
 	}

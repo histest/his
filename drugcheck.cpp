@@ -156,8 +156,12 @@ void DrugCheck::on_deleteButton_clicked()//存在问题
 	int i=0,amount;
 	int rows = ui.tableWidget->model()->rowCount();   //行总数
 
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除本单？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除本单？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QSqlQuery query(*sql.db);		
 		QString strSheetNo=ui.lineEdit_CheckNo->text();
@@ -275,7 +279,10 @@ void DrugCheck::getItem(int row,int column)//计算费用
 		if(ibookcount<0)
 		{
 			str2 = str.fromLocal8Bit("盘点数量不能为负，请核对！");
-			QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			QString stramount = QString::number(0);
 			ui.tableWidget->setItem(row,column,new QTableWidgetItem(stramount));
 			return;
@@ -345,7 +352,10 @@ void DrugCheck::on_saveButton_clicked()
 	if(!ui.tableWidget->isEnabled())
 	{	
 		str2 = str.fromLocal8Bit("已保存过！");		
-		QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 	
@@ -378,7 +388,10 @@ void DrugCheck::on_saveButton_clicked()
 		{
 			sprintf(strtemp,"第%d行盘点数量为空，请核对！",i+1);
 			str2 = str.fromLocal8Bit(strtemp);		
-			QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 
@@ -455,7 +468,10 @@ void DrugCheck::on_saveButton_clicked()
 	{
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("保存失败！");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 }
 int  DrugCheck::InventorySheetNo()

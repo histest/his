@@ -189,7 +189,10 @@ void ruralcooperatecorrespondence::on_inputButton_clicked()
 		}
 	}
 	db.close();
-	QMessageBox::information(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("导入成功！"));
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("导入成功！"));
+	box.setStandardButtons (QMessageBox::Ok);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.exec();
 	sql.disconnect2();
 }
 void ruralcooperatecorrespondence::on_outputButton_clicked()
@@ -213,12 +216,18 @@ void ruralcooperatecorrespondence::on_outputButton_clicked()
 	if(OdbcExcel::saveFromTable(filePath,ui.tableWidget,"")) {
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("保存成功");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 	else{
 		QString str = str.fromLocal8Bit("错误");
 		QString msg=str.fromLocal8Bit("保存失败！\n\r")+OdbcExcel::getError();
-		QMessageBox::critical(this,str,msg);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),msg);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 }
 void ruralcooperatecorrespondence::showTable(QTreeWidgetItem*item, int column)
@@ -293,16 +302,22 @@ void ruralcooperatecorrespondence::showTable(QTreeWidgetItem*item, int column)
 }
 void ruralcooperatecorrespondence::on_exitButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否已保存？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认退出？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		this->close();
 	}
 }
 void ruralcooperatecorrespondence::on_deleteButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认从数据库中删除该行？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认从数据库中删除该行？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		int row = ui.tableWidget->currentRow();
 		QString strName = ui.tableWidget->item(row,1)->text().trimmed();
@@ -325,7 +340,12 @@ void ruralcooperatecorrespondence::on_deleteButton_clicked()
 			strsql = QString("delete from HIS.t_dic3 where Mc = '"+strName+"'");	
 		}
 		if (query2.exec(strsql))
-			QMessageBox::information(NULL, QString::fromLocal8Bit("提示"), QString::fromLocal8Bit("删除成功！"));
+		{
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("删除成功！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
+		}
 		sql.disconnect2();
 	}
 }

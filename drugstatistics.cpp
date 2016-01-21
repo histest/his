@@ -16,6 +16,10 @@ DrugStatistics::DrugStatistics(QWidget *parent)
 {
 	ui.setupUi(this);
 	initUI();
+	druglist = new QListView(this);
+	model = new QStringListModel(this);
+	druglist->setWindowFlags(Qt::ToolTip);
+	connect(druglist, SIGNAL(clicked(const QModelIndex &)), this, SLOT(completeText(const QModelIndex &)));
 	setStyleSheet("QTableWidget{border: 1px solid gray;	background-color: transparent;	selection-color: grey;}");
 	ui.tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->setStyleSheet("QTableWidget{border: 1px solid gray;	background-color: transparent;	selection-color: grey;}");
@@ -23,7 +27,7 @@ DrugStatistics::DrugStatistics(QWidget *parent)
 		"color: white;padding-left: 4px;border: 1px solid #6c6c6c;}"
 		"QHeaderView::section:checked{background-color: white;color: black;}");	
 	ui.tableWidget->installEventFilter(this);//注册事件过滤器
-	connect(ui.lineEdit_DrugNo,SIGNAL(textChanged(const QString &)),this,SLOT(DrugName(const QString &)));
+	connect(ui.lineEdit_DrugName,SIGNAL(textChanged(const QString &)),this,SLOT(DrugName(const QString &)));
 	connect(ui.tableWidget,SIGNAL(cellDoubleClicked(int,int)),this,SLOT(getItem(int,int)));
 }
 
@@ -32,16 +36,50 @@ DrugStatistics::~DrugStatistics()
 
 }
 
-void DrugStatistics::DrugName(const QString &)
+void DrugStatistics::DrugName(const QString &text)
 {
-	QString strText = ui.lineEdit_DrugNo->text();
+	druglist->hide();
+	if (text.isEmpty()) {
+		druglist->hide();
+		return;
+	}
+
+	if ((text.length() > 1) && (!druglist->isHidden())) {
+		return;
+	}
+
 	QSqlQuery query(*sql.db);	
-	QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strText).arg(strText);
+
+	QString strsql=QString("select * from sys_drugdictionary where abbr like '%%1%' or name like'%%2%'  ").arg(text).arg(text);
 	query.exec(strsql);
+	QStringList list;
 	while(query.next())
 	{
-		ui.lineEdit_DrugName->setText(query.value(1).toString());
+		QString str = query.value(1).toString();
+		list.append(str);
 	}
+
+	model->setStringList(list);
+	//	model->setStringList(sl);
+	druglist->setModel(model);
+
+	if (model->rowCount() == 0) {
+		return;
+	}
+
+	// Position the text edit
+	druglist->setMinimumWidth(width());
+	druglist->setMaximumWidth(width());
+
+	QPoint p(0, height());
+	int x = mapToGlobal(p).x();
+	int y = mapToGlobal(p).y() + 1;
+
+	//druglist->move(x, y);
+	druglist->setGeometry(this->x()+822, this->y()+165, 50, 100);
+	druglist->resize(100,200);
+	druglist->setFixedWidth(160);
+	druglist->show();
 
 }
 
@@ -49,12 +87,12 @@ void DrugStatistics::on_radioButton_clicked()
 {
 	if(!ui.radioButton->isChecked())
 	{
-		ui.lineEdit_DrugNo->setEnabled(false);
+		//ui.lineEdit_DrugNo->setEnabled(false);
 		ui.lineEdit_DrugName->setEnabled(false);
 	}
 	if(ui.radioButton->isChecked())
 	{
-		ui.lineEdit_DrugNo->setEnabled(true);
+		//ui.lineEdit_DrugNo->setEnabled(true);
 		ui.lineEdit_DrugName->setEnabled(true);
 	}
 		
@@ -81,12 +119,12 @@ void DrugStatistics::initUI()
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("gb18030"));
 	if(!ui.radioButton->isChecked())
 	{
-		ui.lineEdit_DrugNo->setEnabled(false);
+		//ui.lineEdit_DrugNo->setEnabled(false);
 		ui.lineEdit_DrugName->setEnabled(false);
 	}
 	if(ui.radioButton->isChecked())
 	{
-		ui.lineEdit_DrugNo->setEnabled(true);
+		//ui.lineEdit_DrugNo->setEnabled(true);
 		ui.lineEdit_DrugName->setEnabled(true);
 	}
 }
@@ -101,7 +139,7 @@ void DrugStatistics::getItem(int row,int column)
 		strStd= code->fromUnicode(strFindItem).data();
 
 	
-	if(strStd == "入库记录")
+	if(strStd == "入库记录"||strStd == "退货记录")
 	{
 		DrugStorage *storage = new DrugStorage();
 		QString strNo= ui.tableWidget->item(row,0)->text();
@@ -188,13 +226,16 @@ void DrugStatistics::on_findButton_clicked()
 			ui.tableWidget->removeRow(rows - i);
 		}
 
-	if(strStd == "入库记录")
+	if(strStd == "入库记录"||strStd == "退货记录")
 	{
 		ui.tableWidget->setColumnCount(9); //设置列数
 		ui.tableWidget->horizontalHeader()->setClickable(false); //设置表头不可点击（默认点击后进行排序）
 
 		QStringList header;
-		header<<tr("单号")<<tr("日期")<<tr("名称")<<tr("规格")<<tr("生产厂商")<<tr("单位")<<tr("入库数量")<<tr("入库价格")<<tr("入库总额");
+		if(strStd == "入库记录")
+			header<<tr("单号")<<tr("日期")<<tr("名称")<<tr("规格")<<tr("生产厂商")<<tr("单位")<<tr("入库数量")<<tr("入库价格")<<tr("入库总额");
+		else
+			header<<tr("单号")<<tr("日期")<<tr("名称")<<tr("规格")<<tr("生产厂商")<<tr("单位")<<tr("退货数量")<<tr("退货价格")<<tr("退货总额");
 		ui.tableWidget->setHorizontalHeaderLabels(header);
 
 		ui.tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
@@ -213,6 +254,11 @@ void DrugStatistics::on_findButton_clicked()
 			iRow = 0;
 			while(query.next())
 			{
+				int num;			
+				num= query.value(13).toInt();
+				if(strStd == "入库记录"&& num<0) continue;
+				if(strStd == "退货记录"&& num>0) continue;
+				if(strStd == "退货记录"&& num<0) num= query.value(13).toInt()*(-1);
 				int rows = ui.tableWidget->model()->rowCount();   //行总数
 				ui.tableWidget->insertRow(rows);
 				iRow=rows;
@@ -222,12 +268,17 @@ void DrugStatistics::on_findButton_clicked()
 				ui.tableWidget->setItem(iRow,3,new QTableWidgetItem(query.value(9).toString()));
 				ui.tableWidget->setItem(iRow,4,new QTableWidgetItem(query.value(10).toString()));
 				ui.tableWidget->setItem(iRow,5,new QTableWidgetItem(query.value(12).toString()));//
-				ui.tableWidget->setItem(iRow,6,new QTableWidgetItem(query.value(13).toString()));//
+				ui.tableWidget->setItem(iRow,6,new QTableWidgetItem(QString::number(num)));//
 				ui.tableWidget->setItem(iRow,7,new QTableWidgetItem(query.value(14).toString()));//
 				ui.tableWidget->setItem(iRow,8,new QTableWidgetItem(query.value(15).toString()));//
-				int num = query.value(13).toInt();
+				
+				//int num;
+				//if(strStd == "入库记录")
+				//	num= query.value(13).toInt();
+				//else
+				//	num= query.value(13).toInt()*(-1);
 				itotalNum = itotalNum + num;
-				int price = query.value(15).toInt();
+				double price = query.value(15).toDouble();
 				dtotalPrice = dtotalPrice + price;
 				//iRow ++;
 			}
@@ -246,6 +297,12 @@ void DrugStatistics::on_findButton_clicked()
 			iRow = 0;
 			while(query.next())
 			{
+				int num;			
+				num= query.value(13).toInt();
+				if(strStd == "入库记录"&& num<0) continue;
+				if(strStd == "退货记录"&& num>0) continue;
+				if(strStd == "退货记录"&& num<0) num= query.value(13).toInt()*(-1);
+
 				int rows = ui.tableWidget->model()->rowCount();   //行总数
 				ui.tableWidget->insertRow(rows);
 				iRow=rows;
@@ -255,13 +312,12 @@ void DrugStatistics::on_findButton_clicked()
 				ui.tableWidget->setItem(iRow,3,new QTableWidgetItem(query.value(9).toString()));
 				ui.tableWidget->setItem(iRow,4,new QTableWidgetItem(query.value(10).toString()));
 				ui.tableWidget->setItem(iRow,5,new QTableWidgetItem(query.value(12).toString()));//
-				ui.tableWidget->setItem(iRow,6,new QTableWidgetItem(query.value(13).toString()));//
+				ui.tableWidget->setItem(iRow,6,new QTableWidgetItem(QString::number(num)));//
 				ui.tableWidget->setItem(iRow,7,new QTableWidgetItem(query.value(14).toString()));//
 				ui.tableWidget->setItem(iRow,8,new QTableWidgetItem(query.value(15).toString()));//
-				//iRow ++;
-				int num = query.value(13).toInt();
+
 				itotalNum = itotalNum + num;
-				int price = query.value(15).toInt();
+				double price = query.value(15).toDouble();
 				dtotalPrice = dtotalPrice + price;
 			}
 			QString strProfit = QString::number(itotalNum);
@@ -311,7 +367,7 @@ void DrugStatistics::on_findButton_clicked()
 				ui.tableWidget->setItem(iRow,9,new QTableWidgetItem(query.value(15).toString()));//
 				int num = query.value(13).toInt();
 				itotalNum = itotalNum + num;
-				int price = query.value(15).toInt();
+				double price = query.value(15).toDouble();
 				dtotalPrice = dtotalPrice + price;
 			}
 			QString strProfit = QString::number(itotalNum);
@@ -345,7 +401,7 @@ void DrugStatistics::on_findButton_clicked()
 				//iRow ++;
 				int num = query.value(13).toInt();
 				itotalNum = itotalNum + num;
-				int price = query.value(15).toInt();
+				double price = query.value(15).toDouble();
 				dtotalPrice = dtotalPrice + price;
 			}
 			QString strProfit = QString::number(itotalNum);
@@ -395,7 +451,7 @@ void DrugStatistics::on_findButton_clicked()
 				//ui.tableWidget->setItem(iRow,9,new QTableWidgetItem(query.value(15).toString()));//
 				int num = query.value(12).toInt();
 				itotalNum = itotalNum + num;
-				int price = query.value(14).toInt();
+				double price = query.value(14).toDouble();
 				dtotalPrice = dtotalPrice + price;
 			}
 			QString strProfit = QString::number(itotalNum);
@@ -429,7 +485,7 @@ void DrugStatistics::on_findButton_clicked()
 				//iRow ++;
 				int num = query.value(12).toInt();
 				itotalNum = itotalNum + num;
-				int price = query.value(14).toInt();
+				double price = query.value(14).toDouble();
 				dtotalPrice = dtotalPrice + price;
 			}
 			QString strProfit = QString::number(itotalNum);
@@ -479,7 +535,7 @@ void DrugStatistics::on_findButton_clicked()
 				ui.tableWidget->setItem(iRow,10,new QTableWidgetItem(query.value(12).toString()));//
 				//ui.tableWidget->setItem(iRow,11,new QTableWidgetItem(query.value(12).toString()));//
 				itotalNum = itotalNum + 1;
-				int price = query.value(10).toInt();
+				double price = query.value(10).toDouble();
 				dtotalPrice = dtotalPrice + price;
 			}
 			QString strProfit = QString::number(itotalNum);
@@ -513,7 +569,7 @@ void DrugStatistics::on_findButton_clicked()
 				ui.tableWidget->setItem(iRow,10,new QTableWidgetItem(query.value(12).toString()));//
 				//ui.tableWidget->setItem(iRow,11,new QTableWidgetItem(query.value(12).toString()));//
 				itotalNum = itotalNum + 1;
-				int price = query.value(12).toInt();
+				double price = query.value(12).toDouble();
 				dtotalPrice = dtotalPrice + price;
 			}
 			QString strProfit = QString::number(itotalNum);
@@ -563,7 +619,7 @@ void DrugStatistics::on_findButton_clicked()
 				ui.tableWidget->setItem(iRow,10,new QTableWidgetItem(query.value(16).toString()));//
 				int num = query.value(14).toInt();
 				itotalNum = itotalNum + num;
-				int price = query.value(16).toInt();
+				double price = query.value(16).toDouble();
 				dtotalPrice = dtotalPrice + price;
 			}
 			QString strProfit = QString::number(itotalNum);
@@ -598,7 +654,7 @@ void DrugStatistics::on_findButton_clicked()
 				//iRow ++;
 				int num = query.value(14).toInt();
 				itotalNum = itotalNum + num;
-				int price = query.value(16).toInt();
+				double price = query.value(16).toDouble();
 				dtotalPrice = dtotalPrice + price;
 			}
 			QString strProfit = QString::number(itotalNum);
@@ -627,7 +683,10 @@ void DrugStatistics::on_excelButton_clicked()
 	{
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("无数据");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 
@@ -646,12 +705,18 @@ void DrugStatistics::on_excelButton_clicked()
 	if(OdbcExcel::saveFromTable(filePath,ui.tableWidget,"")) {
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("保存成功");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 	else{
 		QString str = str.fromLocal8Bit("错误");
 		QString msg=str.fromLocal8Bit("保存失败！\n\r")+OdbcExcel::getError();
-		QMessageBox::critical(this,str,msg);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),msg);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 }
 void DrugStatistics::filePrintPreview()
@@ -835,3 +900,52 @@ void DrugStatistics::print( QPrinter* printer )
 		painter.end();
 	}
 } 
+void DrugStatistics::completeText(const QModelIndex &index) {
+	QString strName = index.data().toString();
+	ui.lineEdit_DrugName->setText(strName);
+	druglist->hide();
+}
+void DrugStatistics::keyPressEvent(QKeyEvent *e) {
+	if (!druglist->isHidden()) {
+		int key = e->key();
+		int count = druglist->model()->rowCount();
+		QModelIndex currentIndex = druglist->currentIndex();
+
+		if (Qt::Key_Down == key) {
+			// 按向下方向键时，移动光标选中下一个完成列表中的项
+			int row = currentIndex.row() + 1;
+			if (row >= count) {
+				row = 0;
+			}
+
+			QModelIndex index = druglist->model()->index(row, 0);
+			druglist->setCurrentIndex(index);
+		} else if (Qt::Key_Up == key) {
+			// 按向下方向键时，移动光标选中上一个完成列表中的项
+			int row = currentIndex.row() - 1;
+			if (row < 0) {
+				row = count - 1;
+			}
+
+			QModelIndex index = druglist->model()->index(row, 0);
+			druglist->setCurrentIndex(index);
+		} else if (Qt::Key_Escape == key) {
+			// 按下Esc键时，隐藏完成列表
+			druglist->hide();
+		} else if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+			// 按下回车键时，使用完成列表中选中的项，并隐藏完成列表
+			if (currentIndex.isValid()) {
+				QString text = druglist->currentIndex().data().toString();
+				ui.lineEdit_DrugName->setText(text);
+			}
+
+			druglist->hide();
+		} else {
+			// 其他情况，隐藏完成列表，并使用QLineEdit的键盘按下事件
+			druglist->hide();
+			//QLineEdit::keyPressEvent(e);
+		}
+	} else {
+		//QLineEdit::keyPressEvent(e);
+	}
+}

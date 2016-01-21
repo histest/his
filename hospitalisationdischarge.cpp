@@ -66,18 +66,28 @@ void HospitalisationDischarge::on_applyButton_clicked()
 {
 	QString strNo = ui.hospitalisationNoEdit->text();
 	if(strNo=="") return;
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认允许该病人出院？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认允许该病人出院？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		double balance = ui.balanceEdit->text().toDouble();
 		if (balance>0)
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("请先退款！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请先退款"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 		if (balance<0)
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("请先补款！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请先补款"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 		QSqlQuery query(*sql.db);
@@ -89,7 +99,11 @@ void HospitalisationDischarge::on_applyButton_clicked()
 		query.bindValue(0,QString::fromLocal8Bit("出院-已结算"));
 		if(query.exec())
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("已出院！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("已出院！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
+
 			return;
 		}
 
@@ -143,13 +157,18 @@ void HospitalisationDischarge::on_recallButton_clicked()
 	{
 		if (query.value(22).toString()==QString::fromLocal8Bit("住院中"))
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("尚未出院！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("尚未出院！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 	}
-
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认召回该病人？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认召回该病人？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QString strNo = ui.hospitalisationNoEdit_2->text();
 		QSqlQuery query(*sql.db);
@@ -157,7 +176,10 @@ void HospitalisationDischarge::on_recallButton_clicked()
 		query.bindValue(0,QString::fromLocal8Bit("住院中"));
 		if(query.exec())
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("已召回！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("已召回！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 	}
@@ -220,7 +242,10 @@ void HospitalisationDischarge::showinfo(const QString &text)
 	}
 	if (strstatus==QString::fromLocal8Bit("出院-已结算"))
 	{
-		QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("该病人已出院！"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("该病人已出院！"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		ui.refundButton->setEnabled(false);
 		ui.supplementButton->setEnabled(false);
 		ui.applyButton->setEnabled(false);
@@ -294,7 +319,10 @@ void HospitalisationDischarge::showinfo2(const QString &text)
 		ui.nursinglevelEdit_2->setText(query.value(16).toString());
 		if (query.value(22).toString()==QString::fromLocal8Bit("住院中"))
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("尚未出院！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("尚未出院！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 	}

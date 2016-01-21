@@ -51,7 +51,7 @@ void Villageclinic::initUI()
 	}
 	ui.treeWidget->expandAll();
 	ui.saveButton->setEnabled(false);
-	ui.deleteButton->setEnabled(false);
+	//ui.deleteButton->setEnabled(false);
 }
 void Villageclinic::showTable(QTreeWidgetItem*item, int column)
 {
@@ -119,8 +119,11 @@ void Villageclinic::on_saveButton_clicked()
 }
 void Villageclinic::on_deleteButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确定删除？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QList<QTableWidgetItem*> list =  ui.tableWidget->selectedItems();
 		if (list.at(0)==NULL)
@@ -139,8 +142,11 @@ void Villageclinic::on_deleteButton_clicked()
 }
 void Villageclinic::on_exitButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否已保存？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认退出？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		this->close();
 	}

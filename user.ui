@@ -184,7 +184,7 @@
          </column>
          <column>
           <property name="text">
-           <string>是否管理员</string>
+           <string/>
           </property>
          </column>
         </widget>

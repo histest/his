@@ -47,7 +47,7 @@ void DrugStorage::initUI()
 	ui.discardButton->setEnabled(false);
 	ui.deleteButton->setEnabled(false);
 	ui.tableWidget->setEnabled(false);
-	ui.tableWidget->setEditTriggers(QAbstractItemView::AllEditTriggers);
+	//ui.tableWidget->setEditTriggers(QAbstractItemView::AllEditTriggers);
 	ui.tableWidget->setAlternatingRowColors(true);  
 
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("gb18030"));
@@ -56,7 +56,7 @@ void DrugStorage::initUI()
 	QStringList list;
 	while(query.next())
 	{
-		QString str = query.value(0).toString();
+		QString str = query.value(1).toString();
 		list.append(str);
 	}
 	ui.comboBox_supplier->addItems(list);
@@ -213,7 +213,7 @@ void DrugStorage::on_addButton_clicked()
 	ui.tableWidget->setRowCount(0);
 	ui.tableWidget->clearContents();
 	ui.tableWidget->insertRow(0);
-	ui.tableWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
+	//ui.tableWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
 	iRow = 0;
 	icount = 0;
 	ui.tableWidget->setRowCount(0);
@@ -265,8 +265,11 @@ void DrugStorage::on_deleteButton_clicked()//存在问题
 	int i=0,amount;
 	int rows = ui.tableWidget->model()->rowCount();   //行总数
 
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除本单？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除本单？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QSqlQuery query(*sql.db);		
 		QString strSheetNo=ui.lineEdit_No->text();
@@ -387,7 +390,10 @@ void DrugStorage::on_saveButton_clicked()
 	if(!ui.tableWidget->isEnabled())
 	{	
 		str2 = str.fromLocal8Bit("已保存过！");		
-		QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 
@@ -466,7 +472,10 @@ void DrugStorage::on_saveButton_clicked()
 		{
 			sprintf(strtemp,"第%d行入库数量为空，请核对！",i+1);
 			str2 = str.fromLocal8Bit(strtemp);		
-			QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 
@@ -516,7 +525,10 @@ void DrugStorage::on_saveButton_clicked()
 		amount = ui.tableWidget->item(i,6)->text().toInt();
 		unitprice = ui.tableWidget->item(i,8)->text().toDouble();
 
-		query.bindValue(13, amount);
+		if(iInputFlag==0) 
+			query.bindValue(13, amount);
+		else
+			query.bindValue(13, -1*amount);
 		query.bindValue(14, unitprice);
 		unitprice = unitprice * amount;
 		/*QString strprice= QString::number(unitprice);*/
@@ -532,7 +544,7 @@ void DrugStorage::on_saveButton_clicked()
 		int kucun1=0;
 		//	kucun1 = kucun + amount;
 
-
+		amount = ui.tableWidget->item(i,6)->text().toInt();
 		if(ui.radioButton_Add->isChecked() && !ui.radioButton_Minus->isChecked())
 			kucun1 = kucun + amount;
 		else
@@ -573,7 +585,10 @@ void DrugStorage::on_saveButton_clicked()
 	{
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("保存成功！");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		SetEdit(false);
 		ui.saveButton->setEnabled(false);
 		ui.discardButton->setEnabled(false);
@@ -586,7 +601,10 @@ void DrugStorage::on_saveButton_clicked()
 	{
 		QString str = str.fromLocal8Bit("提示");
 		QString str2 = str.fromLocal8Bit("保存失败！");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 	//ui.editButton->setEnabled(true);
 	//ui.saveButton->setEnabled(false);
@@ -703,7 +721,10 @@ void DrugStorage::getItem(int row,int column)//计算费用
 		if(icount<0)
 		{
 			str2 = str.fromLocal8Bit("收货数量不能为负，请核对！");
-			QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),str2);
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			QString stramount = QString::number(0);
 			ui.tableWidget->setItem(row,column,new QTableWidgetItem(stramount));
 			return;
@@ -757,6 +778,7 @@ void DrugStorage::getItem(int row,int column)//计算费用
 	}
 }
 void DrugStorage::keyPressEvent(QKeyEvent *e) {
+	list_widget->setFocus();
 	if (!list_widget->isHidden()) {
 		int key = e->key();
 		int count = list_widget->model()->rowCount();
@@ -798,6 +820,10 @@ void DrugStorage::keyPressEvent(QKeyEvent *e) {
 					ui.tableWidget->setItem(row,8,new QTableWidgetItem(query.value(15).toString()));
 					ui.tableWidget->setItem(row,9,new QTableWidgetItem(query.value(16).toString()));//
 					ui.tableWidget->setItem(row,10,new QTableWidgetItem(query.value(10).toString()));//
+
+					ui.tableWidget->setFocus();
+					ui.tableWidget->setCurrentCell(row, 0, QItemSelectionModel::Deselect);
+					ui.tableWidget->setCurrentCell(row,6, QItemSelectionModel::Select);
 				}
 				QString strsql1= "select * from yk_inventory where name='"+strName+"'";//;//where AbbrName = '"+strName+"'
 				query.exec(strsql1);	
@@ -817,7 +843,21 @@ void DrugStorage::keyPressEvent(QKeyEvent *e) {
 			list_widget->hide();
 			//QLineEdit::keyPressEvent(e);
 		}
-	} else {
-		//QLineEdit::keyPressEvent(e);
+	} 
+	else {
+			int key = e->key();
+			if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+				int row = ui.tableWidget->currentRow();
+				int count = ui.tableWidget->rowCount();
+				ui.tableWidget->insertRow(count);
+				ui.tableWidget->setCurrentCell(row, 6, QItemSelectionModel::Deselect);
+				ui.tableWidget->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
+				//QCursor cursorAction;
+				//ui.tableWidget->setCursor(cursorAction);
+			}
+			if (Qt::Key_F5 == key ) {
+				on_saveButton_clicked();
+			}
+
 	}
 }

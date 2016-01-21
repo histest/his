@@ -74,14 +74,18 @@ void ConnectDB::on_loginButton_clicked()
 	QString str = str.fromLocal8Bit("警告");
 	if(user==NULL)
 	{
-		QString str2 = str.fromLocal8Bit("请输入用户名！");
-		QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请输入用户名"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 	if(pwd==NULL)
 	{
-		QString str2 = str.fromLocal8Bit("请输入密码！");
-		QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请输入密码"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 
@@ -103,8 +107,10 @@ void ConnectDB::on_loginButton_clicked()
 	}
 	else
 	{
-		QString str2 = str.fromLocal8Bit("用户名或密码错误！");
-		QMessageBox::warning(this,str,str2,QMessageBox::Ok);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("用户名或密码错误"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		ui->lineEdit_2->clear();
 		ui->comboBox_2->setFocus();
 		return;

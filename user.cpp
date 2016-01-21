@@ -2,6 +2,7 @@
 #include "connectsql.h"
 #include <QTreeWidgetItem>
 #include <QTextCodec>
+#include <QCheckBox>
 extern ConnectSql sql;
 User::User(QWidget *parent)
 	: QWidget(parent)
@@ -40,16 +41,25 @@ void User::initUI()
 		QTreeWidgetItem *item = new QTreeWidgetItem(ui.treeWidget, strlist);
 		ui.treeWidget->addTopLevelItem(item);
 		ui.tableWidget->insertRow(row);
+		QCheckBox *checkbox=new QCheckBox( QString::fromLocal8Bit("是否管理员"));  
+		ui.tableWidget ->setCellWidget(row,3,checkbox);  
+
 		ui.tableWidget->setItem(row,0,new QTableWidgetItem(query.value(0).toString()));
 		ui.tableWidget->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
 		ui.tableWidget->setItem(row,2,new QTableWidgetItem(query.value(2).toString()));
-		ui.tableWidget->setItem(row,3,new QTableWidgetItem(query.value(3).toString()));
+		if(query.value(3).toString()=="yes")
+			checkbox->setCheckState( Qt::Checked);
+		else
+			checkbox->setCheckState( Qt::Unchecked);
+
+
+		//ui.tableWidget->setItem(row,3,new QTableWidgetItem(query.value(3).toString()));
 		row++;
 	}
 	ui.treeWidget->expandAll();
 	ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	ui.saveButton->setEnabled(false);
-	ui.deleteButton->setEnabled(false);
+	//ui.deleteButton->setEnabled(false);
 }
 void User::showTable(QTreeWidgetItem*item, int column)
 {
@@ -63,10 +73,17 @@ void User::showTable(QTreeWidgetItem*item, int column)
 	while(query.next())
 	{	
 		ui.tableWidget->insertRow(row);
+		//QCheckBox *checkbox=new QCheckBox( QString::fromLocal8Bit("是否管理员"));  
+		//ui.tableWidget ->setCellWidget(row,3,checkbox);  
 		ui.tableWidget->setItem(row,0,new QTableWidgetItem(query.value(0).toString()));
 		ui.tableWidget->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
 		ui.tableWidget->setItem(row,2,new QTableWidgetItem(query.value(2).toString()));
-		ui.tableWidget->setItem(row,3,new QTableWidgetItem(query.value(3).toString()));
+		if(query.value(3).toString()=="yes")
+			/*checkbox->setCheckState();*/
+			ui.tableWidget->itemAt(row,3)->setCheckState( Qt::Checked);
+		else
+			ui.tableWidget->itemAt(row,3)->setCheckState( Qt::Unchecked);
+		//	checkbox->setCheckState( Qt::Unchecked);
 		row++;
 	}
 }
@@ -80,6 +97,8 @@ void User::on_addButton_clicked()
 	int row = ui.tableWidget->rowCount();
 	ui.tableWidget->insertRow(row);
 	ui.tableWidget->setItem(row,0,new QTableWidgetItem(QString::number(row+1)));
+	QCheckBox *checkbox=new QCheckBox( QString::fromLocal8Bit("是否管理员"));  
+	ui.tableWidget ->setCellWidget(row,3,checkbox);  
 }
 void User::on_editButton_clicked()
 {
@@ -90,8 +109,11 @@ void User::on_editButton_clicked()
 }
 void User::on_deleteButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确定删除？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QList<QTableWidgetItem*> list =  ui.tableWidget->selectedItems();
 		if (list.at(0)==NULL)
@@ -110,16 +132,22 @@ void User::on_deleteButton_clicked()
 }
 void User::on_exitButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否已保存？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认退出？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		this->close();
 	}
 }
 void User::on_saveButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否保存？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否保存？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QSqlQuery query(*sql.db);		
 		QString strsql = "delete from sys_users"; 
@@ -131,8 +159,29 @@ void User::on_saveButton_clicked()
 			query.bindValue(0, ui.tableWidget->item(i,0)->text().toInt());
 			if (ui.tableWidget->item(i,1)==NULL) return;
 			query.bindValue(1, ui.tableWidget->item(i,1)->text());
+			if (ui.tableWidget->item(i,2)==NULL) 
+				{
+					QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写密码"));
+					box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+					box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+					box.exec();
+					return;
+			}
 			query.bindValue(2, ui.tableWidget->item(i,2)->text());
-			query.bindValue(3, ui.tableWidget->item(i,3)->text());
+
+		/*	QWidget * QTableWidget::cellWidget ( int row, int column ) const*/
+			QCheckBox *box = qobject_cast<QCheckBox *>(ui.tableWidget->cellWidget(i, 3));
+			if(box){
+				if(box->checkState())
+					query.bindValue(3, "yes");
+				else
+					query.bindValue(3, "no");
+			}
+			
+			/*if (ui.tableWidget->itemAt(row,3)->checkState()==Qt::Checked)
+			query.bindValue(3, "yes");
+			else
+			query.bindValue(3, "no");*/
 			query.exec();
 		}
 		initUI();

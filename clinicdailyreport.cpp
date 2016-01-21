@@ -72,7 +72,10 @@ void ClinicDailyReport::on_saveButton_clicked()
 	query.bindValue(13, ui.tableWidget->item(rows-1,4)->text().toDouble());	
 	if(query.exec())
 	{
-		QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功！"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		ui.discardButton->setEnabled(false);
 		ui.queryButton->setEnabled(false);
 		ui.saveButton->setEnabled(false);

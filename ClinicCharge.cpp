@@ -27,8 +27,13 @@ ClinicCharge::ClinicCharge(QWidget *parent)
 	list_widget = new QListWidget(this);
 	list_widget->setWindowFlags(Qt::FramelessWindowHint);
 	list_widget->close();
-	installEventFilter(list_widget);
-//	installEventFilter(ui.tableWidget);
+	//installEventFilter(list_widget);
+	list_widget->installEventFilter(this);
+	//installEventFilter(ui.tableWidget);
+	ui.tableWidget->installEventFilter(this);
+	//installEventFilter(doctorlist);
+	//installEventFilter(departmentlist);
+
 	ui.tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 	ui.tableWidget->setStyleSheet("QTableWidget{border: 1px solid gray;	background-color: transparent;	selection-color: grey;}");
 	ui.tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section {background-color:white;color: black;padding-left: 4px;border: 1px solid #6c6c6c;};"
@@ -40,6 +45,8 @@ ClinicCharge::ClinicCharge(QWidget *parent)
 	connect(ui.doctorEdit, SIGNAL(textChanged(const QString &)), this, SLOT(setCompleter(const QString &)));
 	connect(ui.doctorEdit, SIGNAL(textChanged(const QString &)), this, SLOT(showDepartment(const QString &)));
 	connect(package,SIGNAL(showPackage(QString)),this,SLOT(addPackage(QString)));
+	//ui.tableWidget->setFocusPolicy(Qt::NoFocus);
+	//ui.tableWidget->unsetCursor();
 }
 void ClinicCharge::initUI()
 {
@@ -100,7 +107,7 @@ void ClinicCharge::on_addButton_clicked()
 	isheetcount++;
 	QString strSheetNo= "MZSF"+QString::number(isheetcount, 10);
 	ui.sheetNoEdit->setText(strSheetNo);
-	ui.tableWidget->installEventFilter(this);
+	//ui.tableWidget->installEventFilter(this);
 	ui.doctorEdit->installEventFilter(this);
 	installEventFilter(this);
 }
@@ -125,7 +132,10 @@ void ClinicCharge::on_saveButton_clicked()
 
 	if (ui.nameEdit->text()=="")
 	{
-		QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写病人姓名"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写病人姓名"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 	/*
@@ -152,7 +162,11 @@ void ClinicCharge::on_saveButton_clicked()
 		}
 		if( ui.tableWidget->item(i,7)==NULL||ui.tableWidget->item(i,7)->text()=="")
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写数量"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写数量"));
+			//QMessageBox box(QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写数量")));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 	}
@@ -279,8 +293,12 @@ void ClinicCharge::on_saveButton_clicked()
 	ui.deleterowButton->setEnabled(false);
 	ui.discardButton->setEnabled(false);
 	ui.packageButton->setEnabled(false);
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否打印发票？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否打印发票？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		on_printButton_clicked();
 	}
@@ -315,8 +333,11 @@ void ClinicCharge::on_editButton_clicked()
 }
 void ClinicCharge::on_deleteButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认从数据库中删除该单？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认从数据库中删除该单？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		QSqlQuery query(*sql.db);		
 		QString strSheetNo=ui.sheetNoEdit->text();
@@ -330,7 +351,10 @@ void ClinicCharge::on_deleteButton_clicked()
 		}
 		if (lastNo!=strSheetNo) 
 		{
-			QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("删除该单会造成重复！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("删除该单会造成重复！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec ();
 			return;
 		}
 
@@ -362,7 +386,10 @@ void ClinicCharge::on_addrowButton_clicked()
 		if( ui.tableWidget->item(irows-1,0)==NULL) return;
 		if( ui.tableWidget->item(irows-1,7)==NULL||ui.tableWidget->item(irows-1,7)->text()=="")
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写数量"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写数量！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec ();
 			return;
 		}
 	}
@@ -370,9 +397,11 @@ void ClinicCharge::on_addrowButton_clicked()
 }
 void ClinicCharge::on_deleterowButton_clicked()
 {
-
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除选择行？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除选择行？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		int row = ui.tableWidget->currentRow();  
 		ui.tableWidget->removeRow(row);
@@ -480,6 +509,7 @@ void ClinicCharge::getItem(int row,int column)
 		}
 		if (list.count()==0) return;
 		list_widget->show();
+		list_widget->setWindowFlags(Qt::FramelessWindowHint);
 		list_widget->addItems(list);
 	}
 }
@@ -544,7 +574,8 @@ void ClinicCharge::print( QPrinter* printer )
 	QRect    page3( 35*w/210, 24*h/297, 5*w/6, h/8);
 	QRect    page4( 28*w/210, 35*h/297, 5*w/6, h/4);
 	QRect    page5( 45*w/210, 93*h/297,  5*w/6, h/8);
-	QRect    page6( 115*w/210, 122*h/297, 5*w/6, h/8);
+	QRect    page6( 45*w/210, 105*h/297,  5*w/6, h/8);
+	QRect    page7( 115*w/210, 122*h/297, 5*w/6, h/8);
 	QFont    font = painter.font();
 	font.setPointSize(8);
 	painter.setFont( font );
@@ -554,12 +585,15 @@ void ClinicCharge::print( QPrinter* printer )
 	painter.drawText( page3, Qt::AlignTop    | Qt::AlignLeft, str);
 	int row = ui.tableWidget->rowCount();
 	str="";
+	bool Isnormal = false;
 	for (int i =0;i<row;i++)
 	{
 		if (ui.tableWidget->item(i,0)==NULL)
 		{
 			continue;
 		}
+		if(ui.tableWidget->item(i,1)->text()==QString::fromLocal8Bit("一般诊疗费")) 
+			Isnormal=true;
 		str =str+ui.tableWidget->item(i,1)->text()+"               "+ui.tableWidget->item(i,6)->text()+"   "+ui.tableWidget->item(i,7)->text()+"   "+ui.tableWidget->item(i,9)->text()+"\n";
 	
 	}
@@ -568,12 +602,14 @@ void ClinicCharge::print( QPrinter* printer )
 
 	double amount=ui.dueincomeEdit->text().toDouble();
 	Capital*capital = new Capital;
-	QString strcaptial=capital->NumToChineseStr(amount);;
-	str="";
+	QString strcaptial=capital->NumToChineseStr(amount);
 	str=strcaptial+"                                   "+ui.dueincomeEdit->text();
 	painter.drawText( page5, Qt::AlignTop    | Qt::AlignLeft, str);
+	str="10.0                                                                            "+QString::number(amount-10);
+	if(Isnormal)
+		painter.drawText( page6, Qt::AlignTop    | Qt::AlignLeft, str);
 	str=ui.sheetmakerEdit->text()+"                               "+QString::number(ui.dateTimeEdit->date().year())+"   "+QString::number(ui.dateTimeEdit->date().month())+"   "+QString::number(ui.dateTimeEdit->date().day());
-	painter.drawText( page6, Qt::AlignTop    | Qt::AlignLeft, str);
+	painter.drawText( page7, Qt::AlignTop    | Qt::AlignLeft, str);
 
 }
 void ClinicCharge::printString(const QString &htmlString) {
@@ -595,6 +631,17 @@ void ClinicCharge::printString(const QString &htmlString) {
 	doc.print(&p);
 }
 void ClinicCharge::keyPressEvent(QKeyEvent *e) {
+	list_widget->setFocus();
+	int key = e->key();
+	if (Qt::Key_Up == key) {
+		int row = ui.tableWidget->currentRow();
+		ui.tableWidget->setCurrentCell(row, 0, QItemSelectionModel::Deselect);
+		for (int i = 0;i<row;i++)
+		{
+			ui.tableWidget->setCurrentCell(i, 0, QItemSelectionModel::Deselect);
+		}
+	}
+
 	if (!doctorlist->isHidden()) {
 		int key = e->key();
 		int count = doctorlist->model()->rowCount();
@@ -626,6 +673,7 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 			if (currentIndex.isValid()) {
 				QString text = doctorlist->currentIndex().data().toString();
 				ui.doctorEdit->setText(text);
+			
 			}
 
 			doctorlist->hide();
@@ -636,13 +684,6 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 		}
 	} else {
 		//QLineEdit::keyPressEvent(e);
-	}
-
-	if (!ui.tableWidget->isHidden()) {
-		int key = e->key();
-		if (Qt::Key_Return == key) {
-
-		}
 	}
 	if (!departmentlist->isHidden()) {
 		int key = e->key();
@@ -699,7 +740,6 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 			if (row < 0) {
 				row = count - 1;
 			}
-
 			QModelIndex index = list_widget->model()->index(row, 0);
 			list_widget->setCurrentIndex(index);
 		} else if (Qt::Key_Escape == key) {
@@ -708,7 +748,7 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 			if (currentIndex.isValid()) {
 				QString strName = list_widget->currentIndex().data().toString();
 
-				int row = ui.tableWidget->currentRow();
+				int row = ui.tableWidget->rowCount()-1;
 				QSqlQuery query(*sql.db);	
 				QString strsql= "select * from sys_drugdictionary where name='"+strName+"'";
 				bool isexist = query.exec(strsql);
@@ -725,12 +765,19 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 					ui.tableWidget->setItem(row,10,new QTableWidgetItem(query.value(10).toString()));
 					ui.tableWidget->setItem(row,11,new QTableWidgetItem(query.value(14).toString()));
 					ui.tableWidget->setItem(row,12,new QTableWidgetItem(query.value(12).toString()));
+
+					ui.tableWidget->setFocus();
+					ui.tableWidget->setCurrentCell(row, 0, QItemSelectionModel::Deselect);
+					ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Select);
+
+					//QCursor cursorAction;
+					//ui.tableWidget->setCursor(cursorAction);
 				}
-				if(isexist)
-				{
-					int count = ui.tableWidget->rowCount();
-					ui.tableWidget->insertRow(count);
-				}
+				//if(isexist)
+				//{
+				//	int count = ui.tableWidget->rowCount();
+				//	ui.tableWidget->insertRow(count);
+				//}
 
 				strsql= "select * from yf_inventory where name='"+strName+"'";
 				query.exec(strsql);
@@ -748,8 +795,23 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 			//QLineEdit::keyPressEvent(e);
 		}
 	} else {
-		//QLineEdit::keyPressEvent(e);
+
+		int key = e->key();
+		if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+			int row = ui.tableWidget->currentRow();
+			int count = ui.tableWidget->rowCount();
+			ui.tableWidget->insertRow(count);
+			ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Deselect);
+			ui.tableWidget->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
+			//QCursor cursorAction;
+			//ui.tableWidget->setCursor(cursorAction);
+		}
+		if (Qt::Key_F5 == key ) {
+			on_saveButton_clicked();
+		}
+
 	}
+
 }
 void ClinicCharge::edit(QString strNo)
 {
@@ -1006,6 +1068,152 @@ void ClinicCharge::addPackage(QString strName)
 		row++;
 	}
 }
+//bool ClinicCharge::eventFilter(QObject *obj, QEvent *event)
+//{
+//	 QKeyEvent *e = static_cast<QKeyEvent*>(event);
+//
+//	 //if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+//		// // 按下回车键时，使用完成列表中选中的项，并隐藏完成列表
+//		// focusNextChild();
+//		// int row = ui.tableWidget->currentRow();
+//		// ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Deselect);
+//		// ui.tableWidget->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
+//		// QCursor cursorAction;
+//		// ui.tableWidget->setCursor(cursorAction);
+//	 //}
+//	 //if (Qt::Key_F5 == key ) {
+//		// on_saveButton_clicked();
+//	 //}
+//	  if (obj == ui.tableWidget) 
+//	  {
+//		  ui.addButton->setFocus();
+//		  int key = e->key();
+//		  if (Qt::Key_Up == key) {
+//			  //QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请输入用户名"));
+//			  //box.setStandardButtons (QMessageBox::Ok);
+//			  //box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+//			  //box.exec();
+//			  return false;
+//		  }
+//		  if (Qt::Key_Down == key) {
+//			  //QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请输入用户名"));
+//			  //box.setStandardButtons (QMessageBox::Ok);
+//			  //box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+//			  //box.exec();
+//			  return false;
+//		  }
+//		  if (Qt::Key_Left == key) {
+//			  //QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请输入用户名"));
+//			  //box.setStandardButtons (QMessageBox::Ok);
+//			  //box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+//			  //box.exec();
+//			  return false;
+//		  }
+//		  if (Qt::Key_Right == key) {
+//			  //QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请输入用户名"));
+//			  //box.setStandardButtons (QMessageBox::Ok);
+//			  //box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+//			  //box.exec();
+//			  return false;
+//		  }
+//		  if (Qt::Key_Enter == key )
+//		  {
+//			  //QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请输入用户名"));
+//			  //box.setStandardButtons (QMessageBox::Ok);
+//			  //box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+//			  //box.exec();
+//			  return false;
+//		  }
+//		return false;
+//	  }
+//	   if (!list_widget->isHidden()) {
+//		int key = e->key();
+//		int count = list_widget->model()->rowCount();
+//		QModelIndex currentIndex = list_widget->currentIndex();
+//
+//		if (Qt::Key_Down == key) {
+//			int row = currentIndex.row() + 1;
+//			if (row >= count) {
+//				row = 0;
+//			}
+//
+//			QModelIndex index = list_widget->model()->index(row, 0);
+//			list_widget->setCurrentIndex(index);
+//		} else if (Qt::Key_Up == key) {
+//			int row = currentIndex.row() - 1;
+//			if (row < 0) {
+//				row = count - 1;
+//			}
+//
+//			QModelIndex index = list_widget->model()->index(row, 0);
+//			list_widget->setCurrentIndex(index);
+//		} else if (Qt::Key_Escape == key) {
+//			//list_widget->hide();
+//		} else if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+//			if (currentIndex.isValid()) {
+//				QString strName = list_widget->currentIndex().data().toString();
+//
+//				int row = ui.tableWidget->currentRow();
+//				QSqlQuery query(*sql.db);	
+//				QString strsql= "select * from sys_drugdictionary where name='"+strName+"'";
+//				bool isexist = query.exec(strsql);
+//				while(query.next())
+//				{
+//					ui.tableWidget->setItem(row,0,new QTableWidgetItem(query.value(22).toString()));
+//					ui.tableWidget->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
+//					ui.tableWidget->setItem(row,2,new QTableWidgetItem(query.value(4).toString()));
+//					ui.tableWidget->setItem(row,3,new QTableWidgetItem(query.value(5).toString()));
+//					//ui.tableWidget->setItem(iRow,4,new QTableWidgetItem(query.value(6).toString()));//批号
+//					//ui.tableWidget->setItem(iRow,5,new QTableWidgetItem(query.value(6).toString()));//库存
+//					ui.tableWidget->setItem(row,6,new QTableWidgetItem(query.value(6).toString()));
+//					ui.tableWidget->setItem(row,8,new QTableWidgetItem(query.value(15).toString()));
+//					ui.tableWidget->setItem(row,10,new QTableWidgetItem(query.value(10).toString()));
+//					ui.tableWidget->setItem(row,11,new QTableWidgetItem(query.value(14).toString()));
+//					ui.tableWidget->setItem(row,12,new QTableWidgetItem(query.value(12).toString()));
+//					/*			ui.tableWidget->openPersistentEditor(ui.tableWidget->itemAt(row,10));
+//					ui.tableWidget->editItem(ui.tableWidget->itemAt(row,10));*/
+//				
+//					/*	QModelIndex index = ui.tableWidget->model()->index(row, 10);
+//					ui.tableWidget->setCurrentIndex(index);*/
+//					ui.tableWidget->setCurrentCell(row, 0, QItemSelectionModel::Deselect);
+//					ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Select);
+//
+//					QCursor cursorAction;
+//					ui.tableWidget->setCursor(cursorAction);
+//				}
+//				if(isexist)
+//				{
+//					int count = ui.tableWidget->rowCount();
+//					ui.tableWidget->insertRow(count);
+//				}
+//
+//				strsql= "select * from yf_inventory where name='"+strName+"'";
+//				query.exec(strsql);
+//				while(query.next())
+//				{
+//					ui.tableWidget->setItem(row,5,new QTableWidgetItem(query.value(7).toString()));
+//				}
+//			}
+//
+//			list_widget->hide();
+//
+//
+//		} else {
+//			//list_widget->hide();
+//			//QLineEdit::keyPressEvent(e);
+//		}
+//	 if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+//		 int row = ui.tableWidget->currentRow();
+//		 ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Deselect);
+//		 ui.tableWidget->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
+//		 QCursor cursorAction;
+//		 ui.tableWidget->setCursor(cursorAction);
+//	 }
+//	 	  }
+//	 return true;
+//}
+
+
 ClinicCharge::~ClinicCharge()
 {
 

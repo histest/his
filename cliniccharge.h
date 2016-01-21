@@ -35,7 +35,7 @@ private:
 	QStringListModel *departmentmodel; 
 	void keyPressEvent(QKeyEvent *e);
 	void focusOutEvent(QFocusEvent *e);
-//	bool eventFilter(QObject*obj,QEvent*event);
+	//bool eventFilter(QObject*obj,QEvent*event);
 public slots:
 	void on_printButton_clicked();
 	void on_previewButton_clicked();

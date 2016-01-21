@@ -41,9 +41,10 @@ void ClinicInternalPayment::on_excelButton_clicked()
 	QAbstractItemModel* model=ui.tableWidget->model();
 	if (model->rowCount()==0||model==NULL)
 	{
-		QString str = str.fromLocal8Bit("提示");
-		QString str2 = str.fromLocal8Bit("无数据");
-		QMessageBox::information(this,str,str2);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("无数据"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 

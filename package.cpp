@@ -87,7 +87,10 @@ void Package::on_okButton_clicked()
 	 QString strText = item->text(0);
 	 if (strText==""||strText==NULL)
 	 {
-		 QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请选择套餐"));
+		 QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请选择套餐"));
+		 box.setStandardButtons (QMessageBox::Ok);
+		 box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		 box.exec();
 		 return;
 	 }
 	 emit showPackage(strText);

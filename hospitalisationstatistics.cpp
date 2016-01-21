@@ -481,8 +481,8 @@ void HospitalisationStatistics::showinfo2(const QString &text)
 	query.exec(strsql);
 	while(query.next())
 	{
-		ui.lineEdit_5->setText(query.value(4).toString());
-		ui.lineEdit_9->setText(query.value(14).toString());
+		ui.lineEdit_5->setText(query.value(14).toString());
+		ui.lineEdit_9->setText(query.value(4).toString());
 		ui.lineEdit_7->setText(query.value(13).toString());	
 	}
 }
@@ -736,7 +736,10 @@ void HospitalisationStatistics::print( QPrinter* printer )
 		QString strNo = ui.lineEdit_6->text();
 		if (strNo==""&&strNo==NULL )
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("请输入住院号！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请输入住院号！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 		QPainter painter( printer );
@@ -1080,7 +1083,10 @@ void HospitalisationStatistics::on_billqueryButton_clicked()
 
 		if (strNo==""&&strNo==NULL )
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("请输入住院号！"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请输入住院号！"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 		QString strsql;

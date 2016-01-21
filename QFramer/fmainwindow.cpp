@@ -290,8 +290,11 @@ void FMainWindow::onSystemTrayIconClicked(QSystemTrayIcon::ActivationReason reas
 }
 void FMainWindow::CloseWindow()
 {
-	int ok = QMessageBox::warning(this,QApplication::translate("help", "\350\255\246\345\221\212", 0, QApplication::UnicodeUTF8),QApplication::translate("help", "\347\241\256\350\256\244\351\200\200\345\207\272\347\250\213\345\272\217\345\220\227\357\274\237", 0, QApplication::UnicodeUTF8),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+	QMessageBox box(QMessageBox::Warning,QApplication::translate("help", "\350\255\246\345\221\212", 0, QApplication::UnicodeUTF8),QApplication::translate("help", "\347\241\256\350\256\244\351\200\200\345\207\272\347\250\213\345\272\217\345\220\227\357\274\237", 0, QApplication::UnicodeUTF8));
+	box.setStandardButtons(QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText(QMessageBox::Ok,QApplication::translate("User", "\347\241\256\345\256\232", 0, QApplication::UnicodeUTF8));
+	box.setButtonText(QMessageBox::Cancel,QApplication::translate("User", "\345\217\226\346\266\210", 0, QApplication::UnicodeUTF8));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		this->animationClose();
 	}

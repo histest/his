@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include "ui_user.h"
-
+#include <QtGui>
 class User : public QWidget
 {
 	Q_OBJECT

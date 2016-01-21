@@ -117,7 +117,10 @@ void HospitalisationCharge::on_saveButton_clicked()
 		}
 		if( ui.tableWidget->item(i,7)==NULL||ui.tableWidget->item(i,7)->text()=="")
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写数量"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写数量"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 	}
@@ -157,6 +160,7 @@ void HospitalisationCharge::on_saveButton_clicked()
 	{
 		temp++;
 	}
+	bool issuccess =false;
 	for (int i=0;i<rows;i++)
 	{
 		if(ui.tableWidget->item(i,1)==NULL||ui.tableWidget->item(i,7)==NULL) continue;
@@ -207,9 +211,15 @@ void HospitalisationCharge::on_saveButton_clicked()
 			query.bindValue(12, ui.tableWidget->item(i,12)->text());
 		else
 			query.bindValue(12, NULL);
-		query.exec();
+		issuccess = query.exec();
 	}
-
+	if (issuccess)
+	{
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存成功"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
+	}
 	ui.editButton->setEnabled(true);
 	ui.saveButton->setEnabled(false);
 	ui.addrowButton->setEnabled(false);
@@ -262,16 +272,26 @@ void HospitalisationCharge::on_deleteButton_clicked()
 	}
 	if (lastNo!=strSheetNo) 
 	{
-		QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("删除该单会造成重复！"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("删除该单会造成重复"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 
-	QString strsql = "delete from zy_chargesheet where sheetno ='"+strSheetNo+"'"; //where ID > 1
-	query.exec(strsql);
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除该单？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
+	{
+		QString strsql = "delete from zy_chargesheet where sheetno ='"+strSheetNo+"'"; //where ID > 1
+		query.exec(strsql);
 
-	strsql = "delete from zy_chargedetail where sheetno ='"+strSheetNo+"'"; //where ID > 1
-	query.exec(strsql);
-	on_discardButton_clicked();
+		strsql = "delete from zy_chargedetail where sheetno ='"+strSheetNo+"'"; //where ID > 1
+		query.exec(strsql);
+		on_discardButton_clicked();
+	}
 }
 void HospitalisationCharge::on_previewButton_clicked()
 {
@@ -292,7 +312,10 @@ void HospitalisationCharge::on_addrowButton_clicked()
 		if( ui.tableWidget->item(irows-1,0)==NULL) return;
 		if( ui.tableWidget->item(irows-1,7)==NULL||ui.tableWidget->item(irows-1,7)->text()=="")
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写数量"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写数量"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 			return;
 		}
 	}
@@ -301,8 +324,12 @@ void HospitalisationCharge::on_addrowButton_clicked()
 }
 void HospitalisationCharge::on_deleterowButton_clicked()
 {
-	int ok = QMessageBox::warning(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除选择行？"),QMessageBox::Yes,QMessageBox::No);
-	if(ok == QMessageBox::Yes)
+
+	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除选择行？"));
+	box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+	box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+	box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+	if(box.exec()==QMessageBox::Ok)
 	{
 		int row = ui.tableWidget->currentRow();  
 		ui.tableWidget->removeRow(row);
@@ -737,6 +764,7 @@ void HospitalisationCharge::edit(QString strNo)
 }
 void HospitalisationCharge::keyPressEvent(QKeyEvent *e) 
 {
+	list_widget->setFocus();
 	if (!list_widget->isHidden()) {
 		int key = e->key();
 		int count = list_widget->model()->rowCount();
@@ -781,12 +809,19 @@ void HospitalisationCharge::keyPressEvent(QKeyEvent *e)
 					ui.tableWidget->setItem(row,10,new QTableWidgetItem(query.value(11).toString()));//
 					ui.tableWidget->setItem(row,11,new QTableWidgetItem(query.value(14).toString()));//
 					ui.tableWidget->setItem(row,12,new QTableWidgetItem(query.value(12).toString()));
+
+					ui.tableWidget->setFocus();
+					ui.tableWidget->setCurrentCell(row, 0, QItemSelectionModel::Deselect);
+					ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Select);
+
+					QCursor cursorAction;
+					ui.tableWidget->setCursor(cursorAction);
 				}
-				if (isexist)
-				{
-					int count = ui.tableWidget->rowCount();
-					ui.tableWidget->insertRow(count);
-				}
+				//if (isexist)
+				//{
+				//	int count = ui.tableWidget->rowCount();
+				//	ui.tableWidget->insertRow(count);
+				//}
 				strsql= "select * from yf_inventory where name='"+strName+"'";
 				query.exec(strsql);
 				while(query.next())
@@ -802,6 +837,21 @@ void HospitalisationCharge::keyPressEvent(QKeyEvent *e)
 		}
 	} else {
 		//QLineEdit::keyPressEvent(e);
+		int key = e->key();
+		if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+			// 按下回车键时，使用完成列表中选中的项，并隐藏完成列表
+			//focusNextChild();
+			int row = ui.tableWidget->currentRow();
+			int count = ui.tableWidget->rowCount();
+			ui.tableWidget->insertRow(count);
+			ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Deselect);
+			ui.tableWidget->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
+			QCursor cursorAction;
+			ui.tableWidget->setCursor(cursorAction);
+		}
+		if (Qt::Key_F5 == key ) {
+			on_saveButton_clicked();
+		}
 	}
 }
 void HospitalisationCharge::addPackage(QString strName)

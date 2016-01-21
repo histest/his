@@ -99,18 +99,27 @@ void HospitalisationPay::on_saveButton_clicked()
 	query.exec(strsql);
 	if (ui.nameEdit->text()=="")
 	{
-		QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写病人姓名"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写病人姓名"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return;
 	}
 	if (ui.amountEdit->text()=="")
 	{
 		if (Isrefund)
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写退款金额"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写退款金额"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 		}
 		else
 		{
-			QMessageBox::information(this,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写交款金额"));
+			QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("请填写交款金额"));
+			box.setStandardButtons (QMessageBox::Ok);
+			box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+			box.exec();
 		}
 		return;
 	}
@@ -138,15 +147,21 @@ void HospitalisationPay::on_saveButton_clicked()
 		setEdit(false);
 		strNo = ui.hospitalNocomboBox->currentText();
 		getInfo(strNo);
-		int ok = QMessageBox::warning(this,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("是否打印押金条？"),QMessageBox::Yes,QMessageBox::No);
-		if(ok == QMessageBox::Yes)
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("是否打印押金条？"));
+		box.setStandardButtons (QMessageBox::Ok|QMessageBox::Cancel);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.setButtonText (QMessageBox::Cancel,QString::fromLocal8Bit("取 消"));
+		if(box.exec()==QMessageBox::Ok)
 		{
 			on_printButton_clicked();
 		}
 	}
 	else
 	{
-		QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("保存失败！"));
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("保存失败！"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 }
 void HospitalisationPay::on_discardButton_clicked()
@@ -173,7 +188,10 @@ void HospitalisationPay::on_deleteButton_clicked()
 	QString strsql = "delete from zy_pay where sheetno ='"+strNo+"'"; 
 	if(query.exec(strsql))
 	{
-		QMessageBox::information(this,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("删除成功！"));
+		QMessageBox box(QMessageBox::Warning,QString ::fromLocal8Bit("提示"),QString::fromLocal8Bit("删除成功！"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		on_discardButton_clicked();
 	}
 }

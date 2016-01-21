@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>646</width>
-    <height>407</height>
+    <width>855</width>
+    <height>422</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_10">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label_9">
        <property name="sizePolicy">
@@ -40,6 +40,12 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <item>
         <property name="text">
          <string>收货记录</string>
@@ -60,12 +66,19 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>  日期范围：</string>
+        <string>日期范围：</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QDateTimeEdit" name="dateTimeEdit_1"/>
+      <widget class="QDateTimeEdit" name="dateTimeEdit_1">
+       <property name="maximumSize">
+        <size>
+         <width>180</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_2">
@@ -75,23 +88,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QDateTimeEdit" name="dateTimeEdit_2"/>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QRadioButton" name="radioButton">
-       <property name="text">
-        <string>选定药品</string>
+      <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+       <property name="maximumSize">
+        <size>
+         <width>180</width>
+         <height>16777215</height>
+        </size>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QRadioButton" name="radioButton">
        <property name="text">
-        <string>药品简称：</string>
+        <string>选定药品</string>
        </property>
       </widget>
      </item>
@@ -103,17 +112,13 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>药品名称：</string>
+       <property name="maximumSize">
+        <size>
+         <width>100</width>
+         <height>16777215</height>
+        </size>
        </property>
       </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEdit_DrugName"/>
      </item>
      <item>
       <widget class="QPushButton" name="findButton">
@@ -128,7 +133,7 @@
     <widget class="QTableWidget" name="tableWidget"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label_5">
        <property name="text">
@@ -137,7 +142,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit_TotalNum"/>
+      <widget class="QLineEdit" name="lineEdit_TotalNum">
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_6">
@@ -147,14 +159,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="lineEdit_TotalPrice"/>
+      <widget class="QLineEdit" name="lineEdit_TotalPrice">
+       <property name="maximumSize">
+        <size>
+         <width>60</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
      </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <spacer name="horizontalSpacer_4">
+      <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>

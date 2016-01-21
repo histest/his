@@ -30,9 +30,10 @@ bool ConnectSql::connect(QString  strip)
 	setting.endGroup();
 	if(!db->open())
 	{
-		QString str = str.fromLocal8Bit("提示");
-		QString str2 = str.fromLocal8Bit("连接数据库失败！");
-		QMessageBox::information(NULL, str,str2, QMessageBox::Ok);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),QString::fromLocal8Bit("连接数据库失败！"));
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 		return false;
 	}
 	return true;
@@ -50,7 +51,10 @@ bool ConnectSql::connect2()
 	setting.endGroup();
 	if(!db2.open())  
 	{  
-		QMessageBox::information(NULL, "",db2.lastError().text(), QMessageBox::Ok);
+		QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("提示"),db2.lastError().text());
+		box.setStandardButtons (QMessageBox::Ok);
+		box.setButtonText (QMessageBox::Ok,QString::fromLocal8Bit("确 定"));
+		box.exec();
 	}
 	return true; 
 }
