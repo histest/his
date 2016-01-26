@@ -124,7 +124,7 @@ void HospitalisationPay::on_saveButton_clicked()
 		return;
 	}
 
-	query.prepare("INSERT INTO zy_pay VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	query.prepare("INSERT INTO zy_pay VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)");//, ?
 	query.bindValue(0, itotalcount);
 	query.bindValue(1, ui.sheetNoEdit->text());
 	query.bindValue(2, ui.dateTimeEdit->dateTime());
@@ -138,7 +138,7 @@ void HospitalisationPay::on_saveButton_clicked()
 	else
 		query.bindValue(8, ui.amountEdit->text().toDouble());
 	query.bindValue(9, ui.remarkEdit->document()->toPlainText());
-	query.bindValue(10, ui.payerEdit->text());
+	//query.bindValue(10, ui.payerEdit->text());
 	if(query.exec())
 	{
 		ui.editButton->setEnabled(true);
@@ -242,7 +242,7 @@ void HospitalisationPay::print( QPrinter* printer )
 			QDateTime::currentDateTime().toString( Qt::DefaultLocaleShortDate ) );
 		painter.drawRect(page3);
 		painter.drawRect(page4);
-		str ="\n"+QString::fromLocal8Bit("退款人：")+ui.payerEdit->text()+"     "+QString::fromLocal8Bit("制单：")+ui.sheetmakerEdit->text()+"     "+QString::fromLocal8Bit("打印时间：")+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+		str ="\n"+QString::fromLocal8Bit("制单：")+ui.sheetmakerEdit->text()+"     "+QString::fromLocal8Bit("打印时间：")+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")+"     "+QString::fromLocal8Bit("收款人：")+ui.payerEdit->text();
 		painter.drawText( page5, Qt::AlignTop    | Qt::AlignLeft, str);
 		painter.drawRect(page6);
 		str =QString::fromLocal8Bit("此乃临时收据，不作报销凭证，请妥善保存，出院结算时交回。");
@@ -262,7 +262,7 @@ void HospitalisationPay::print( QPrinter* printer )
 		QDateTime::currentDateTime().toString( Qt::DefaultLocaleShortDate ) );
 	painter.drawRect(page3);
 	painter.drawRect(page4);
-	str ="\n"+QString::fromLocal8Bit("交款人：")+ui.payerEdit->text()+"     "+QString::fromLocal8Bit("制单：")+ui.sheetmakerEdit->text()+"     "+QString::fromLocal8Bit("打印时间：")+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss");
+	str ="\n"+QString::fromLocal8Bit("制单：")+ui.sheetmakerEdit->text()+"     "+QString::fromLocal8Bit("打印时间：")+QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss")+"     "+QString::fromLocal8Bit("交款人：")+ui.payerEdit->text();
 	painter.drawText( page5, Qt::AlignTop    | Qt::AlignLeft, str);
 	painter.drawRect(page6);
 	str =QString::fromLocal8Bit("此乃临时收据，不作报销凭证，请妥善保存，出院结算时交回。");

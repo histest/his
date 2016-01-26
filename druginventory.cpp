@@ -70,9 +70,11 @@ void DrugInventory::findbyname(const QString &text)
 	int y = mapToGlobal(p).y() + 1;
 
 	//druglist->move(x, y);
-	druglist->setGeometry(this->x()+180, this->y()+160, 50, 100);
-	druglist->resize(100,200);
-	druglist->setFixedWidth(160);
+	QPoint GlobalPoint(ui.lineEdit_code->mapToGlobal(QPoint(0, 0)));
+	
+	druglist->setGeometry(GlobalPoint.x(), GlobalPoint.y()+ui.lineEdit_code->height(), 60, 100);
+	//druglist->resize(100,200);
+	//druglist->setFixedWidth(160);
 	druglist->show();
 }
 

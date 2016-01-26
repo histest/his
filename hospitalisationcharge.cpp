@@ -597,7 +597,9 @@ void HospitalisationCharge::getItem(int row,int column)//计算费用
 		strText =  ui.tableWidget->item(row,0)->text();
 		if(strText.at(0)== QChar('1')) return;
 
-		list_widget->setGeometry(103, 280+row*30, 150, 250);
+		//list_widget->setGeometry(103, 280+row*30, 150, 250);
+		QPoint GlobalPoint(ui.addButton->mapToGlobal(QPoint(0, 0)));//获取控件在窗体中的坐标
+		list_widget->setGeometry(GlobalPoint.x(), GlobalPoint.y(), 150, 280);
 		list_widget->show();
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();

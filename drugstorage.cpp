@@ -677,22 +677,7 @@ void DrugStorage::print( QPrinter* printer )
 
 	// 绘制模拟数据
 	page.adjust( w/20, h/20, -w/20, -h/20 );
-
-	//m_scene->render( &painter, page );
-	//表格
-	/*	QWidget *myForm=new QWidget(this);
-	myForm->setObjectName(QString::fromUtf8("Form"));
-	myForm->resize(500, 500);
-	QTableWidget *tableWidget;
-	tableWidget = new QTableWidget(myForm);
-	tableWidget->setColumnCount(3);
-	tableWidget->setRowCount(4);
-	tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
-	tableWidget->setGeometry(QRect(0, 0,500, 500));    
-	tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-	tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section {background-color:white;color: black;padding-left: 4px;border: 1px solid #6c6c6c;};"
-	"color: white;padding-left: 4px;border: 1px solid #6c6c6c;}"
-	"QHeaderView::section:checked{background-color: red;}");    */       
+  
 	QPixmap image;
 	image=image.grabWidget(ui.tableWidget,-35,0,900, 1000);
 	painter.drawPixmap(page4,image);
@@ -760,7 +745,10 @@ void DrugStorage::getItem(int row,int column)//计算费用
 		strText =  ui.tableWidget->item(row,0)->text();
 		if(strText.at(0)== QChar('1')) return;
 
-		list_widget->setGeometry(103, 160+row*30, 150, 280);
+		//list_widget->setGeometry(103, 160+row*30, 150, 280);
+		QPoint GlobalPoint(ui.tableWidget->mapFrom(ui.tableWidget,QPoint(0, 0)));//获取控件在窗体中的坐标
+		if(row<8)
+			list_widget->setGeometry(GlobalPoint.x()+80, GlobalPoint.y()+40*(row+1), 150, 280);
 		list_widget->show();
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
@@ -813,6 +801,7 @@ void DrugStorage::keyPressEvent(QKeyEvent *e) {
 				query.exec(strsql);
 				while(query.next())
 				{
+					ui.tableWidget->setItem(row,0,new QTableWidgetItem(query.value(22).toString()));
 					ui.tableWidget->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
 					ui.tableWidget->setItem(row,2,new QTableWidgetItem(query.value(4).toString()));
 					ui.tableWidget->setItem(row,3,new QTableWidgetItem(query.value(5).toString()));

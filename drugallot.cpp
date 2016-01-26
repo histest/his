@@ -129,10 +129,10 @@ void DrugAllot::initUI()
 	//ui.tableWidget_SaleAllot->setSelectionBehavior(QAbstractItemView::SelectRows);  //整行选中的方式
 	//ui.tableWidget_StoreAllot->setSelectionBehavior(QAbstractItemView::SelectRows);  //整行选中的方式
 
-	ui.tableWidget_SaleAllot->setEditTriggers(QAbstractItemView::AllEditTriggers);
+	//ui.tableWidget_SaleAllot->setEditTriggers(QAbstractItemView::AllEditTriggers);
 	ui.tableWidget_SaleAllot->setAlternatingRowColors(true); 
 
-	ui.tableWidget_StoreAllot->setEditTriggers(QAbstractItemView::AllEditTriggers);
+	//ui.tableWidget_StoreAllot->setEditTriggers(QAbstractItemView::AllEditTriggers);
 	ui.tableWidget_StoreAllot->setAlternatingRowColors(true); 
 
 	query.exec("select * from sys_customer");
@@ -165,7 +165,6 @@ DrugAllot::~DrugAllot()
 {
 
 }
-
 double DrugAllot::TotalPrice_sale()
 {
 	int i;
@@ -192,7 +191,6 @@ void DrugAllot::on_addRowButton_clicked()
 	ui.tableWidget_SaleAllot->insertRow(rows);
 	iRow_Sale=rows;
 }
-
 void DrugAllot::on_addRowButton_2_clicked()
 {
 	//表格增加一行
@@ -236,7 +234,6 @@ void DrugAllot::on_deleteRowButton_clicked()
 	ui.tableWidget_SaleAllot->removeRow(rows);
 	iRow_Sale--;
 }
-
 void DrugAllot::on_deleteRowButton_2_clicked()
 {
 
@@ -245,7 +242,6 @@ void DrugAllot::on_deleteRowButton_2_clicked()
 	ui.tableWidget_StoreAllot->removeRow(rows);
 	iRow_Store--;
 }
-
 void DrugAllot::SetEdit(bool IsEdit)
 {
 	if (IsEdit==true)
@@ -281,7 +277,6 @@ void DrugAllot::SetEdit(bool IsEdit)
 		ui.dateTimeEdit_Date_Store->setEnabled(false);
 	}
 }
-
 void DrugAllot::on_addButton_clicked()
 {
 	SetEdit(true);
@@ -297,7 +292,7 @@ void DrugAllot::on_addButton_clicked()
 	ui.tableWidget_SaleAllot->insertRow(0);
 	iRow_Sale = 0;
 	icount_sale = 0;
-	ui.tableWidget_SaleAllot->setEditTriggers(QAbstractItemView::DoubleClicked);
+	//ui.tableWidget_SaleAllot->setEditTriggers(QAbstractItemView::DoubleClicked);
 	int isheetcount=PublicInfoSheetNo_Sale();
 	isheetcount++;
 	QString strSheetNo= "XSDB"+QString::number(isheetcount, 10);
@@ -306,7 +301,6 @@ void DrugAllot::on_addButton_clicked()
 	ui.lineEdit_Paid->setText("0");
 	ui.lineEdit_Debt->setText("0");
 }
-
 void DrugAllot::on_addButton_2_clicked()
 {
 	SetEdit(true);
@@ -323,7 +317,7 @@ void DrugAllot::on_addButton_2_clicked()
 	ui.tableWidget_StoreAllot->insertRow(0);
 	iRow_Store = 0;
 	icount_store = 0;
-	ui.tableWidget_StoreAllot->setEditTriggers(QAbstractItemView::DoubleClicked);
+	//ui.tableWidget_StoreAllot->setEditTriggers(QAbstractItemView::DoubleClicked);
 	int isheetcount=PublicInfoSheetNo_Store();
 	isheetcount++;
 	QString strSheetNo= "CKDB"+QString::number(isheetcount, 10);
@@ -351,7 +345,6 @@ int  DrugAllot::SheetNo_Sale()
 	}
 	return isheetcount;
 }
-
 int  DrugAllot::PublicInfoSheetNo_Store()
 {
 	QSqlQuery query(*sql.db);		
@@ -374,8 +367,6 @@ int  DrugAllot::SheetNo_Store()
 	}
 	return isheetcount;
 }
-
-
 void DrugAllot::on_deleteButton_clicked()//存在问题
 {
 
@@ -405,7 +396,6 @@ void DrugAllot::on_deleteButton_clicked()//存在问题
 		ui.tableWidget_SaleAllot->insertRow(0);
 	}
 }
-
 void DrugAllot::on_deleteButton_2_clicked()//存在问题
 {
 	QMessageBox box(QMessageBox::Warning,QString::fromLocal8Bit("警告"),QString::fromLocal8Bit("确认删除本单？"));
@@ -435,7 +425,6 @@ void DrugAllot::on_deleteButton_2_clicked()//存在问题
 		ui.tableWidget_StoreAllot->insertRow(0);
 	}
 }
-
 void DrugAllot::on_saveButton_clicked()
 {
 	static int iFlag;
@@ -671,7 +660,6 @@ void DrugAllot::on_saveButton_clicked()
 	//ui.editButton->setEnabled(true);
 	//ui.saveButton->setEnabled(false);
 }
-
 void DrugAllot::on_saveButton_2_clicked()
 {
 	static int iFlag;
@@ -975,7 +963,6 @@ void DrugAllot::on_discardButton_clicked()
 	ui.deleteRowButton->setEnabled(false);
 	
 }
-
 void DrugAllot::on_discardButton_2_clicked()
 {
 	ui.lineEdit_StoreAllotNo->setText("");
@@ -986,7 +973,6 @@ void DrugAllot::on_discardButton_2_clicked()
 	ui.deleteRowButton->setEnabled(false);
 	
 }
-
 void DrugAllot::on_editButton_clicked()
 {
 	int i=0,amount;
@@ -1030,7 +1016,6 @@ void DrugAllot::on_editButton_clicked()
 		}
 	}
 }
-
 void DrugAllot::on_editButton_2_clicked()
 {
 	int i=0,amount;
@@ -1157,7 +1142,6 @@ void DrugAllot::edit_sale(QString strNo)
 		row++;
 	}
 }
-
 void DrugAllot::edit_store(QString strNo)
 {
 	ui.tableWidget_StoreAllot->installEventFilter(this);
@@ -1236,24 +1220,20 @@ void DrugAllot::on_printButton_clicked()
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print_XSDB( &printer );
 }
-
 void DrugAllot::on_printButton_2_clicked()
 {
 	QPrinter       printer( QPrinter::PrinterResolution );
 	QPrintDialog   dialog( &printer, this );
 	if ( dialog.exec() == QDialog::Accepted ) print_CKDB( &printer );
 }
-
 void DrugAllot::on_previewButton_clicked()
 {
 	filePrintPreview();
 }
-
 void DrugAllot::on_previewButton_2_clicked()
 {
 	filePrintPreview_2();
 }
-
 void DrugAllot::filePrintPreview()
 {
 	// 打印预览对话框
@@ -1264,7 +1244,6 @@ void DrugAllot::filePrintPreview()
 	connect( &preview, SIGNAL(paintRequested(QPrinter*)), SLOT(print_XSDB(QPrinter*)) );
 	preview.exec();
 }
-
 void DrugAllot::filePrintPreview_2()
 {
 	// 打印预览对话框
@@ -1275,7 +1254,6 @@ void DrugAllot::filePrintPreview_2()
 	connect( &preview, SIGNAL(paintRequested(QPrinter*)), SLOT(print_CKDB(QPrinter*)) );
 	preview.exec();
 }
-
 void DrugAllot::print_XSDB( QPrinter* printer )
 {
 	//// 创建打印页面的绘制对象
@@ -1302,28 +1280,12 @@ void DrugAllot::print_XSDB( QPrinter* printer )
 	// 绘制模拟数据
 	page.adjust( w/20, h/20, -w/20, -h/20 );
 
-	//m_scene->render( &painter, page );
-	//表格
-	/*	QWidget *myForm=new QWidget(this);
-	myForm->setObjectName(QString::fromUtf8("Form"));
-	myForm->resize(500, 500);
-	QTableWidget *tableWidget;
-	tableWidget = new QTableWidget(myForm);
-	tableWidget->setColumnCount(3);
-	tableWidget->setRowCount(4);
-	tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
-	tableWidget->setGeometry(QRect(0, 0,500, 500));    
-	tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-	tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section {background-color:white;color: black;padding-left: 4px;border: 1px solid #6c6c6c;};"
-	"color: white;padding-left: 4px;border: 1px solid #6c6c6c;}"
-	"QHeaderView::section:checked{background-color: red;}");    */       
 	QPixmap image;
 	image=image.grabWidget(ui.tableWidget_SaleAllot,-35,0,900, 1000);
 	painter.drawPixmap(page4,image);
 
 	//printTableWidget(ui.tableWidget,"preview",printer);
 }
-
 void DrugAllot::print_CKDB( QPrinter* printer )
 {
 	//// 创建打印页面的绘制对象
@@ -1348,30 +1310,13 @@ void DrugAllot::print_CKDB( QPrinter* printer )
 		QDateTime::currentDateTime().toString( Qt::DefaultLocaleShortDate ) );*/
 
 	// 绘制模拟数据
-	page.adjust( w/20, h/20, -w/20, -h/20 );
-
-	//m_scene->render( &painter, page );
-	//表格
-	/*	QWidget *myForm=new QWidget(this);
-	myForm->setObjectName(QString::fromUtf8("Form"));
-	myForm->resize(500, 500);
-	QTableWidget *tableWidget;
-	tableWidget = new QTableWidget(myForm);
-	tableWidget->setColumnCount(3);
-	tableWidget->setRowCount(4);
-	tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
-	tableWidget->setGeometry(QRect(0, 0,500, 500));    
-	tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-	tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section {background-color:white;color: black;padding-left: 4px;border: 1px solid #6c6c6c;};"
-	"color: white;padding-left: 4px;border: 1px solid #6c6c6c;}"
-	"QHeaderView::section:checked{background-color: red;}");    */       
+	page.adjust( w/20, h/20, -w/20, -h/20 );  
 	QPixmap image;
 	image=image.grabWidget(ui.tableWidget_StoreAllot,-35,0,900, 1000);
 	painter.drawPixmap(page4,image);
 
 	//printTableWidget(ui.tableWidget,"preview",printer);
 }
-
 void DrugAllot::pay(const QString &)
 {
 	double iamount = ui.lineEdit_Paid->text().toInt();
@@ -1381,7 +1326,6 @@ void DrugAllot::pay(const QString &)
 	ui.lineEdit_Debt->setText(strcurrentamount);
 
 }
-
 void DrugAllot::getItem_Sale(int row,int column)//计算费用
 {
 	QString str2;
@@ -1445,11 +1389,12 @@ void DrugAllot::getItem_Sale(int row,int column)//计算费用
 		strText =  ui.tableWidget_SaleAllot->item(row,0)->text();
 		if(strText.at(0)== QChar('1')) return;
 
-		list_widget->setGeometry(103, 160+row*30, 150, 280);
+		//list_widget->setGeometry(103, 160+row*30, 150, 280);
+		QPoint GlobalPoint(ui.tableWidget_SaleAllot->mapFrom(ui.tableWidget_SaleAllot,QPoint(0, 0)));//获取控件在窗体中的坐标
+		if(row<8)
+			list_widget->setGeometry(GlobalPoint.x()+80, GlobalPoint.y()+40*(row+1), 150, 280);
 		list_widget->show();
 		QSqlQuery query(*sql.db);	
-
-
 
 		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strText).arg(strText);
 
@@ -1465,7 +1410,6 @@ void DrugAllot::getItem_Sale(int row,int column)//计算费用
 	}
 
 }
-
 void DrugAllot::getItem_Store(int row,int column)//计算费用
 {
 	QString str2;
@@ -1532,7 +1476,10 @@ void DrugAllot::getItem_Store(int row,int column)//计算费用
 		strText =  ui.tableWidget_StoreAllot->item(row,0)->text();
 		if(strText.at(0)== QChar('1')) return;
 
-		list_widget2->setGeometry(103, 160+row*30, 150, 280);
+		//list_widget2->setGeometry(103, 160+row*30, 150, 280);
+		QPoint GlobalPoint(ui.tableWidget_StoreAllot->mapFrom(ui.tableWidget_StoreAllot,QPoint(0, 0)));//获取控件在窗体中的坐标
+		if(row<8)
+			list_widget->setGeometry(GlobalPoint.x()+80, GlobalPoint.y()+40*(row+1), 150, 280);
 		list_widget2->show();
 		QSqlQuery query(*sql.db);	
 
@@ -1554,6 +1501,15 @@ void DrugAllot::getItem_Store(int row,int column)//计算费用
 void DrugAllot::keyPressEvent(QKeyEvent *e) {
 	QString str2;
 	QString str = str.fromLocal8Bit("警告");
+	if (!ui.tab->isHidden())
+	{
+		list_widget->setFocus();
+	}
+	if (!ui.tab_2->isHidden())
+	{
+		list_widget2->setFocus();
+	}
+
 	if (!list_widget->isHidden()) {
 		int key = e->key();
 		int count = list_widget->model()->rowCount();
@@ -1600,6 +1556,7 @@ void DrugAllot::keyPressEvent(QKeyEvent *e) {
 				query.exec(strsql);
 				while(query.next())
 				{
+					ui.tableWidget_SaleAllot->setItem(row,0,new QTableWidgetItem(query.value(22).toString()));
 					ui.tableWidget_SaleAllot->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
 					ui.tableWidget_SaleAllot->setItem(row,2,new QTableWidgetItem(query.value(4).toString()));
 					ui.tableWidget_SaleAllot->setItem(row,3,new QTableWidgetItem(query.value(5).toString()));
@@ -1607,6 +1564,11 @@ void DrugAllot::keyPressEvent(QKeyEvent *e) {
 					ui.tableWidget_SaleAllot->setItem(row,8,new QTableWidgetItem(query.value(15).toString()));
 					ui.tableWidget_SaleAllot->setItem(row,9,new QTableWidgetItem(query.value(16).toString()));//
 					ui.tableWidget_SaleAllot->setItem(row,10,new QTableWidgetItem(query.value(10).toString()));//
+
+
+					ui.tableWidget_SaleAllot->setFocus();
+					ui.tableWidget_SaleAllot->setCurrentCell(row, 0, QItemSelectionModel::Deselect);
+					ui.tableWidget_SaleAllot->setCurrentCell(row,6, QItemSelectionModel::Select);
 				}
 
 				strsql= "select * from yk_inventory where name='"+strName+"'";//;//where AbbrName = '"+strName+"'
@@ -1631,10 +1593,26 @@ void DrugAllot::keyPressEvent(QKeyEvent *e) {
 			list_widget->hide();
 			//QLineEdit::keyPressEvent(e);
 		}
-	} else {
-		//QLineEdit::keyPressEvent(e);
 	}
+	else
+	{
+		if (!ui.tab_2->isHidden())
+			return;
+		int key = e->key();
+		if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+			int row = ui.tableWidget_SaleAllot->currentRow();
+			int count = ui.tableWidget_SaleAllot->rowCount();
+			ui.tableWidget_SaleAllot->insertRow(count);
+			ui.tableWidget_SaleAllot->setCurrentCell(row, 6, QItemSelectionModel::Deselect);
+			ui.tableWidget_SaleAllot->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
+			//QCursor cursorAction;
+			//ui.tableWidget->setCursor(cursorAction);
+		}
+		if (Qt::Key_F5 == key ) {
+			on_saveButton_clicked();
+		}
 
+	}
 
 	if (!list_widget2->isHidden()) {
 		int key = e->key();
@@ -1699,6 +1677,7 @@ void DrugAllot::keyPressEvent(QKeyEvent *e) {
 				query.exec(strsql);
 				while(query.next())
 				{
+					ui.tableWidget_StoreAllot->setItem(row,0,new QTableWidgetItem(query.value(22).toString()));
 					ui.tableWidget_StoreAllot->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
 					ui.tableWidget_StoreAllot->setItem(row,2,new QTableWidgetItem(query.value(4).toString()));
 					ui.tableWidget_StoreAllot->setItem(row,3,new QTableWidgetItem(query.value(5).toString()));
@@ -1706,6 +1685,10 @@ void DrugAllot::keyPressEvent(QKeyEvent *e) {
 					ui.tableWidget_StoreAllot->setItem(row,9,new QTableWidgetItem(query.value(15).toString()));
 					ui.tableWidget_StoreAllot->setItem(row,10,new QTableWidgetItem(query.value(16).toString()));//
 					ui.tableWidget_StoreAllot->setItem(row,11,new QTableWidgetItem(query.value(10).toString()));//
+
+					ui.tableWidget_StoreAllot->setFocus();
+					ui.tableWidget_StoreAllot->setCurrentCell(row, 0, QItemSelectionModel::Deselect);
+					ui.tableWidget_StoreAllot->setCurrentCell(row,6, QItemSelectionModel::Select);
 				}
 				QString strsql1= "select * from yk_inventory where name='"+strName+"'";//;//where AbbrName = '"+strName+"'
 				query.exec(strsql1);
@@ -1741,7 +1724,24 @@ void DrugAllot::keyPressEvent(QKeyEvent *e) {
 			list_widget2->hide();
 			//QLineEdit::keyPressEvent(e);
 		}
-	} else {
-		//QLineEdit::keyPressEvent(e);
+	} 
+	else
+	{
+		if (!ui.tab->isHidden())
+		return;
+		int key = e->key();
+		if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+			int row = ui.tableWidget_StoreAllot->currentRow();
+			int count = ui.tableWidget_StoreAllot->rowCount();
+			ui.tableWidget_StoreAllot->insertRow(count);
+			ui.tableWidget_StoreAllot->setCurrentCell(row, 6, QItemSelectionModel::Deselect);
+			ui.tableWidget_StoreAllot->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
+			//QCursor cursorAction;
+			//ui.tableWidget->setCursor(cursorAction);
+		}
+		if (Qt::Key_F5 == key ) {
+			on_saveButton_2_clicked();
+		}
+
 	}
 }

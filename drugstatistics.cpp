@@ -71,14 +71,9 @@ void DrugStatistics::DrugName(const QString &text)
 	druglist->setMinimumWidth(width());
 	druglist->setMaximumWidth(width());
 
-	QPoint p(0, height());
-	int x = mapToGlobal(p).x();
-	int y = mapToGlobal(p).y() + 1;
-
-	//druglist->move(x, y);
-	druglist->setGeometry(this->x()+822, this->y()+165, 50, 100);
-	druglist->resize(100,200);
-	druglist->setFixedWidth(160);
+	//druglist->setGeometry(this->x()+822, this->y()+165, 50, 100);
+	QPoint GlobalPoint(ui.lineEdit_DrugName->mapToGlobal(QPoint(0, 0)));
+	druglist->setGeometry(GlobalPoint.x(), GlobalPoint.y()+ui.lineEdit_DrugName->height(), 60, 100);
 	druglist->show();
 
 }
@@ -664,7 +659,6 @@ void DrugStatistics::on_findButton_clicked()
 		}
 	}
 }
-
 void DrugStatistics::on_printButton_clicked()
 {
 	QPrinter       printer( QPrinter::PrinterResolution );

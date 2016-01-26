@@ -83,6 +83,7 @@ void PharmacyCheck::edit(QString strNo)
 		query.exec(strsql);
 		while(query.next())
 		{
+			ui.tableWidget->setItem(row,0,new QTableWidgetItem(query.value(22).toString()));
 			ui.tableWidget->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
 			ui.tableWidget->setItem(row,2,new QTableWidgetItem(query.value(4).toString()));
 			ui.tableWidget->setItem(row,3,new QTableWidgetItem(query.value(5).toString()));
@@ -212,137 +213,6 @@ void PharmacyCheck::on_addButton_clicked()
 	ui.lineEdit_AftProfit->setText("0");
 
 }
-//void PharmacyCheck::on_checkButton_clicked()
-//{
-//	int i;
-//	QSqlQuery query(*sql.db);	
-//	QDateTime time;
-//	QStringList list;
-//	QString strName;
-//	QString strDate1;
-//	QString strDate2;
-//	QString strsql= "select * from yf_inventory";
-//	query.exec(strsql);
-//		
-//	int rows = ui.tableWidget->model()->rowCount();   //行总数
-//	for (int i=0;i<rows+1;i++)
-//	{
-//		ui.tableWidget->removeRow(rows - i);
-//	}
-//	 
-//	//time = ui.dateTimeEdit_Begin->dateTime();
-//	//strDate1 = time.toString("YYYY-MM-DD THH:MM:SS");
-//
-//	//time = ui.dateTimeEdit_End->dateTime();
-//	//strDate2 = time.toString("YYYY-MM-DD THH:MM:SS");
-//	while(query.next())
-//	{
-//		strName = query.value(2).toString();
-//		list.append(strName);
-//
-//	}
-//
-//	for(i =0;i<list.size();i++)
-//	{
-//		int rows = ui.tableWidget->model()->rowCount();   //行总数
-//		ui.tableWidget->insertRow(rows);
-//		iRow=rows;
-//		strName = list[i];
-//		QSqlQuery query(*sql.db);	
-//	
-//		QString strsql= "select * from sys_drugdictionary where name='"+strName+"'";
-//		query.exec(strsql);
-//
-//		if(query.next())
-//		{
-//			ui.tableWidget->setItem(i,0,new QTableWidgetItem(query.value(2).toString()));
-//			ui.tableWidget->setItem(i,1,new QTableWidgetItem(query.value(1).toString()));
-//			ui.tableWidget->setItem(i,2,new QTableWidgetItem(query.value(4).toString()));
-//			ui.tableWidget->setItem(i,3,new QTableWidgetItem(query.value(5).toString()));
-//			ui.tableWidget->setItem(i,5,new QTableWidgetItem(query.value(6).toString()));
-//		}
-//		strsql= "select * from yf_inventory where name='"+strName+"'";//;//where AbbrName = '"+strName+"'
-//		query.exec(strsql);
-//					
-//		if(query.next())
-//		{
-//			ui.tableWidget->setItem(i,6,new QTableWidgetItem(query.value(7).toString()));
-//		}
-//
-//		strsql= "select * from yf_receipt where name='"+strName+"'";//;//where AbbrName = '"+strName+"'
-//		query.exec(strsql);
-//					
-//		if(query.next())
-//		{
-//			ui.tableWidget->setItem(i,9,new QTableWidgetItem(query.value(12).toString()));
-//		}
-//	}
-//	
-//	//for(i =0;i<list.size();i++)
-//	//{	
-//	//	int preBooknum =0;
-//	//	int preInventorynum =0;
-//	//	strName = list[i];
-//	//	strsql= "select * from yk_check where name='"+strName+"'and Date =(select max(Date) from yk_check where name='"+strName+"')";
-//	//	query.exec(strsql);
-//	//	while(query.next())
-//	//	{
-//	//		preBooknum = query.value(12).toInt();
-//	//		preInventorynum = query.value(13).toInt();
-//	//	}
-//	//	
-//	//	//查询该药品的入库信息
-//	//	int instorage_num = 0;
-//	//	int total_instorage_num = 0;
-//
-//	//	strName = list[i];
-//	//	strsql= "select * from yk_instorage where name='"+strName+"'and Date between '"+strDate1+"' and '"+strDate1+"'";
-//	//	query.exec(strsql);
-//	//	while(query.next())
-//	//	{
-//	//		instorage_num = query.value(13).toInt();
-//	//		total_instorage_num = total_instorage_num + instorage_num;
-//	//	}
-//	//	//查询该药品的销售调拨信息
-//	//	int saleallot_num = 0;
-//	//	int total_saleallot_num = 0;
-//
-//	//	strName = list[i];
-//	//	strsql= "select * from yk_saleallot where name='"+strName+"'and Date between '"+strDate1+"' and '"+strDate1+"'";
-//	//	query.exec(strsql);
-//	//	while(query.next())
-//	//	{
-//	//		saleallot_num = query.value(13).toInt();
-//	//		total_saleallot_num = total_saleallot_num + saleallot_num;
-//	//	}
-//
-//	//	//查询该药品的仓库调拨信息
-//	//	int warehouseallot_num = 0;
-//	//	int total_warehouseallot_num = 0;
-//
-//	//	strName = list[i];
-//	//	strsql= "select * from yk_warehouseallot where name='"+strName+"'and Date between '"+strDate1+"' and '"+strDate1+"'";
-//	//	query.exec(strsql);
-//	//	while(query.next())
-//	//	{
-//	//		warehouseallot_num = query.value(13).toInt();
-//	//		total_warehouseallot_num = warehouseallot_num + warehouseallot_num;
-//	//	}
-//
-//	//	int BookCount =preBooknum + total_instorage_num - total_saleallot_num - total_warehouseallot_num; //盘点数量
-//	//	int inventory_num = 0;
-//	//	strName = list[i];
-//	//	strsql= "select * from yk_inventory where name='"+strName+"'";
-//	//	query.exec(strsql);
-//	//	while(query.next())
-//	//	{
-//	//		inventory_num = preInventorynum + query.value(7).toInt() ;                  //账面数量
-//	//	}
-//
-// //
-//	//}
-//
-//}
 double PharmacyCheck::TotalPrice()
 {
 	int i;
@@ -447,7 +317,10 @@ void PharmacyCheck::getItem(int row,int column)//计算费用
 		strText =  ui.tableWidget->item(row,0)->text();
 		if(strText.at(0)== QChar('1')) return;
 
-		list_widget->setGeometry(103, 160+row*30, 150, 280);
+		//list_widget->setGeometry(103, 160+row*30, 150, 280);
+		QPoint GlobalPoint(ui.tableWidget->mapFrom(ui.tableWidget,QPoint(0, 0)));//获取控件在窗体中的坐标
+		if(row<8)
+			list_widget->setGeometry(GlobalPoint.x()+80, GlobalPoint.y()+40*(row+1), 150, 280);
 		list_widget->show();
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
@@ -695,21 +568,6 @@ void PharmacyCheck::print( QPrinter* printer )
 	// 绘制模拟数据
 	page.adjust( w/20, h/20, -w/20, -h/20 );
 
-	//m_scene->render( &painter, page );
-	//表格
-	/*	QWidget *myForm=new QWidget(this);
-	myForm->setObjectName(QString::fromUtf8("Form"));
-	myForm->resize(500, 500);
-	QTableWidget *tableWidget;
-	tableWidget = new QTableWidget(myForm);
-	tableWidget->setColumnCount(3);
-	tableWidget->setRowCount(4);
-	tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
-	tableWidget->setGeometry(QRect(0, 0,500, 500));    
-	tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-	tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section {background-color:white;color: black;padding-left: 4px;border: 1px solid #6c6c6c;};"
-	"color: white;padding-left: 4px;border: 1px solid #6c6c6c;}"
-	"QHeaderView::section:checked{background-color: red;}");    */       
 	QPixmap image;
 	image=image.grabWidget(ui.tableWidget,-35,0,900, 1000);
 	painter.drawPixmap(page4,image);
@@ -717,6 +575,7 @@ void PharmacyCheck::print( QPrinter* printer )
 	//printTableWidget(ui.tableWidget,"preview",printer);
 }
 void PharmacyCheck::keyPressEvent(QKeyEvent *e) {
+	list_widget->setFocus();
 	if (!list_widget->isHidden()) {
 		int key = e->key();
 		int count = list_widget->model()->rowCount();
@@ -751,12 +610,15 @@ void PharmacyCheck::keyPressEvent(QKeyEvent *e) {
 				query.exec(strsql);
 				while(query.next())
 				{
-					//ui.tableWidget->setItem(iRow,0,new QTableWidgetItem(query.value(2).toString()));
+					ui.tableWidget->setItem(row,0,new QTableWidgetItem(query.value(22).toString()));
 					ui.tableWidget->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
 					ui.tableWidget->setItem(row,2,new QTableWidgetItem(query.value(4).toString()));
 					ui.tableWidget->setItem(row,3,new QTableWidgetItem(query.value(5).toString()));
 					ui.tableWidget->setItem(row,5,new QTableWidgetItem(query.value(6).toString()));
 					ui.tableWidget->setItem(row,9,new QTableWidgetItem(query.value(15).toString()));
+					ui.tableWidget->setFocus();
+					ui.tableWidget->setCurrentCell(row, 0, QItemSelectionModel::Deselect);
+					ui.tableWidget->setCurrentCell(row,7, QItemSelectionModel::Select);
 				}
 				QString strsql1= "select * from yf_inventory where name='"+strName+"'";//;//where AbbrName = '"+strName+"'
 				query.exec(strsql1);
@@ -778,6 +640,19 @@ void PharmacyCheck::keyPressEvent(QKeyEvent *e) {
 			//QLineEdit::keyPressEvent(e);
 		}
 	} else {
-		//QLineEdit::keyPressEvent(e);
+		int key = e->key();
+		if (Qt::Key_Enter == key || Qt::Key_Return == key) {
+			int row = ui.tableWidget->currentRow();
+			int count = ui.tableWidget->rowCount();
+			ui.tableWidget->insertRow(count);
+			ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Deselect);
+			ui.tableWidget->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
+			//QCursor cursorAction;
+			//ui.tableWidget->setCursor(cursorAction);
+		}
+		if (Qt::Key_F5 == key ) {
+			on_saveButton_clicked();
+		}
+
 	}
 }

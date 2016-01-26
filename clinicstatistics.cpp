@@ -495,9 +495,10 @@ void ClinicStatistics::setCompleter(const QString &text) {
 	int y = mapToGlobal(p).y() + 1;
 
 	//listView->move(x, y);
-	listView->setGeometry(this->x()+180, this->y()+235, 50, 100);
+	QPoint GlobalPoint(ui.patientEdit->mapToGlobal(QPoint(0, 0)));
+	listView->setGeometry(GlobalPoint.x(), GlobalPoint.y()+ui.patientEdit->height(), 50, 100);
 	listView->resize(100,200);
-	listView->setFixedWidth(95);
+	listView->setFixedWidth(ui.patientEdit->width());
 	listView->show();
 }
 void ClinicStatistics::keyPressEvent(QKeyEvent *e) {

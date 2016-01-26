@@ -94,7 +94,6 @@ void PharmacyReceipt::on_radioButton_sendback_clicked()
 		ui.tableWidget->removeRow(rows - i);
 	}
 }
-
 void PharmacyReceipt::on_radioButton_broken_clicked()
 {
 	ui.lineEdit_Payable->setText("0");
@@ -106,7 +105,6 @@ void PharmacyReceipt::on_radioButton_broken_clicked()
 		ui.tableWidget->removeRow(rows - i);
 	}
 }
-
 PharmacyReceipt::~PharmacyReceipt()
 {
 
@@ -190,7 +188,7 @@ void PharmacyReceipt::initUI()
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("gb18030"));
 
 	//ui.tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);  //整行选中的方式
-	ui.tableWidget->setEditTriggers(QAbstractItemView::AllEditTriggers);
+	//ui.tableWidget->setEditTriggers(QAbstractItemView::AllEditTriggers);
 	ui.tableWidget->setAlternatingRowColors(true);  
 
 	ui.lineEdit_Payable->setText("0");
@@ -287,7 +285,7 @@ void PharmacyReceipt::on_addButton_clicked()
 	ui.tableWidget->insertRow(0);
 	iRow = 0;
 	icount = 0;
-	ui.tableWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
+	//ui.tableWidget->setEditTriggers(QAbstractItemView::DoubleClicked);
 	int rows = ui.tableWidget->model()->rowCount();   //行总数
 	for (int i=0;i<rows;i++)
 	{
@@ -302,7 +300,6 @@ void PharmacyReceipt::on_addButton_clicked()
 	ui.lineEdit_Paid->setText("0");
 	ui.lineEdit_Debt->setText("0");
 }
-
 int  PharmacyReceipt::PublicInfoSheetNo()
 {
 	QSqlQuery query(*sql.db);		
@@ -314,7 +311,6 @@ int  PharmacyReceipt::PublicInfoSheetNo()
 	}
 	return isheetcount;
 }
-
 int  PharmacyReceipt::SheetNo()
 {
 	QSqlQuery query(*sql.db);		
@@ -731,22 +727,7 @@ void PharmacyReceipt::print( QPrinter* printer )
 
 	// 绘制模拟数据
 	page.adjust( w/20, h/20, -w/20, -h/20 );
-
-	//m_scene->render( &painter, page );
-	//表格
-	/*	QWidget *myForm=new QWidget(this);
-	myForm->setObjectName(QString::fromUtf8("Form"));
-	myForm->resize(500, 500);
-	QTableWidget *tableWidget;
-	tableWidget = new QTableWidget(myForm);
-	tableWidget->setColumnCount(3);
-	tableWidget->setRowCount(4);
-	tableWidget->setObjectName(QString::fromUtf8("tableWidget"));
-	tableWidget->setGeometry(QRect(0, 0,500, 500));    
-	tableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-	tableWidget->horizontalHeader()->setStyleSheet("QHeaderView::section {background-color:white;color: black;padding-left: 4px;border: 1px solid #6c6c6c;};"
-	"color: white;padding-left: 4px;border: 1px solid #6c6c6c;}"
-	"QHeaderView::section:checked{background-color: red;}");    */       
+  
 	QPixmap image;
 	image=image.grabWidget(ui.tableWidget,-35,0,900, 1000);
 	painter.drawPixmap(page4,image);
@@ -846,7 +827,11 @@ void PharmacyReceipt::getItem(int row,int column)//计算费用
 		strText =  ui.tableWidget->item(row,0)->text();
 		if(strText.at(0)== QChar('1')) return;
 
-		list_widget->setGeometry(103, 160+row*30, 150, 280);
+		//list_widget->setGeometry(103, 160+row*30, 150, 280);
+		QPoint GlobalPoint(ui.tableWidget->mapFrom(ui.tableWidget,QPoint(0, 0)));//获取控件在窗体中的坐标
+		if(row<8)
+			list_widget->setGeometry(GlobalPoint.x()+80, GlobalPoint.y()+40*(row+1), 150, 280);
+		list_widget->show();
 		list_widget->show();
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
@@ -900,6 +885,7 @@ void PharmacyReceipt::keyPressEvent(QKeyEvent *e) {
 				query.exec(strsql);
 				while(query.next())
 				{
+					ui.tableWidget->setItem(row,0,new QTableWidgetItem(query.value(22).toString()));
 					ui.tableWidget->setItem(row,1,new QTableWidgetItem(query.value(1).toString()));
 					ui.tableWidget->setItem(row,2,new QTableWidgetItem(query.value(4).toString()));
 					ui.tableWidget->setItem(row,3,new QTableWidgetItem(query.value(5).toString()));
@@ -938,7 +924,7 @@ void PharmacyReceipt::keyPressEvent(QKeyEvent *e) {
 			int row = ui.tableWidget->currentRow();
 			int count = ui.tableWidget->rowCount();
 			ui.tableWidget->insertRow(count);
-			ui.tableWidget->setCurrentCell(row, 7, QItemSelectionModel::Deselect);
+			ui.tableWidget->setCurrentCell(row, 6, QItemSelectionModel::Deselect);
 			ui.tableWidget->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
 			//QCursor cursorAction;
 			//ui.tableWidget->setCursor(cursorAction);

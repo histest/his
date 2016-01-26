@@ -214,8 +214,9 @@ void ConnectDB::setCompleter(const QString &text) {
 	int x = this->mapToGlobal(p).x();
 	int y = this->mapToGlobal(p).y() + 1;
 
-	//listView->move(x, y);
-	namelistview->setGeometry(this->x()+130, this->y()+215, 50, 100);
+	QPoint GlobalPoint(ui->comboBox_2->mapToGlobal(QPoint(0, 0)));//获取控件在窗体中的坐标
+
+	namelistview->setGeometry(GlobalPoint.x(), GlobalPoint.y()+ui->comboBox_2->height(), 60, 100);
 	namelistview->resize(100,200);
 	namelistview->setFixedWidth(123);
 	namelistview->show();

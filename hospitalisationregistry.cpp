@@ -491,12 +491,10 @@ void HospitalisationRegistry::setCompleter(const QString &text) {
 	doctorlist->setMinimumWidth(width());
 	doctorlist->setMaximumWidth(width());
 
-	QPoint p(0, height());
-	int x = mapToGlobal(p).x();
-	int y = mapToGlobal(p).y() + 1;
-	//listView->move(x, y);
-	doctorlist->setGeometry(this->x()+441, this->y()+270, 50, 100);
-	doctorlist->setFixedWidth(40);
+	QPoint GlobalPoint(ui.doctorEdit->mapToGlobal(QPoint(0, 0)));
+	doctorlist->setGeometry(GlobalPoint.x(), GlobalPoint.y()+ui.doctorEdit->height(), 60, 100);
+	//doctorlist->setGeometry(this->x()+441, this->y()+270, 50, 100);
+	//doctorlist->setFixedWidth(40);
 	doctorlist->show();
 }
 void HospitalisationRegistry::keyPressEvent(QKeyEvent *e) {

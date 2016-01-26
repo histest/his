@@ -41,7 +41,7 @@ ClinicCharge::ClinicCharge(QWidget *parent)
 		"QHeaderView::section:checked{background-color: white;color: black;}");	
 	ui.tableWidget->horizontalHeader()->resizeSection(2,80);
 	connect(ui.tableWidget,SIGNAL(cellChanged(int,int)),this,SLOT(getItem(int,int)));
-	connect(list_widget,SIGNAL(itemClicked(QListWidgetItem *)),this,SLOT(selectItem(QListWidgetItem *)));//
+	//connect(list_widget,SIGNAL(itemClicked(QListWidgetItem *)),this,SLOT(selectItem(QListWidgetItem *)));//
 	connect(ui.doctorEdit, SIGNAL(textChanged(const QString &)), this, SLOT(setCompleter(const QString &)));
 	connect(ui.doctorEdit, SIGNAL(textChanged(const QString &)), this, SLOT(showDepartment(const QString &)));
 	connect(package,SIGNAL(showPackage(QString)),this,SLOT(addPackage(QString)));
@@ -480,9 +480,6 @@ void ClinicCharge::getItem(int row,int column)
 		QString strcurrentamount = QString::number(currentamount);
 		ui.dueincomeEdit->setText(strcurrentamount);
 	
-		//int row = ui.tableWidget->rowCount();
-		//if (ui.tableWidget->itemAt(row,0)==NULL) return;
-		//ui.tableWidget->insertRow(row);
 	}
 	if (column==0)
 	{
@@ -493,8 +490,10 @@ void ClinicCharge::getItem(int row,int column)
 		strText =  ui.tableWidget->item(row,0)->text();
 		if(strText.at(0)== QChar('1')) return;
 		
-		list_widget->setGeometry(103, 160+row*30, 150, 280);
-
+		QPoint GlobalPoint(ui.tableWidget->mapToParent(QPoint(0, 0)));//获取控件在窗体中的坐标+row*30
+		if(row<8)
+			list_widget->setGeometry(GlobalPoint.x(), GlobalPoint.y()+40*(row+1), 150, 280);
+		//list_widget->move(GlobalPoint.x(), GlobalPoint.y());
 		QSqlQuery query(*sql.db);	
 		strText =  ui.tableWidget->item(row,0)->text();
 		QString strsql= QString("select * from sys_drugdictionary where abbr like '%%1%'or name like'%%2%'  ").arg(strText).arg(strText);
@@ -677,6 +676,7 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 			}
 
 			doctorlist->hide();
+			return;
 		} else {
 			// 其他情况，隐藏完成列表，并使用QLineEdit的键盘按下事件
 			doctorlist->hide();
@@ -711,6 +711,7 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 			if (currentIndex.isValid()) {
 				QString text = departmentlist->currentIndex().data().toString();
 				//ui.departmentEdit->setText(text);
+				return;
 			}
 
 			departmentlist->hide();
@@ -748,7 +749,7 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 			if (currentIndex.isValid()) {
 				QString strName = list_widget->currentIndex().data().toString();
 
-				int row = ui.tableWidget->rowCount()-1;
+				int row = ui.tableWidget->currentRow();
 				QSqlQuery query(*sql.db);	
 				QString strsql= "select * from sys_drugdictionary where name='"+strName+"'";
 				bool isexist = query.exec(strsql);
@@ -805,6 +806,7 @@ void ClinicCharge::keyPressEvent(QKeyEvent *e) {
 			ui.tableWidget->setCurrentCell(row+1, 0, QItemSelectionModel::Select);
 			//QCursor cursorAction;
 			//ui.tableWidget->setCursor(cursorAction);
+			list_widget->setFocus();
 		}
 		if (Qt::Key_F5 == key ) {
 			on_saveButton_clicked();
@@ -1009,10 +1011,9 @@ void ClinicCharge::setCompleter(const QString &text) {
 	int x = mapToGlobal(p).x();
 	int y = mapToGlobal(p).y() + 1;
 
-	//listView->move(x, y);
-	doctorlist->setGeometry(this->x()+677, this->y()+220, 50, 100);
-	doctorlist->resize(100,200);
-	doctorlist->setFixedWidth(ui.doctorEdit->width());
+	QPoint GlobalPoint(ui.doctorEdit->mapToGlobal(QPoint(0, 0)));
+	doctorlist->setGeometry(GlobalPoint.x(), GlobalPoint.y()+ui.doctorEdit->height(), 50, 100);
+	doctorlist->resize(100,200);	doctorlist->setFixedWidth(ui.doctorEdit->width());
 	doctorlist->show();
 }
 void ClinicCharge::showDepartment(const QString &text)

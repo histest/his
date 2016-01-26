@@ -78,10 +78,8 @@ void PharmacyInventory::findbyname(const QString &text)
 	int x = mapToGlobal(p).x();
 	int y = mapToGlobal(p).y() + 1;
 
-	//listView->move(x, y);
-	druglist->setGeometry(this->x()+180, this->y()+160, 50, 100);
-	druglist->resize(100,200);
-	druglist->setFixedWidth(160);
+	QPoint GlobalPoint(ui.lineEdit_code->mapToGlobal(QPoint(0, 0)));
+	druglist->setGeometry(GlobalPoint.x(), GlobalPoint.y()+ui.lineEdit_code->height(), 60, 100);
 	druglist->show();
 }
 void PharmacyInventory::initUI()
@@ -104,7 +102,6 @@ void PharmacyInventory::initUI()
 	}
 
 }
-
 void PharmacyInventory::SetEdit(bool IsEdit)
 {
 	if (IsEdit==true)
@@ -117,8 +114,6 @@ void PharmacyInventory::SetEdit(bool IsEdit)
 		ui.tableWidget->setEnabled(false);
 	}
 }
-
-
 void PharmacyInventory::on_FindAllButton_clicked()
 {
 	QSqlQuery query(*sql.db);
@@ -146,7 +141,6 @@ void PharmacyInventory::on_FindAllButton_clicked()
 	}
 
 }
-
 void PharmacyInventory::on_FindButton_clicked()
 {
 	QString strName;
@@ -211,7 +205,6 @@ void PharmacyInventory::on_FindButton_clicked()
 		ui.tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	}
 }
-
 void PharmacyInventory::completeText(const QModelIndex &index) {
 	QString strName = index.data().toString();
 	ui.lineEdit_code->setText(strName);

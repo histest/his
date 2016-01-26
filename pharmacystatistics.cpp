@@ -110,9 +110,9 @@ void PharmacyStatistics::DrugName(const QString &text)
 	int y = mapToGlobal(p).y() + 1;
 
 	//druglist->move(x, y);
-	druglist->setGeometry(this->x()+822, this->y()+165, 50, 100);
-	druglist->resize(100,200);
-	druglist->setFixedWidth(160);
+	//druglist->setGeometry(this->x()+822, this->y()+165, 50, 100);
+	QPoint GlobalPoint(ui.lineEdit_DrugNo->mapToGlobal(QPoint(0, 0)));
+	druglist->setGeometry(GlobalPoint.x(), GlobalPoint.y()+ui.lineEdit_DrugNo->height(), 60, 100);
 	druglist->show();
 }
 void PharmacyStatistics::on_radioButton_clicked()
