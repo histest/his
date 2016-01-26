@@ -727,10 +727,6 @@ void DrugStorage::getItem(int row,int column)//¼ÆËã·ÑÓÃ
 		
 		double iamount = ui.lineEdit_Paid->text().toInt();
 		iamount = iamount - icurrentamount;
-		/*if(ui.radioButton_Add->isChecked() && !ui.radioButton_Minus->isChecked())
-			iamount = iamount - icurrentamount;
-		if(!ui.radioButton_Add->isChecked() && ui.radioButton_Minus->isChecked())
-			iamount = iamount + icurrentamount;*/
 		strcurrentamount = QString::number(iamount);
 		ui.lineEdit_debt->setText(strcurrentamount);
 
